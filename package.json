@@ -1,0 +1,31 @@
+{
+  "name": "ct-product-search",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-scripts": "4.0.1",
+    "react-router-dom": "^5.2.0",
+    "@commercetools/api-request-builder": "^5.6.3",
+    "@commercetools/sdk-client": "^2.1.2",
+    "@commercetools/sdk-middleware-auth": "^6.1.4",
+    "@commercetools/sdk-middleware-http": "^6.0.9"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
