@@ -11,7 +11,7 @@ const VariantInfo = ({variant}) => {
   return (
     <li>
         SKU: { variant.sku } <br></br>
-        Attributes: { variant.attributes.map(attr => <AttributeInfo key={attr.name} attr={attr} />) } <br></br>
+        Variant Key:  { variant.key } <br></br>
         { variant.price
         ? <span>Price: (using price selection): {variant.price.value.centAmount/100}</span>
         :
@@ -38,6 +38,8 @@ const VariantInfo = ({variant}) => {
             </table>
           </div>
         }
+        <p></p>
+        <h4>Attributes:</h4> { variant.attributes.map(attr => <AttributeInfo key={attr.name} attr={attr} />) } <br></br>
         <p></p>
     </li>
   );

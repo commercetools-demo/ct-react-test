@@ -48,6 +48,9 @@ const ProductDetailPage = () => {
         params.push(`priceCustomerGroup=${context.customerGroup}`);
       }
     }
+    if(context.store) {
+      params.push(`storeProjection=${context.store}`);
+    }
 
     /* Last, but not least, add a couple of reference expansions to include channel and customer group data */
     params = params.concat([
@@ -79,7 +82,8 @@ const ProductDetailPage = () => {
     <div>
       <ContextDisplay />
       <h1>{product.name.en}</h1>
-      Variants:
+      {product.description.en}<p>&nbsp;</p>
+      <h3>Variants:</h3>
       <ul>
         <VariantInfo variant={product.masterVariant} />
         { product.variants.map(variant => <VariantInfo key={variant.id} variant={variant}/>) }

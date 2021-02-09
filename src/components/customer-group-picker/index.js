@@ -20,14 +20,15 @@ function CustomerGroupPicker() {
   }
 
   let [customerGroups, setCustomerGroups] = useState([]);
+  let [fetched, setFetched] = useState([]);
 
   useEffect(() => {
     fetchCustomerGroups();
   });
 
   async function fetchCustomerGroups()  {
-    // Avoid repeat calls (?)
-    if(customerGroups.length) {
+    // Avoid repeat calls
+    if(fetched) {
       return;
     }
  
@@ -43,6 +44,7 @@ function CustomerGroupPicker() {
     if(res && res.body.results) {
       console.log('customerGroups',res.body.results);
       setCustomerGroups(res.body.results);
+      setFetched(true);
     }
   };
 

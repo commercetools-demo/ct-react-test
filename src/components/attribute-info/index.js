@@ -2,14 +2,8 @@
 
 const VERBOSE = false; 
 
-const includeAttrs=['color','size']
 
 const AttributeInfo = ({attr}) => {
-
-  if(!includeAttrs.find(i => i==attr.name))
-    return null;
-
-  VERBOSE && console.log('attribute',attr);
   
   const name = attr.name;
 
@@ -21,7 +15,7 @@ const AttributeInfo = ({attr}) => {
     }
   }
   return (
-    <span>&nbsp;{ name }={ value }</span>
+    <span>&nbsp;{ name }={ value }<br></br></span>
   )
 }
 

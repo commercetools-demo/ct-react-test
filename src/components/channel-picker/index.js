@@ -31,7 +31,9 @@ function ChannelPicker() {
       return;
     }
  
-    let uri = requestBuilder.channels.where('roles contains all ("ProductDistribution")').build();
+    let uri = requestBuilder
+                .channels
+                .where('roles contains all ("ProductDistribution")').build() + '&limit=200&sort=name.en asc';
 
    
     VERBOSE && console.log('Get channels URI',uri);

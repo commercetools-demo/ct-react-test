@@ -4,6 +4,7 @@ import ContextDisplay from '../context-display';
 import CurrencyPicker from '../currency-picker';
 import CountryPicker from '../country-picker';
 import ChannelPicker from '../channel-picker';
+import StorePicker from '../store-picker';
 import CustomerGroupPicker from '../customer-group-picker';
 
 function ContextPage() {
@@ -32,6 +33,9 @@ function ContextPage() {
       <p></p>
       
       <ChannelPicker />
+      <p></p>
+
+      <StorePicker />
       <p></p>
 
      <CustomerGroupPicker />

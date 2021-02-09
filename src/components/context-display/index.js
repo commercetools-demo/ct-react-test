@@ -14,6 +14,8 @@ function ContextDisplay() {
       &nbsp;|&nbsp;
       Channel:  {context.channelName}
       &nbsp;|&nbsp;
+      Store:  {context.storeName}
+      &nbsp;|&nbsp;
       Customer Group: {context.customerGroupName}
       <hr></hr>
     </div>
