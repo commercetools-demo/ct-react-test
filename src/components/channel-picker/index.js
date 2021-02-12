@@ -1,22 +1,21 @@
 import { useContext, useState, useEffect } from 'react';
 import { callCT, requestBuilder } from '../../commercetools';
-import AppContext from '../../appContext';
 
 const VERBOSE = true;
 
 function ChannelPicker() {
-
-  const [context, setContext] = useContext(AppContext);
   
   const onChangeChannel = (event) => {
     const channelId = event.target.value;
     let channelName = "";
     if(channelId) {
       channelName = channels.find(c => c.id == channelId).name.en;
+      sessionStorage.setItem('channelId',channelId);
+      sessionStorage.setItem('channelName',channelName);
+    } else {
+      sessionStorage.removeItem('channelId');
+      sessionStorage.removeItem('channelName');
     }
-      setContext({...context, 
-        channel: channelId, 
-        channelName: channelName });
   }
 
   let [channels, setChannels] = useState([]);
@@ -57,7 +56,7 @@ function ChannelPicker() {
   return (
     <div>
       Channel:&nbsp;&nbsp;  
-      <select value={context.channel} onChange={onChangeChannel}>
+      <select value={sessionStorage.getItem('channelId')} onChange={onChangeChannel}>
         <option value="">(none selected)</option>
         {channelOptions}
       </select>

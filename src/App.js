@@ -1,8 +1,7 @@
 import './App.css';
-import { useState } from 'react';
-import AppContext from './appContext.js';
 import SearchPage from './components/search-page';
 import ProductDetailPage from './components/product-detail-page';
+import CartPage from './components/cart-page';
 import ContextPage from './components/context-page';
 import {
   BrowserRouter,
@@ -13,43 +12,47 @@ import {
 
 
 function App() {
-
-  const [context, setContext] = useState({});
   
   return(
-    <AppContext.Provider value={[context, setContext]}>
-      <BrowserRouter>
-          <div>
-            <nav>
-              <ul>
+    <BrowserRouter>
+        <div>
+          <nav>
+            <ul>
+              <li>
+                <NavLink exact to="/" activeClassName="active">Home</NavLink>
+              </li>
+              <li>
+                <NavLink to="/context" activeClassName="active">Context</NavLink>
+              </li>
+              {sessionStorage.getItem('productId') &&
                 <li>
-                  <NavLink exact to="/" activeClassName="active">Home</NavLink>
+                  <NavLink to={"/product-detail/"+sessionStorage.getItem('productId')} activeClassName="active">Product Detail</NavLink>
                 </li>
+              }
+              {sessionStorage.getItem('cartId') &&
                 <li>
-                  <NavLink to="/context" activeClassName="active">Context</NavLink>
+                  <NavLink to={"/cart"} activeClassName="active">Cart</NavLink>
                 </li>
-                {context.productId &&
-                  <li>
-                    <NavLink to={"/product-detail/"+context.productId} activeClassName="active">Product Detail</NavLink>
-                  </li>
-                }
-              </ul>
-            </nav>
-            <br></br>
-            <Switch>
-              <Route path="/context">
-                <ContextPage />
-              </Route>
-              <Route path="/product-detail/:id">
-                <ProductDetailPage />
-              </Route>
-              <Route path="/">
-                <SearchPage />
-              </Route>
-            </Switch>
-          </div>
-        </BrowserRouter>
-    </AppContext.Provider>
+              }
+            </ul>
+          </nav>
+          <br></br>
+          <Switch>
+            <Route path="/context">
+              <ContextPage />
+            </Route>
+            <Route path="/product-detail/:id">
+              <ProductDetailPage />
+            </Route>
+            <Route path="/cart">
+              <CartPage />
+            </Route>
+            <Route path="/">
+              <SearchPage />
+            </Route>
+          </Switch>
+        </div>
+      </BrowserRouter>
   );
 }
 

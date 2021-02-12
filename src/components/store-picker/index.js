@@ -1,22 +1,21 @@
 import { useContext, useState, useEffect } from 'react';
 import { callCT, requestBuilder } from '../../commercetools';
-import AppContext from '../../appContext';
 
 const VERBOSE = true;
 
 function StorePicker() {
-
-  const [context, setContext] = useContext(AppContext);
   
   const onChangeStore = (event) => {
     const key = event.target.value;
     let storeName = "";
     if(key) {
       storeName = stores.find(s => s.key == key).name.en;
+      sessionStorage.setItem('storeKey',key);
+      sessionStorage.setItem('storeName',storeName);
+    } else {
+      sessionStorage.removeItem('storeKey');
+      sessionStorage.removeItem('storeName');
     }
-    setContext({...context, 
-      store: key, 
-      storeName: storeName });
   }
 
   let [stores, setStores] = useState([]);

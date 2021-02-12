@@ -2,7 +2,6 @@ import { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { callCT, requestBuilder } from '../../commercetools';
 import VariantInfo from '../variant-info';
-import AppContext from '../../appContext';
 import ContextDisplay from '../context-display';
 
 const VERBOSE=true;
@@ -10,7 +9,6 @@ const VERBOSE=true;
 const ProductDetailPage = () => {
   let { id } = useParams();
 
-  const [context, setContext] = useContext(AppContext);
   let [product, setProduct] = useState(null);
 
   useEffect(() => {
@@ -23,8 +21,8 @@ const ProductDetailPage = () => {
       return;
     }
 
-    if(id != context.productId ) {
-      setContext({...context, productId: id});
+    if(id != sessionStorage.getItem('productId') ) {
+      sessionStorage.setItem('productId',id);
     }
 
     let params = ['']      
@@ -35,21 +33,27 @@ const ProductDetailPage = () => {
     (see https://docs.commercetools.com/api/projects/products#price-selection)
     If currency is found, we add additional parameters.
     */
+    const currency = sessionStorage.getItem('currency');
+    const country = sessionStorage.getItem('country');
+    const channelId = sessionStorage.getItem('channelId');
+    const customerGroupId = sessionStorage.getItem('customerGroupId');
+    const storeKey = sessionStorage.getItem('storeKey');
 
-    if(context.currency) {
-      params.push(`priceCurrency=${context.currency}`);
-      if(context.country) {
-        params.push(`priceCountry=${context.country}`);
+    console.log('currency',currency);
+    if(currency) {
+      params.push(`priceCurrency=${currency}`);
+      if(country) {
+        params.push(`priceCountry=${country}`);
       }
-      if(context.channel) {
-        params.push(`priceChannel=${context.channel}`);
+      if(channelId) {
+        params.push(`priceChannel=${channelId}`);
       }
-      if(context.customerGroup) {
-        params.push(`priceCustomerGroup=${context.customerGroup}`);
+      if(customerGroupId) {
+        params.push(`priceCustomerGroup=${customerGroupId}`);
       }
     }
-    if(context.store) {
-      params.push(`storeProjection=${context.store}`);
+    if(storeKey) {
+      params.push(`storeProjection=${storeKey}`);
     }
 
     /* Last, but not least, add a couple of reference expansions to include channel and customer group data */

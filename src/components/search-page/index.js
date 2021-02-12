@@ -1,12 +1,9 @@
 import { useState, useContext } from 'react';
 import SearchInput from '../search-input';
 import ProductList from '../product-list';
-import AppContext from '../../appContext';
 import ContextDisplay from '../context-display';
 
 function SearchPage() {
-
-  const [context] = useContext(AppContext);
 
   const [isSubmitted, setSubmitted] = useState(false);
   const [search, setSearch] = useState('');

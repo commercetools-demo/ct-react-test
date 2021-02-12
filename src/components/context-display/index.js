@@ -1,22 +1,17 @@
-import { useContext } from 'react';
-import AppContext from '../../appContext';
-
 function ContextDisplay() {
 
-  const [context] = useContext(AppContext);
-  
   return (
     <div>
       <h4>Current Context:</h4>
-      Currency:  {context.currency}
+      Currency:  {sessionStorage.getItem('currency')}
       &nbsp;|&nbsp;
-      Country: {context.country}
+      Country: {sessionStorage.getItem('country')}
       &nbsp;|&nbsp;
-      Channel:  {context.channelName}
+      Channel:  {sessionStorage.getItem('channelName')}
       &nbsp;|&nbsp;
-      Store:  {context.storeName}
+      Store:  {sessionStorage.getItem('storeName')}
       &nbsp;|&nbsp;
-      Customer Group: {context.customerGroupName}
+      Customer Group: {sessionStorage.getItem('customerGroupName')}
       <hr></hr>
     </div>
   );

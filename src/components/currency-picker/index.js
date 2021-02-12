@@ -1,15 +1,14 @@
-import { useContext, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { callCT, requestBuilder } from '../../commercetools';
-import AppContext from '../../appContext';
 
 const VERBOSE = true;
 
 function CurrencyPicker() {
 
-  const [context, setContext] = useContext(AppContext);
-  
+  let currency = sessionStorage.getItem('currency');
+
   const onChangeCurrency = (event) => {
-      setContext({...context, currency: event.target.value});
+    sessionStorage.setItem('currency',event.target.value);
   }
 
   let [currencies, setCurrencies] = useState([]);
@@ -46,7 +45,7 @@ function CurrencyPicker() {
   return (
     <div>
       Currency:&nbsp;&nbsp;  
-      <select value={context.currency} onChange={onChangeCurrency}>
+      <select value={currency} onChange={onChangeCurrency}>
         <option value="">(none selected)</option>
         {currencyOptions}
       </select>

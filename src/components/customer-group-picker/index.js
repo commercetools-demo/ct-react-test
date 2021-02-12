@@ -1,23 +1,23 @@
-import { useContext, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { callCT, requestBuilder } from '../../commercetools';
-import AppContext from '../../appContext';
 
 const VERBOSE = true;
 
 function CustomerGroupPicker() {
-
-  const [context, setContext] = useContext(AppContext);
   
   const onChangeCustomerGroup = (event) => {
     const customerGroupId = event.target.value;
-    let customerGroupName = "";
     if(customerGroupId) {
-      customerGroupName = customerGroups.find(c => c.id == customerGroupId).name;
+      sessionStorage.setItem('customerGroupId',customerGroupId); 
+      const customerGroupName = customerGroups.find(c => c.id == customerGroupId).name;
+      sessionStorage.setItem('customerGroupName',customerGroupName); 
+    } else {
+      sessionStorage.removeItem('customerGroupId');
+      sessionStorage.removeItem('customerGroupName');
     }
-      setContext({...context, 
-        customerGroup: customerGroupId, 
-        customerGroupName: customerGroupName });
   }
+
+  const customerGroupId=sessionStorage.getItem('customerGroupid');
 
   let [customerGroups, setCustomerGroups] = useState([]);
   let [fetched, setFetched] = useState([]);
@@ -33,7 +33,6 @@ function CustomerGroupPicker() {
     }
  
     let uri = requestBuilder.customerGroups.build();
-
    
     VERBOSE && console.log('Get customerGroups URI',uri);
 
@@ -57,7 +56,7 @@ function CustomerGroupPicker() {
   return (
     <div>
       Customer Group:&nbsp;&nbsp;  
-      <select value={context.customerGroup} onChange={onChangeCustomerGroup}>
+      <select value={customerGroupId} onChange={onChangeCustomerGroup}>
         <option value="">(none selected)</option>
         {customerGroupOptions}
       </select>

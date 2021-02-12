@@ -1,11 +1,8 @@
 import { callCT, requestBuilder } from '../../commercetools'
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState } from 'react';
 import ProductListEntry from '../product-list-entry';
-import AppContext from '../../appContext';
 
 const ProductList = ({search}) => {
-
-  const context = useContext(AppContext);
 
   let [products, setProducts] = useState([]);
 
@@ -41,7 +38,6 @@ const ProductList = ({search}) => {
 
   return (
     <div>
-      Country: {context.country}<br></br>
       <ul>
         {products.map(product => <ProductListEntry key={product.id} product={product}/>)}
       </ul>
