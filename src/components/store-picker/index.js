@@ -49,10 +49,12 @@ function StorePicker() {
     storeOptions = stores.map(s => <option key={s.key} value={s.key}>{s.name.en}</option>);
   }
 
+  const storeKey=sessionStorage.getItem('storeKey');
+
   return (
     <div>
       Store:&nbsp;&nbsp;  
-      <select value={context.store} onChange={onChangeStore}>
+      <select value={storeKey} onChange={onChangeStore}>
         <option value="">(none selected)</option>
         {storeOptions}
       </select>

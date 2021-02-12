@@ -10,7 +10,6 @@ const VERBOSE=false;
 
 const VariantInfo = ({variant}) => {
 
-  
   const addToCart = async () => {
 
     const currency = sessionStorage.getItem('currency');
@@ -69,10 +68,16 @@ const VariantInfo = ({variant}) => {
         createCartBody.country = country;
       }
       if(customerGroupId) {
-        createCartBody.customerGroup = customerGroupId;
+        createCartBody.customerGroup = {
+          typeId: 'customer-group',
+          id: customerGroupId,
+        }
       }
       if(storeKey) {
-        createCartBody.store = storeKey;
+        createCartBody.store = {
+          typeId: 'store',
+          key: storeKey,
+        }
       }
     
       let result = await callCT({

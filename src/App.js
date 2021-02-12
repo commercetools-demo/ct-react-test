@@ -12,6 +12,8 @@ import {
 
 
 function App() {
+
+  const productId=sessionStorage.getItem('productId');
   
   return(
     <BrowserRouter>
@@ -23,17 +25,13 @@ function App() {
               </li>
               <li>
                 <NavLink to="/context" activeClassName="active">Context</NavLink>
+              </li>             
+              <li>
+                <NavLink to={"/product-detail/"+productId} activeClassName="active">Product Detail</NavLink>
               </li>
-              {sessionStorage.getItem('productId') &&
-                <li>
-                  <NavLink to={"/product-detail/"+sessionStorage.getItem('productId')} activeClassName="active">Product Detail</NavLink>
-                </li>
-              }
-              {sessionStorage.getItem('cartId') &&
-                <li>
-                  <NavLink to={"/cart"} activeClassName="active">Cart</NavLink>
-                </li>
-              }
+              <li>
+                <NavLink to={"/cart"} activeClassName="active">Cart</NavLink>
+              </li>            
             </ul>
           </nav>
           <br></br>
