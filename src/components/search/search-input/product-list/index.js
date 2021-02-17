@@ -20,7 +20,7 @@ const ProductList = ({search}) => {
       uri: requestBuilder.productProjectionsSearch
       .text(search,'en')
       .fuzzy(true)
-      .perPage(10)
+      .perPage(20)
       .build(),
       method: 'GET'
     });

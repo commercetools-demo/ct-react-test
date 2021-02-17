@@ -7,7 +7,7 @@ const ProductListEntry = ({product}) => {
   return (
     <li>
       <Link to={"/product-detail/"+product.id}>
-     {product.name.en} -- {product.description.en}
+     {product.name.en}: {product.description.en}
      </Link>
     </li>
   )
