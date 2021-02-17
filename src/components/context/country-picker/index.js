@@ -1,5 +1,5 @@
-import { useContext, useState, useEffect } from 'react';
-import { callCT, requestBuilder } from '../../commercetools';
+import { useState, useEffect } from 'react';
+import { callCT, requestBuilder } from '../../../commercetools';
 
 const VERBOSE = true;
 

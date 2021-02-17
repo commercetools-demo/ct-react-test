@@ -1,23 +1,27 @@
-import { useContext, useState, useEffect } from 'react';
 import AttributeInfo from '../attribute-info';
+import { useContext} from 'react';
 import PriceInfo from '../price-info';
-import {
-  Link
-} from "react-router-dom";
-import { callCT, requestBuilder } from '../../commercetools';
+import { Link } from "react-router-dom";
+import AppContext from '../../../appContext.js';
+import { callCT, requestBuilder } from '../../../commercetools';
 
 const VERBOSE=false;
 
 const VariantInfo = ({variant}) => {
 
+  const [context, setContext] = useContext(AppContext);
+  
   const addToCart = async () => {
 
     const currency = sessionStorage.getItem('currency');
     const country = sessionStorage.getItem('country');
     const channelId = sessionStorage.getItem('channelId');
     const customerGroupId = sessionStorage.getItem('customerGroupId');
-    const productId = sessionStorage.getItem('productId');
     const storeKey = sessionStorage.getItem('storeKey');
+
+    
+    const productId = context.productId;
+
 
     let cart;
     const lineItem = {

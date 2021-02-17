@@ -1,7 +1,7 @@
-import { useState, useContext } from 'react';
-import SearchInput from '../search-input';
-import ProductList from '../product-list';
-import ContextDisplay from '../context-display';
+import { useState } from 'react';
+import SearchInput from '../../components/search/search-input';
+import ProductList from '../../components/search/search-input/product-list';
+import ContextDisplay from '../../components/context/context-display';
 
 function SearchPage() {
 

@@ -1,4 +1,4 @@
-import { callCT, requestBuilder } from '../../commercetools'
+import { callCT, requestBuilder } from '../../../../commercetools'
 import { useEffect, useState } from 'react';
 import ProductListEntry from '../product-list-entry';
 

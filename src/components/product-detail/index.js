@@ -1,14 +1,17 @@
 import { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { callCT, requestBuilder } from '../../commercetools';
-import VariantInfo from '../variant-info';
-import ContextDisplay from '../context-display';
+import VariantInfo from './variant-info';
+import ContextDisplay from '../context/context-display';
+import AppContext from '../../appContext';
 
 const VERBOSE=true;
 
 const ProductDetailPage = () => {
   let { id } = useParams();
 
+  const [context, setContext] = useContext(AppContext);
+ 
   let [product, setProduct] = useState(null);
 
   useEffect(() => {
@@ -21,8 +24,8 @@ const ProductDetailPage = () => {
       return;
     }
 
-    if(id != sessionStorage.getItem('productId') ) {
-      sessionStorage.setItem('productId',id);
+    if(id != context.productId ) {
+      setContext({...context, productId: id});
     }
 
     let params = ['']      

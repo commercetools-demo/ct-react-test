@@ -1,8 +1,8 @@
-import { useEffect, useState, useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { callCT, requestBuilder } from '../../commercetools';
-import LineItemInfo from '../line-item-info';
-import ContextDisplay from '../context-display';
+import LineItemInfo from '../../components/cart/line-item-info';
+import ContextDisplay from '../../components/context/context-display';
+import LineItemPriceInfo from './line-item-price-info';
 
 const VERBOSE=true;
 
@@ -49,10 +49,12 @@ const CartPage = () => {
       <ContextDisplay />
       <h3>Cart {cart.id}</h3>
       
-      <h4>Line Items:</h4>
+      <h4>Line Items</h4>
       <ul>
         { cart.lineItems.map((lineItem,index) => <LineItemInfo key={index} lineItem={lineItem}/>) }
       </ul>
+      <h4>Cart Total: <LineItemPriceInfo price={cart.totalPrice}/></h4>
+      
       <p></p>
       <button type="button" onClick={deleteCart}>Delete Cart</button>
     </div>
