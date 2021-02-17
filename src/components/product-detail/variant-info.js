@@ -1,9 +1,9 @@
-import AttributeInfo from '../attribute-info';
+import AttributeInfo from './attribute-info';
 import { useContext} from 'react';
-import PriceInfo from '../price-info';
+import PriceInfo from './price-info';
 import { Link } from "react-router-dom";
-import AppContext from '../../../appContext.js';
-import { callCT, requestBuilder } from '../../../commercetools';
+import AppContext from '../../appContext.js';
+import { callCT, requestBuilder } from '../../commercetools';
 
 const VERBOSE=false;
 

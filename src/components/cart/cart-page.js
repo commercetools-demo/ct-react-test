@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { callCT, requestBuilder } from '../../commercetools';
-import LineItemInfo from '../../components/cart/line-item-info';
-import ContextDisplay from '../../components/context/context-display';
+import LineItemInfo from './line-item-info';
+import ContextDisplay from '../context/context-display';
 import LineItemPriceInfo from './line-item-price-info';
 
 const VERBOSE=true;

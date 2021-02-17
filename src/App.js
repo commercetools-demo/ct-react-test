@@ -1,9 +1,9 @@
 import './App.css';
 import { useState } from 'react';
-import SearchPage from './components/search';
-import ProductDetailPage from './components/product-detail';
-import CartPage from './components/cart';
-import ContextPage from './components/context';
+import SearchPage from './components/search/search-page';
+import ProductDetailPage from './components/product-detail/product-detail-page';
+import CartPage from './components/cart/cart-page';
+import ContextPage from './components/context/context-page';
 import AppContext from './appContext.js';
 import {
   BrowserRouter,

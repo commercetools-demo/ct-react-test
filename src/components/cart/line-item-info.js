@@ -1,5 +1,5 @@
-import DiscountInfo from '../discount-info';
-import LineItemPriceInfo from '../line-item-price-info';
+import DiscountInfo from './discount-info';
+import LineItemPriceInfo from './line-item-price-info';
 
 
 const VERBOSE=true;
