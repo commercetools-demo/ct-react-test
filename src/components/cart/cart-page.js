@@ -14,8 +14,21 @@ const CartPage = () => {
     fetchCart();
   });
 
-  const deleteCart = () => {
-    // TODO - delete from server as well, but this will work for now...
+  const deleteCart = async() => {
+    let cartId=sessionStorage.getItem('cartId');
+    if(cartId) {
+      let res = await callCT({
+        uri: requestBuilder.myActiveCart.build(),
+        method: 'GET'
+      });
+      if(res && res.body) {
+        callCT({
+          uri: requestBuilder.myCarts.byId(res.body.id),
+          version: res.body,version,
+          method: 'DELETE',
+        });
+      }
+    }
     sessionStorage.removeItem('cartId');
     setCart(null);
   }
@@ -45,7 +58,7 @@ const CartPage = () => {
     if(!cartId)
       return null;
 
-    return requestBuilder.carts.byId(cartId).build() +
+    return requestBuilder.myCarts.byId(cartId).build() +
     '?expand=lineItems[*].discountedPrice.includedDiscounts[*].discount' +
     '&expand=lineItems[*].discountedPricePerQuantity[*].discountedPrice.includedDiscounts[*].discount';
   }
@@ -57,7 +70,7 @@ const CartPage = () => {
       return;
    
     let res =  await callCT({
-      uri: cartUri,
+      uri: getCartUri(),
       method: 'POST',
       body: {
         version: cart.version,

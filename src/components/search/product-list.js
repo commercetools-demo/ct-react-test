@@ -24,7 +24,7 @@ const ProductList = ({search}) => {
       .build(),
       method: 'GET'
     });
-    if(res.body.results) {
+    if(res && res.body.results) {
       setProducts(res.body.results);
     } else {
       console.log('no results')
@@ -32,7 +32,9 @@ const ProductList = ({search}) => {
   };
 
   if(products.length===0) {
-    return null
+    return (
+      <div>no results</div>
+    )
   }
 
 

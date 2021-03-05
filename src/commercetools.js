@@ -7,8 +7,9 @@
 */
 
 import { createRequestBuilder } from '@commercetools/api-request-builder'
+import SdkAuth from '@commercetools/sdk-auth'
 import { createClient } from '@commercetools/sdk-client'
-import { createAuthMiddlewareForClientCredentialsFlow } from '@commercetools/sdk-middleware-auth'
+import { createAuthMiddlewareForAnonymousSessionFlow, createAuthMiddlewareWithExistingToken } from '@commercetools/sdk-middleware-auth'
 import { createHttpMiddleware } from '@commercetools/sdk-middleware-http'
 
 // Log all requests & responses to the console:
@@ -23,7 +24,8 @@ const clientSecret = process.env.REACT_APP_CLIENT_SECRET;
 const scopes = [process.env.REACT_APP_SCOPES];
 const apiUrl = process.env.REACT_APP_API_URL;
 
-const authMiddleware = createAuthMiddlewareForClientCredentialsFlow({
+// By default, we start out with an authentication request for an anonymous user
+const authMiddleware = createAuthMiddlewareForAnonymousSessionFlow({
   host: authUrl,
   projectKey: projectKey,
   credentials: {
@@ -33,18 +35,55 @@ const authMiddleware = createAuthMiddlewareForClientCredentialsFlow({
   scopes: scopes
 })
 
+export const authClient = new SdkAuth({
+  host: authUrl,
+  projectKey: projectKey,
+  disableRefreshToken: false,
+  credentials: {
+    clientId: clientId,
+    clientSecret: clientSecret,
+  },
+  scopes: scopes
+})
+
+
 const httpMiddleware = createHttpMiddleware({
   host: apiUrl,
 })
 
-const client = createClient({
+let client = createClient({
   middlewares: [authMiddleware, httpMiddleware],
 })
 
+// Setting an access token has the side effect of creating a new 
+// client with an 'existing token' auth middleware
+export function setAccessToken(accessToken) {
+  client = createClient({
+    middlewares: [
+      createAuthMiddlewareWithExistingToken(`Bearer ${accessToken}`, {
+        force: true,
+      }),
+      httpMiddleware
+    ],
+  })
+  console.log(client);
+}
+
 /* Provide a requestBuilder object that will create URI components for common commercetools operations
 (see https://commercetools.github.io/nodejs/sdk/api/apiRequestBuilder.html )
+https://docs.commercetools.com/api/authorization#requesting-an-access-token-using-commercetools-oauth-20-server
 */
-export const requestBuilder = createRequestBuilder({projectKey})
+const options = {
+  projectKey: projectKey,
+  customServices: {
+    myProfile: {
+      type: 'customer',
+      endpoint: '/me',
+      features: ['update']
+    }
+  }
+}
+export const requestBuilder = createRequestBuilder(options);
 
 /* Call commercetools with the following arguments:
 

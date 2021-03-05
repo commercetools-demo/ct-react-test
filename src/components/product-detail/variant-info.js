@@ -35,24 +35,21 @@ const VariantInfo = ({variant}) => {
       }
     }
 
-    let cartId = sessionStorage.getItem('cartId');
-
-    if(cartId) {
-      // Fetch latest version
-      let result = await callCT({
-        uri: requestBuilder.carts.byId(cartId).build(),
-        method: 'GET'
-      });
-      if(result) {
-        cart = result.body;
-      }
+    // Fetch current cart, if any
+    let result = await callCT({
+      uri: requestBuilder.myActiveCart.build(),
+      method: 'GET'
+    });
+    if(result) {
+      cart = result.body;
+      sessionStorage.setItem('cartId',cart.id);
     }
+
     if(cart) {
-      
       // add item to current cart
-      console.log('Adding to current cart',cartId,cart.version);
+      console.log('Adding to current cart',cart.id,cart.version);
       callCT({
-        uri: requestBuilder.carts.byId(cartId).build(),
+        uri: requestBuilder.myCarts.byId(cart.id).build(),
         method: 'POST',
         body: {
           version: cart.version,
@@ -85,7 +82,7 @@ const VariantInfo = ({variant}) => {
       }
     
       let result = await callCT({
-        uri: requestBuilder.carts.build(),
+        uri: requestBuilder.myCarts.build(),
         method: 'POST',
         body: createCartBody
       });

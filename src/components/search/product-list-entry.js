@@ -7,10 +7,12 @@ const ProductListEntry = ({product}) => {
   return (
     <li>
       <Link to={"/product-detail/"+product.id}>
-     {product.name.en}: {product.description.en}
+     {product.name.en}: 
      </Link>
     </li>
   )
 }
+
+// TODO - ADD DESCRIPTION, proper localization
 
 export default ProductListEntry

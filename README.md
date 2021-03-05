@@ -17,21 +17,36 @@ If you're not using React, you should still be able to use this in other applica
 # Pages
 
 ## SearchPage 
-```src/components/search-page```:
+```src/components/search```:
 Displays an input form that lets the user search for products
 
 ## ProductDetailPage:
-```src/components/product-detail-page```:
+```src/components/product-detail```:
 Display a single product & variants
 
 ## ContextPage:
-```src/components/context-page```:
+```src/components/context```:
 
 This displays a set of input elements to allow the user to choose the 'context' for product/price lookup:  Country, Currency, Channel, and Customer Group.  
 
+## CartPage:
+```src/components/cart```:
+
+Display the shopping cart with detailed discount information.
+
 # Setup:
 
-Copy .env.sample to .env in the root folder and set the appropriate values for your project/developer API client.
+Because this application has some additional functionality beyond a 'traditional' web app, you'll need
+additional scopes when creating the developer key.
+
+First, start with the "Mobile & Single Page Application" template, and then add (under View):
+
+Products (all)
+Project Settings
+Stores
+
+Download the Environment Variables format, remove the 'export ' and replace CTP_ with REACT_APP_
+
 
 Install Dependencies:
 

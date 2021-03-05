@@ -20,7 +20,7 @@ const ProductDetailPage = () => {
 
   const fetchProduct = async (id) => {
     // Avoid repeat calls (?)
-    if(product) {
+    if(product || !id) {
       return;
     }
 
@@ -89,7 +89,7 @@ const ProductDetailPage = () => {
     <div>
       <ContextDisplay />
       <h1>{product.name.en}</h1>
-      {product.description.en}<p>&nbsp;</p>
+      
       <h3>Variants:</h3>
       <ul>
         <VariantInfo variant={product.masterVariant} />
@@ -98,5 +98,8 @@ const ProductDetailPage = () => {
     </div>
   )
 }
+
+// TODO - Add description, proper localization
+// {product.description.en}<p>&nbsp;</p>
 
 export default ProductDetailPage;

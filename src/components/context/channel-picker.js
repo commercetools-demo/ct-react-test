@@ -18,6 +18,7 @@ function ChannelPicker() {
     }
   }
 
+
   let [channels, setChannels] = useState([]);
 
   useEffect(() => {
@@ -50,13 +51,14 @@ function ChannelPicker() {
   let channelOptions = "";
   if(channels.length) {
     channelOptions = channels.map(c => <option key={c.id} value={c.id}>{c.name.en}</option>);
-   
   }
+
+  let selectedChannel=sessionStorage.getItem('channelId') ? sessionStorage.getItem('channelId') : '';
 
   return (
     <div>
       Channel:&nbsp;&nbsp;  
-      <select value={sessionStorage.getItem('channelId')} onChange={onChangeChannel}>
+      <select value={selectedChannel} onChange={onChangeChannel}>
         <option value="">(none selected)</option>
         {channelOptions}
       </select>

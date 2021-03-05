@@ -4,14 +4,13 @@ import { callCT, requestBuilder } from '../../commercetools';
 const VERBOSE = true;
 
 function CurrencyPicker() {
-
-  let currency = sessionStorage.getItem('currency');
-
   const onChangeCurrency = (event) => {
+    setCurrency(event.target.value);
     sessionStorage.setItem('currency',event.target.value);
   }
 
   let [currencies, setCurrencies] = useState([]);
+  let [currency, setCurrency] = useState(sessionStorage.getItem('currency'));
 
   useEffect(() => {
     fetchCurrencies();
