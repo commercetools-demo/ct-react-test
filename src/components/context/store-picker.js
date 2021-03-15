@@ -1,18 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { callCT, requestBuilder } from '../../commercetools';
+import AppContext from '../../appContext';
 
 const VERBOSE = true;
 
 function StorePicker() {
+
+  const [context, setContext] = useContext(AppContext);
   
   const onChangeStore = (event) => {
     const key = event.target.value;
     let storeName = "";
     if(key) {
       storeName = stores.find(s => s.key == key).name.en;
+      setContext({...context,storeKey: key, storeName: storeName})
       sessionStorage.setItem('storeKey',key);
       sessionStorage.setItem('storeName',storeName);
     } else {
+      setContext({...context,storeKey: null, storeName: null});
       sessionStorage.removeItem('storeKey');
       sessionStorage.removeItem('storeName');
     }
@@ -49,7 +54,7 @@ function StorePicker() {
     storeOptions = stores.map(s => <option key={s.key} value={s.key}>{s.name.en}</option>);
   }
 
-  const storeKey=sessionStorage.getItem('storeKey');
+  const storeKey=context.storeKey;
 
   return (
     <div>

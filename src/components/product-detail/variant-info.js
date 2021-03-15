@@ -9,7 +9,7 @@ const VERBOSE=false;
 
 const VariantInfo = ({variant}) => {
 
-  const [context, setContext] = useContext(AppContext);
+  const [context] = useContext(AppContext);
   
   const addToCart = async () => {
 
@@ -19,7 +19,6 @@ const VariantInfo = ({variant}) => {
     const customerGroupId = sessionStorage.getItem('customerGroupId');
     const storeKey = sessionStorage.getItem('storeKey');
 
-    
     const productId = context.productId;
 
 

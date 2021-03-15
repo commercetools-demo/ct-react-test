@@ -1,16 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { callCT, requestBuilder } from '../../commercetools';
+import AppContext from '../../appContext';
 
 const VERBOSE = true;
 
 function CurrencyPicker() {
+
+  const [context, setContext] = useContext(AppContext);
+
+  // Set both context (for application state) and session (for refreshes)
   const onChangeCurrency = (event) => {
-    setCurrency(event.target.value);
-    sessionStorage.setItem('currency',event.target.value);
+    const curr=event.target.value;
+    setContext({...context,currency: curr })
+    sessionStorage.setItem('currency',curr);
   }
 
   let [currencies, setCurrencies] = useState([]);
-  let [currency, setCurrency] = useState(sessionStorage.getItem('currency'));
 
   useEffect(() => {
     fetchCurrencies();
@@ -40,11 +45,12 @@ function CurrencyPicker() {
     currencyOptions = currencies.map(c => <option key={c} value={c}>{c}</option>);
    
   }
+  let currency = context.currency;
 
   return (
     <div>
       Currency:&nbsp;&nbsp;  
-      <select value={currency} onChange={onChangeCurrency}>
+      <select value={currency ? currency : ''} onChange={onChangeCurrency}>
         <option value="">(none selected)</option>
         {currencyOptions}
       </select>

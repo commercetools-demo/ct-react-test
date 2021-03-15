@@ -51,6 +51,7 @@ const OktaLogin = () => {
       <div>
         Welcome, {userInfo.name}<p></p>
         Scopes: {authState.accessToken.scopes.join(',')}<p></p>
+        Access Token: {authState.accessToken.value}<p></p>
         <button onClick={logout}>Log out</button>
       </div>
     

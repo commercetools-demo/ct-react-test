@@ -1,11 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { callCT, requestBuilder } from '../../commercetools';
+import AppContext from '../../appContext';
 
 const VERBOSE = true;
 
 function CountryPicker() {
+
+  const [context, setContext] = useContext(AppContext);
   
   const onChangeCountry = (event) => {
+      setContext({...context,country: event.target.value});
       sessionStorage.setItem('country',event.target.value);
   }
 
@@ -43,7 +47,7 @@ function CountryPicker() {
   return (
     <div>
       Country:&nbsp;&nbsp;  
-      <select value={sessionStorage.getItem('country')} onChange={onChangeCountry}>
+      <select value={context.country} onChange={onChangeCountry}>
         <option value="">(none selected)</option>
         {countryOptions}
       </select>

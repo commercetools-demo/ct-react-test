@@ -20,7 +20,17 @@ const CALLBACK_PATH = '/login/callback';
 const oktaAuth = new OktaAuth(oktaConfig.oidc);
 function App() {
 
-  const [context, setContext] = useState({});
+  // Initialize context from session state.
+  const [context, setContext] = useState({
+    currency: sessionStorage.getItem('currency'),
+    country: sessionStorage.getItem('country'),
+    channelId: sessionStorage.getItem('channelId'),
+    channelName: sessionStorage.getItem('channelName'),
+    storeKey: sessionStorage.getItem('storeKey'),
+    storeName: sessionStorage.getItem('storeName'),
+    customerGroupId: sessionStorage.getItem('customerGroupId'),
+    customerGroupName: sessionStorage.getItem('customerGroupName')
+  });
   
   return(
     <AppContext.Provider value={[context, setContext]}>

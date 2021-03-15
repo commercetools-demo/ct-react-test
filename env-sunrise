@@ -1,0 +1,6 @@
+export CTP_PROJECT_KEY="presales-sunrise-demo"
+export CTP_CLIENT_SECRET="lzxPfSd9kKTYH8eGQnCoikKyJCFtbq3D"
+export CTP_CLIENT_ID="NeNK6JFdM4boiA-zcLk5LOLK"
+export CTP_AUTH_URL="https://auth.us-central1.gcp.commercetools.com"
+export CTP_API_URL="https://api.us-central1.gcp.commercetools.com"
+export CTP_SCOPES="manage_my_orders:presales-sunrise-demo create_anonymous_token:presales-sunrise-demo manage_my_payments:presales-sunrise-demo manage_my_profile:presales-sunrise-demo manage_my_shopping_lists:presales-sunrise-demo view_categories:presales-sunrise-demo view_products:presales-sunrise-demo view_published_products:presales-sunrise-demo"

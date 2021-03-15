@@ -41,9 +41,9 @@ additional scopes when creating the developer key.
 
 First, start with the "Mobile & Single Page Application" template, and then add (under View):
 
-Products (all)
-Project Settings
-Stores
+* Products (all)
+* Project Settings
+* Stores
 
 Download the Environment Variables format, remove the 'export ' and replace CTP_ with REACT_APP_
 

@@ -1,23 +1,36 @@
-import { useState, useEffect } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { callCT, requestBuilder } from '../../commercetools';
+import AppContext from '../../appContext';
 
 const VERBOSE = true;
 
 function CustomerGroupPicker() {
+
+  const [context, setContext] = useContext(AppContext);
   
   const onChangeCustomerGroup = (event) => {
     const customerGroupId = event.target.value;
     if(customerGroupId) {
-      sessionStorage.setItem('customerGroupId',customerGroupId); 
       const customerGroupName = customerGroups.find(c => c.id == customerGroupId).name;
+
+      setContext({
+        ...context,
+        customerGroupId:customerGroupId, 
+        customerGroupName: customerGroupName
+      });
+      sessionStorage.setItem('customerGroupId',customerGroupId); 
       sessionStorage.setItem('customerGroupName',customerGroupName); 
-    } else {
+    } else {setContext({
+      ...context,
+      customerGroupId:null, 
+      customerGroupName: null
+    });
       sessionStorage.removeItem('customerGroupId');
       sessionStorage.removeItem('customerGroupName');
     }
   }
 
-  const customerGroupId=sessionStorage.getItem('customerGroupid');
+  const customerGroupId=context.customerGroupId;
 
   let [customerGroups, setCustomerGroups] = useState([]);
   let [fetched, setFetched] = useState([]);
