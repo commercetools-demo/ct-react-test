@@ -1,3 +1,4 @@
+import config from '../../config';
 import { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { callCT, requestBuilder } from '../../commercetools';
@@ -88,7 +89,7 @@ const ProductDetailPage = () => {
   return (
     <div>
       <ContextDisplay />
-      <h1>{product.name.en}</h1>
+      <h1>{product.name[config.locale]}</h1>
       
       <h3>Variants:</h3>
       <ul>

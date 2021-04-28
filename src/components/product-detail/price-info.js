@@ -1,3 +1,4 @@
+import config from '../../config';
 const VERBOSE=false;
 
 const PriceInfo = ({price}) => {
@@ -5,7 +6,7 @@ const PriceInfo = ({price}) => {
 
   let channelName = '';
   if(price.channel && price.channel.obj && price.channel.obj.name) {
-    channelName=price.channel.obj.name.en;
+    channelName=price.channel.obj.name[config.locale];
   }
 
   let customerGroup = '';

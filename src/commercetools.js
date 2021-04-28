@@ -15,7 +15,6 @@ import { createHttpMiddleware } from '@commercetools/sdk-middleware-http'
 // Log all requests & responses to the console:
 const VERBOSE=true;
 
-
 // Included automatically by react-scripts.  If not using react, use dotenv to load environment vars instead.
 const authUrl = process.env.REACT_APP_AUTH_URL;
 const projectKey = process.env.REACT_APP_PROJECT_KEY;
@@ -56,7 +55,7 @@ let client = createClient({
 })
 
 // Setting an access token has the side effect of creating a new 
-// client with an 'existing token' auth middleware
+// client with the createAuthMiddlewareWithExistingToken auth middleware
 export function setAccessToken(accessToken) {
   client = createClient({
     middlewares: [

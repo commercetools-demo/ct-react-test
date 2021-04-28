@@ -1,3 +1,4 @@
+import config from '../../config';
 import { useContext, useState, useEffect } from 'react';
 import { callCT, requestBuilder } from '../../commercetools';
 import AppContext from '../../appContext';
@@ -14,7 +15,7 @@ function ChannelPicker() {
     const channelId = event.target.value;
     let channelName = "";
     if(channelId) {
-      channelName = channels.find(c => c.id == channelId).name.en;
+      channelName = channels.find(c => c.id == channelId).name[config.locale];
       setContext({...context,channelId: channelId, channelName: channelName});
       sessionStorage.setItem('channelId',channelId);
       sessionStorage.setItem('channelName',channelName);
@@ -36,7 +37,7 @@ function ChannelPicker() {
  
     let uri = requestBuilder
                 .channels
-                .where('roles contains all ("ProductDistribution")').build() + '&limit=200&sort=name.en asc';
+                .where('roles contains all ("ProductDistribution")').build() + '&limit=200&sort=name' + config.locale + ' asc';
 
    
     VERBOSE && console.log('Get channels URI',uri);
@@ -53,7 +54,7 @@ function ChannelPicker() {
 
   let channelOptions = "";
   if(channels.length) {
-    channelOptions = channels.map(c => <option key={c.id} value={c.id}>{c.name.en}</option>);
+    channelOptions = channels.map(c => <option key={c.id} value={c.id}>{c.name[config.locale]}</option>);
   }
 
   let selectedChannel=context.channelId ? context.channelId : '';

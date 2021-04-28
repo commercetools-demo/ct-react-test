@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import { callCT, requestBuilder } from '../../commercetools';
+import config from '../../config';
 
 const VERBOSE=true;
 
@@ -9,7 +8,7 @@ const DiscountInfo = ({discount}) => {
 
   return (
     <li>
-        Name: { discount.discount.obj.name.en } &nbsp;&nbsp;
+        Name: { discount.discount.obj.name[config.locale] } &nbsp;&nbsp;
         Discounted Amount:  { discount.discountedAmount.centAmount/100 }
     </li>
   );

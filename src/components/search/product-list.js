@@ -1,10 +1,14 @@
+import config from '../../config';
 import { callCT, requestBuilder } from '../../commercetools'
 import { useEffect, useState } from 'react';
 import ProductListEntry from './product-list-entry';
 
+
 const ProductList = ({search}) => {
 
   let [products, setProducts] = useState([]);
+  
+  let [searched, setSearched] = useState(false);
 
   useEffect(() => {
     search && getProducts(search);
@@ -12,13 +16,15 @@ const ProductList = ({search}) => {
 
   const getProducts = async (search) => {
     // Avoid repeat calls (?)
-    if(products.length>0) {
+    if(searched) {
+      console.log('skipping');
       return;
     }
+    setSearched(true);
 
     let res =  await callCT({
       uri: requestBuilder.productProjectionsSearch
-      .text(search,'en')
+      .text(search,config.locale)
       .fuzzy(true)
       .perPage(20)
       .build(),

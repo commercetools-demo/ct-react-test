@@ -40,6 +40,9 @@ const CartPage = () => {
       lineItemId: lineItem.id,
       quantity: lineItem.quantity + 1
     }
+    if(lineItem.priceMode=='ExternalPrice') {
+      action.externalPrice = lineItem.price.value;
+    }
     updateCart(action);
   }
 

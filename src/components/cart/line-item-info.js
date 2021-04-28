@@ -1,3 +1,4 @@
+import config from '../../config';
 import DiscountInfo from './discount-info';
 import LineItemPriceInfo from './line-item-price-info';
 
@@ -15,7 +16,7 @@ const LineItemInfo = ({lineItem,increment,decrement}) => {
           <button onClick={decrement}> - </button>&nbsp;
           { lineItem.quantity }&nbsp;
           <button onClick={increment}> + </button> <br></br>
-        Name:  { lineItem.name.en }&nbsp;&nbsp;
+        Name:  { lineItem.name[config.locale] }&nbsp;&nbsp;
         
         Original Price: <LineItemPriceInfo price={lineItem.price.value}/>&nbsp;&nbsp;
         Discounted Price: <LineItemPriceInfo price={lineItem.discountedPrice}/>&nbsp;&nbsp;

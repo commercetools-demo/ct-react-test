@@ -1,6 +1,6 @@
-# ct-product-price
+# ct-react-test
 
-A simple React app that demonstrates calling the commercetools APIs from a browser.
+A simple React app for testing various API functions from the browser.
 This example calls the product projections Search API to fetch a list of products.
 Optionally, you can use commercetools' price selection logic to fetch the correct price 
 for a product using a combination of currency, country, channel, and customer group parameters
@@ -39,8 +39,9 @@ Display the shopping cart with detailed discount information.
 Because this application has some additional functionality beyond a 'traditional' web app, you'll need
 additional scopes when creating the developer key.
 
-First, start with the "Mobile & Single Page Application" template, and then add (under View):
+First, start with the "Mobile & Single Page Application" template, and then add 
 
+under View:
 * Products (all)
 * Project Settings
 * Stores

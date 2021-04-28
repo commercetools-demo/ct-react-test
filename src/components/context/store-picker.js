@@ -1,3 +1,4 @@
+import config from '../../config';
 import { useContext, useState, useEffect } from 'react';
 import { callCT, requestBuilder } from '../../commercetools';
 import AppContext from '../../appContext';
@@ -12,7 +13,7 @@ function StorePicker() {
     const key = event.target.value;
     let storeName = "";
     if(key) {
-      storeName = stores.find(s => s.key == key).name.en;
+      storeName = stores.find(s => s.key == key).name[config.locale];
       setContext({...context,storeKey: key, storeName: storeName})
       sessionStorage.setItem('storeKey',key);
       sessionStorage.setItem('storeName',storeName);
@@ -23,6 +24,7 @@ function StorePicker() {
     }
   }
 
+  let [fetched, setFetched] = useState(false);
   let [stores, setStores] = useState([]);
 
   useEffect(() => {
@@ -31,11 +33,12 @@ function StorePicker() {
 
   async function fetchStores()  {
     // Avoid repeat calls (?)
-    if(stores.length) {
+    if(fetched) {
       return;
     }
+    setFetched(true);
  
-    let uri = requestBuilder.stores.build()+'?limit=200&sort=name.en asc';
+    let uri = requestBuilder.stores.build()+'?limit=200&sort=name.' + config.locale + ' asc';
 
     VERBOSE && console.log('Get stores URI',uri);
 
@@ -51,7 +54,7 @@ function StorePicker() {
 
   let storeOptions = "";
   if(stores.length) {
-    storeOptions = stores.map(s => <option key={s.key} value={s.key}>{s.name.en}</option>);
+    storeOptions = stores.map(s => <option key={s.key} value={s.key}>{s.name[config.locale]}</option>);
   }
 
   const storeKey=context.storeKey;
