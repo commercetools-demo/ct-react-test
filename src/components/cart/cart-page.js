@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
-import { callCT, requestBuilder } from '../../commercetools';
 import LineItemInfo from './line-item-info';
+import { useEffect, useState } from 'react';
 import ContextDisplay from '../context/context-display';
 import LineItemPriceInfo from './line-item-price-info';
+import CartCustomFields from './cart-custom-fields';
+import { Container, Row, Col} from 'react-bootstrap';
+import { getCart, updateCart, deleteCart } from './cart-util';
 
 const VERBOSE=true;
 
@@ -11,30 +13,22 @@ const CartPage = () => {
   let [cart, setCart] = useState(null);
 
   useEffect(() => {
-    fetchCart();
+    getCurrentCart();
   });
 
-  const deleteCart = async() => {
-    let cartId=sessionStorage.getItem('cartId');
-    if(cartId) {
-      let res = await callCT({
-        uri: requestBuilder.myActiveCart.build(),
-        method: 'GET'
-      });
-      if(res && res.body) {
-        callCT({
-          uri: requestBuilder.myCarts.byId(res.body.id),
-          version: res.body,version,
-          method: 'DELETE',
-        });
-      }
-    }
-    sessionStorage.removeItem('cartId');
-    setCart(null);
+  const getCurrentCart = async() => {
+    setCart(await getCart());
   }
 
-  const incrementQuantity = (lineItem) => {
-    console.log('increment',lineItem);
+  if(!cart) {
+    return null
+  }
+
+  const updateCartAndRefresh = async (action) => {
+    setCart(await updateCart(action));
+  }
+
+  const incrementQuantity = async (lineItem) => {
     const action = {
       action: 'changeLineItemQuantity',
       lineItemId: lineItem.id,
@@ -43,75 +37,33 @@ const CartPage = () => {
     if(lineItem.priceMode=='ExternalPrice') {
       action.externalPrice = lineItem.price.value;
     }
-    updateCart(action);
+    updateCartAndRefresh(action);
   }
-
-  const decrementQuantity = (lineItem) => {
+  
+  const decrementQuantity = async (lineItem) => {
     console.log('decrement',lineItem);
     const action = {
       action: 'changeLineItemQuantity',
       lineItemId: lineItem.id,
       quantity: lineItem.quantity - 1
     }
-    updateCart(action);
-  }
-
-  const getCartUri = () => {
-    const cartId = sessionStorage.getItem('cartId');
-    if(!cartId)
-      return null;
-
-    return requestBuilder.myCarts.byId(cartId).build() +
-    '?expand=lineItems[*].discountedPrice.includedDiscounts[*].discount' +
-    '&expand=lineItems[*].discountedPricePerQuantity[*].discountedPrice.includedDiscounts[*].discount';
-  }
-
-  const updateCart = async(action) => {
-    console.log('action',action);
-    const cartUri = getCartUri();
-    if(!cartUri)
-      return;
-   
-    let res =  await callCT({
-      uri: getCartUri(),
-      method: 'POST',
-      body: {
-        version: cart.version,
-        actions: [action]
-      },
-      verbose: true,
-    });
-    if(res && res.body) {
-      setCart(res.body);
-    }
+    updateCartAndRefresh(action);
   }
   
-  const fetchCart = async () => {
-    // Avoid repeat calls
-    if(cart)
-      return;
-
-    const cartUri = getCartUri();
-    if(!cartUri)
-      return;
-
-    let res =  await callCT({
-      uri: cartUri,
-      method: 'GET'
-    });
-    if(res && res.body) {
-      setCart(res.body);
-    }
-  };
-
-  if(!cart) {
-    return null
-  }
 
   return (
     <div>
       <ContextDisplay />
-      <h3>Cart {cart.id}</h3>
+      <h4>Cart</h4>
+      <Container>
+        <Row>
+          <Col>
+            ID: {cart.id}
+          </Col>
+        </Row>
+      </Container>
+      
+      <CartCustomFields cart={cart} updateCart={updateCartAndRefresh} />
       
       <h4>Line Items</h4>
       <ul>

@@ -10,12 +10,15 @@ function ChannelPicker() {
   const [context, setContext] = useContext(AppContext);
 
   let [channels, setChannels] = useState([]);
+  let [fetched, setFetched] = useState(false);
+
+  let locale = config.locale;
 
   const onChangeChannel = (event) => {
     const channelId = event.target.value;
     let channelName = "";
     if(channelId) {
-      channelName = channels.find(c => c.id == channelId).name[config.locale];
+      channelName = channels.find(c => c.id == channelId).name[locale];
       setContext({...context,channelId: channelId, channelName: channelName});
       sessionStorage.setItem('channelId',channelId);
       sessionStorage.setItem('channelName',channelName);
@@ -31,13 +34,14 @@ function ChannelPicker() {
 
   async function fetchChannels()  {
     // Avoid repeat calls (?)
-    if(channels.length) {
+    if(fetched) {
       return;
     }
+    setFetched(true);
  
     let uri = requestBuilder
                 .channels
-                .where('roles contains all ("ProductDistribution")').build() + '&limit=200&sort=name' + config.locale + ' asc';
+                .where('roles contains all ("ProductDistribution")').build() + '&limit=200&sort=name.' + locale + ' asc';
 
    
     VERBOSE && console.log('Get channels URI',uri);
