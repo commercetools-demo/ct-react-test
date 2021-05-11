@@ -43,7 +43,7 @@ const CustomFieldsForm = ({type, cart, updateCart}) => {
   
   return (
     <Container>
-      { type.fieldDefinitions.map(f => <CustomField field={f} cart={cart} onChange={updateField} />) }
+      { type.fieldDefinitions.map((f,i) => <CustomField key={i} field={f} cart={cart} onChange={updateField} />) }
       <button type="button" onClick={saveCustom}>Save</button>
     </Container>
     

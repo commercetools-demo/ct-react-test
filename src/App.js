@@ -3,6 +3,7 @@ import { useState } from 'react';
 import SearchPage from './components/search/search-page';
 import ProductDetailPage from './components/product-detail/product-detail-page';
 import CartPage from './components/cart/cart-page';
+import OrderPage from './components/order/order-page';
 import AccountPage from './components/user/account-page';
 import ContextPage from './components/context/context-page';
 import AppContext from './appContext.js';
@@ -53,7 +54,10 @@ function App() {
                 </li>
                 <li>
                   <NavLink to={"/account"} activeClassName="active">My Account</NavLink>
-                </li>            
+                </li>
+                <li>
+                  <NavLink to={"/order"} activeClassName="active">Order</NavLink>
+                </li>                
               </ul>
             </nav>
             <br></br>
@@ -70,6 +74,9 @@ function App() {
             </Route>
             <Route path="/account">
               <AccountPage />
+            </Route>
+            <Route path="/order">
+              <OrderPage />
             </Route>
             <Route path={CALLBACK_PATH} component={LoginCallback} />
             <Route path="/">

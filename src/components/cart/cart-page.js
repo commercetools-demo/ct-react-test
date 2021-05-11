@@ -4,24 +4,38 @@ import ContextDisplay from '../context/context-display';
 import LineItemPriceInfo from './line-item-price-info';
 import CartCustomFields from './cart-custom-fields';
 import { Container, Row, Col} from 'react-bootstrap';
-import { getCart, updateCart, deleteCart } from './cart-util';
+import { getCart, updateCart } from './cart-util';
+import { callCT, requestBuilder } from '../../commercetools';
 
 const VERBOSE=true;
 
-const CartPage = () => {
-
+const CartPage = props => {
+  console.log(props);
   let [cart, setCart] = useState(null);
+  let [fetched, setFetched] = useState(false);
 
   useEffect(() => {
     getCurrentCart();
   });
 
   const getCurrentCart = async() => {
+    if(fetched)
+      return cart;
+    setFetched(true);
     setCart(await getCart());
   }
 
   if(!cart) {
-    return null
+    return (
+      <Container fluid>
+        <Row>
+          <Col>
+            no cart.
+          </Col>
+        </Row>
+
+      </Container>
+    )
   }
 
   const updateCartAndRefresh = async (action) => {
@@ -49,35 +63,101 @@ const CartPage = () => {
     }
     updateCartAndRefresh(action);
   }
-  
+
+  const deleteCart = async() => {
+    console.log('delete cart');
+    let cart = await getCart();
+    sessionStorage.removeItem('cartId');
+    setCart(null);    
+    if(cart) {
+      callCT({
+        uri: requestBuilder.myCarts.byId(cart.id).withVersion(cart.version).build(),
+        method: 'DELETE',
+      });
+    }
+
+  }
+
+  const checkout = async() => {
+    let cart = await updateCart([{
+      action: 'setShippingAddress',
+      address: {
+        country: 'US'
+      }
+    }]);
+    let res;
+    if(cart) {
+      res = await callCT({
+        uri: requestBuilder.orders.build(),
+        method: 'POST',
+        body: {
+          cart: {
+            id: cart.id
+          },
+          version: cart.version,
+        }
+      });
+      if(res) {
+        sessionStorage.setItem('orderId',res.body.id);
+        console.log('Order',res.body);
+      }
+    } else {
+      console.log('error in update')
+    }
+  }
 
   return (
     <div>
       <ContextDisplay />
-      <h4>Cart</h4>
-      <Container>
+      
+      <Container fluid>
         <Row>
           <Col>
-            ID: {cart.id}
+            <h4>Cart</h4>{cart.id}
+          </Col>
+          <Col>
+            <CartCustomFields cart={cart} updateCart={updateCartAndRefresh} />        
+          </Col>
+        </Row>
+        <Row>
+          
+         
+        </Row>
+        <Row>
+          <Col>
+          <h4>Line Items</h4>
           </Col>
         </Row>
       </Container>
-      
-      <CartCustomFields cart={cart} updateCart={updateCartAndRefresh} />
-      
-      <h4>Line Items</h4>
-      <ul>
+      <Container>
+        <Row>
+          <Col>Quantity</Col>
+          <Col>Name</Col>
+          <Col>Unit Price</Col>
+          <Col>Discounted Price</Col>
+          <Col>Total Price</Col>
+        </Row>
+
         { cart.lineItems.map((lineItem,index) => <LineItemInfo 
                                                   key={index} 
                                                   lineItem={lineItem} 
                                                   increment={incrementQuantity.bind(null,lineItem)} 
                                                   decrement={decrementQuantity.bind(null,lineItem)} 
                                                  /> )}
-      </ul>
-      <h4>Cart Total: <LineItemPriceInfo price={cart.totalPrice}/></h4>
-      
-      <p></p>
-      <button type="button" onClick={deleteCart}>Delete Cart</button>
+      </Container>
+      <Container fluid>                                                 
+        <Row>
+        <h4>Cart Total: <LineItemPriceInfo price={cart.totalPrice}/></h4>
+        </Row>
+        <Row>
+          <Col>
+            <button type="button" onClick={checkout}>Check Out</button>     
+          </Col>
+          <Col>
+            <button type="button" onClick={deleteCart}>Delete Cart</button>
+          </Col>
+        </Row>
+      </Container>
     </div>
   )
 }

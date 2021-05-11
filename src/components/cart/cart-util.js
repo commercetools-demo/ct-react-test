@@ -2,14 +2,8 @@ import { callCT, requestBuilder } from '../../commercetools';
 
 let VERBOSE=true;
 
-let cart = null;
-
-// Get the current cart or fetch it from commercetools
+// Fetch cart from commercetools, expanding all discount references for display purposes
 export const getCart = async() => {
-  if(cart) {
-    return cart;
-  }
-
   const cartUri = getCartUri();
   console.log(cartUri);
   if(!cartUri)
@@ -19,9 +13,9 @@ export const getCart = async() => {
     uri: cartUri,
     method: 'GET'
   });
-  if(res && res.body) {
-    cart = res.body;
-    return cart;
+  if(res?.body && res.body.cartState=='Active') {
+    console.log(res.body);
+    return res.body;
   }
   return null;
 }
@@ -36,14 +30,14 @@ const getCartUri = () => {
   '&expand=lineItems[*].discountedPricePerQuantity[*].discountedPrice.includedDiscounts[*].discount';
 }
 
+// return the cart after update
 export const updateCart = async(actions) => {
   if(!Array.isArray(actions)) {
     actions = [ actions ];
   }
   console.log('actions',actions);
 
-  if(!cart)
-    return;
+  let cart = await getCart();
 
   const cartUri = getCartUri();
   if(!cartUri)
@@ -58,34 +52,14 @@ export const updateCart = async(actions) => {
     },
     verbose: true,
   });
-  if(res && res.body) {
-    cart = res.body;
-    VERBOSE && console.log('cart',cart);
-    return cart;
+  if(res?.body) {
+    VERBOSE && console.log(res.body);
+    return res.body;
   }
   return null;
 }
 
 
-export const deleteCart = async() => {
-  let cartId=sessionStorage.getItem('cartId');
-  if(cartId) {
-    let res = await callCT({
-      uri: requestBuilder.myActiveCart.build(),
-      method: 'GET'
-    });
-    if(res && res.body) {
-      callCT({
-        uri: requestBuilder.myCarts.byId(res.body.id),
-        version: res.body,version,
-        method: 'DELETE',
-      });
-    }
-  }
-  sessionStorage.removeItem('cartId');
-  sessionStorage.removeItem('cart');
-  setCart(null);
-}
 
 
 

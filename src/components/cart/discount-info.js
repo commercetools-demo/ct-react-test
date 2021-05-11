@@ -4,7 +4,7 @@ const VERBOSE=true;
 
 const DiscountInfo = ({discount}) => {
 
-  console.log('discount',discount);
+  console.log(discount);
 
   return (
     <li>
