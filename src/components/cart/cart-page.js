@@ -131,11 +131,11 @@ const CartPage = props => {
       </Container>
       <Container>
         <Row>
-          <Col>Quantity</Col>
-          <Col>Name</Col>
-          <Col>Unit Price</Col>
-          <Col>Discounted Price</Col>
-          <Col>Total Price</Col>
+          <Col><span class="heading">Quantity</span></Col>
+          <Col><span class="heading">Name</span></Col>
+          <Col><span class="heading">Unit Price</span></Col>
+          <Col><span class="heading">Discounted Price</span></Col>
+          <Col><span class="heading">Total Price</span></Col>
         </Row>
 
         { cart.lineItems.map((lineItem,index) => <LineItemInfo 

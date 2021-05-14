@@ -54,3 +54,8 @@ nav > ul > li a:hover {
 .active {
   background-color: #66F;
 }
+
+.heading {
+  font-weight: bold;
+
+}

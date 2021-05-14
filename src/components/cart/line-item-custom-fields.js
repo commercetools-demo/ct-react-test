@@ -3,18 +3,18 @@ import config from '../../config';
 import { callCT, requestBuilder } from '../../commercetools';
 
 import { Container, Row, Col} from 'react-bootstrap';
-import CustomFieldsForm from './custom-fields-form';
+import LineItemCustomField from './line-item-custom-field';
 
 const VERBOSE=true;
 
-const CartCustomFields = ({cart, updateCart}) => {
+const LineItemCustomFields = ({lineItem}) => {
 
-  if(!cart) {
+  if(!lineItem) {
     return null
   }
   
   let [types, setTypes] = useState([]);
-  let [typeId, setTypeId] = useState(cart?.custom?.type?.id);
+  let [typeId, setTypeId] = useState(lineItem?.custom?.type?.id);
   let [fetched, setFetched] = useState(false);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const CartCustomFields = ({cart, updateCart}) => {
  
     let uri = requestBuilder
                 .types
-                .where('resourceTypeIds contains any ("order")').build();
+                .where('resourceTypeIds contains any ("line-item")').build();
 
     VERBOSE && console.log('Get types URI',uri);
 
@@ -42,34 +42,29 @@ const CartCustomFields = ({cart, updateCart}) => {
     }
   };
 
-  const onChangeType = (event) => {
-    setTypeId(event.target.value);
-  }
-
-  let typeOptions = "";
-  if(types.length) {
-    typeOptions = types.map(t => <option key={t.id} value={t.id}>{t.name[config.locale]}</option>);
-  }
-
   console.log(typeId);
   let type=types.find(t => t.id == typeId)
+  if(!type)
+    return null;
+
+  console.log('line item custom',lineItem.custom);
   
   return (
     <Container>
+      <Row><hr/></Row>
       <Row>
         <Col>
-          Cart Custom Fields &nbsp;
-          <select value={typeId}  onChange={onChangeType}>
-            <option value="">(none selected)</option>
-            {typeOptions}
-          </select>
-          <CustomFieldsForm type={type} cart={cart} updateCart={updateCart} />
+          Line Item Custom Fields
         </Col>
       </Row>
+      <Row>
+        <Col>Type: {type.name[config.locale]}</Col>
+      </Row>
+      { Object.entries(lineItem.custom.fields).map(([key,value]) => <LineItemCustomField name={key} value={value}/> ) }
       <Row><Col></Col></Row>
     </Container>
     
   )
 }
 
-export default CartCustomFields;
+export default LineItemCustomFields;
