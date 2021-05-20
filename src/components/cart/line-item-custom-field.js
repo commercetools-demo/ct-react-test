@@ -1,4 +1,4 @@
-
+import { Container, Row, Col} from 'react-bootstrap';
 const VERBOSE=true;
 
 const LineItemCustomField = ({name,value}) => {
@@ -7,7 +7,7 @@ const LineItemCustomField = ({name,value}) => {
   VERBOSE && console.log(value);
 
   return (
-    <span>{name} : {value} </span>    
+    <Row><Col>{name} : {value}</Col></Row>    
   )
 }
 

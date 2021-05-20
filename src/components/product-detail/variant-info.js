@@ -7,6 +7,9 @@ import { callCT, requestBuilder } from '../../commercetools';
 
 const VERBOSE=false;
 
+const USE_PRICE_ENDING = true;
+
+
 const VariantInfo = ({variant}) => {
 
   const [context] = useContext(AppContext);
@@ -21,7 +24,6 @@ const VariantInfo = ({variant}) => {
 
     const productId = context.productId;
 
-
     let cart;
     const lineItem = {
       productId: productId,
@@ -33,7 +35,7 @@ const VariantInfo = ({variant}) => {
         typeId: 'channel'
       }
     }
-
+    
     // Fetch current cart, if any
     let result = await callCT({
       uri: requestBuilder.myActiveCart.build(),
@@ -47,7 +49,7 @@ const VariantInfo = ({variant}) => {
     if(cart) {
       // add item to current cart
       console.log('Adding to current cart',cart.id,cart.version);
-      callCT({
+      result = await callCT({
         uri: requestBuilder.myCarts.byId(cart.id).build(),
         method: 'POST',
         body: {

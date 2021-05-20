@@ -25,9 +25,12 @@ const getCartUri = () => {
   if(!cartId)
     return null;
 
-  return requestBuilder.myCarts.byId(cartId).build() +
-  '?expand=lineItems[*].discountedPrice.includedDiscounts[*].discount' +
-  '&expand=lineItems[*].discountedPricePerQuantity[*].discountedPrice.includedDiscounts[*].discount';
+  console.log(cartId);
+  return requestBuilder
+    .myCarts
+    .byId(cartId)
+    .expand('lineItems[*].discountedPricePerQuantity[*].discountedPrice.includedDiscounts[*].discount')
+    .build();
 }
 
 // return the cart after update

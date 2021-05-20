@@ -26,7 +26,15 @@ const LineItemInfo = ({lineItem,increment,decrement}) => {
           <LineItemPriceInfo price={lineItem.price.value}/>
         </Col>
         <Col>
-          <LineItemPriceInfo price={lineItem.discountedPrice}/>
+          {
+            lineItem.discountedPricePerQuantity.length == 0 ?
+            <span>N/A</span>
+            : lineItem.discountedPricePerQuantity.length == 1 ?
+              <LineItemPriceInfo price={lineItem.discountedPricePerQuantity[0].discountedPrice}/>
+              : lineItem.discountedPricePerQuantity.map((item) => (
+                <span>{item.quantity} @ <LineItemPriceInfo price={item.discountedPrice}/><br></br></span>
+              ))
+          }
         </Col>
         <Col>
           <LineItemPriceInfo price={lineItem.totalPrice}/>
@@ -34,18 +42,9 @@ const LineItemInfo = ({lineItem,increment,decrement}) => {
         </Row>
         <Row>
           <Col md="6">
-          { lineItem.discountedPrice?.includedDiscounts?.length ? 
-              <small>Discounts:
-                <ul>
-                  { lineItem.discountedPrice.includedDiscounts.map((discount,index) => <DiscountInfo key={index} discount={discount}/>)}
-                </ul>
-              </small>
-            :
-            <small>no discounts</small>
-          }
           {
             lineItem.discountedPricePerQuantity.length ? 
-              <small>Discounted price per quantity:
+              <span class="small">Discounted price per quantity:
               <ul>
               { lineItem.discountedPricePerQuantity.map((item) => (
                 <span>qty: {item.quantity}: 
@@ -54,15 +53,16 @@ const LineItemInfo = ({lineItem,increment,decrement}) => {
                 </span> ))
               }
               </ul>
-              </small>
+              </span>
             : 
-              <span>&nbsp;</span>
+              <span>no discounts</span>
           }
           </Col>
         </Row>
         <Row>
           <LineItemCustomFields lineItem={lineItem}/>
         </Row>
+        <hr></hr>
       </Container>
   );
 }

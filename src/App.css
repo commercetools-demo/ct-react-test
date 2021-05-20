@@ -57,5 +57,12 @@ nav > ul > li a:hover {
 
 .heading {
   font-weight: bold;
+}
 
+hr {
+  border-top: 1px solid black;
+}
+
+.small {
+  font-size: small;
 }
