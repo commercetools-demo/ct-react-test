@@ -7,7 +7,7 @@ const LineItemCustomField = ({name,value}) => {
   VERBOSE && console.log(value);
 
   return (
-    <Row><Col>{name} : {value}</Col></Row>    
+    <Row><Col class="small">{name} : {value}</Col></Row>    
   )
 }
 

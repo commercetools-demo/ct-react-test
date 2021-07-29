@@ -1,4 +1,5 @@
 import config from '../../config';
+import LineItemPriceInfo from './line-item-price-info';
 
 const VERBOSE=true;
 
@@ -10,10 +11,10 @@ const DiscountInfo = ({discount}) => {
     return null;
 
   return (
-    <li class="small">
+    <div class="small">
         Name: { discount?.discount?.obj?.name[config.locale] } &nbsp;&nbsp;
-        Discounted Amount:  { discount.discountedAmount.centAmount/100 }
-    </li>
+        Discounted Amount:  <LineItemPriceInfo price={discount.discountedAmount}/>
+    </div>
   );
 }
 

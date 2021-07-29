@@ -50,18 +50,21 @@ const LineItemCustomFields = ({lineItem}) => {
   console.log('line item custom',lineItem.custom);
   
   return (
-    <Container class="small">
-      <Row><hr/></Row>
-      <Row>
-        <Col>
-          Line Item Custom Fields
-        </Col>
-      </Row>
-      <Row>
-        <Col>Type: {type.name[config.locale]}</Col>
-      </Row>
-      { Object.entries(lineItem.custom.fields).map(([key,value]) => <LineItemCustomField id={key} name={key} value={value}/> ) }
-    </Container>
+    <div class="small">
+      <Container>
+        <Row>
+          <Col>
+            <span class="heading">
+              Line Item Custom Fields
+            </span>
+          </Col>
+        </Row>
+        <Row>
+          <Col>Type: {type.name[config.locale]}</Col>
+        </Row>
+        { Object.entries(lineItem.custom?.fields).map(([key,value]) => <LineItemCustomField key={key} name={key} value={value}/> ) }
+      </Container>
+    </div>
     
   )
 }

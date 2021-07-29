@@ -6,11 +6,12 @@ import CartCustomFields from './cart-custom-fields';
 import { Container, Row, Col} from 'react-bootstrap';
 import { getCart, updateCart } from './cart-util';
 import { callCT, requestBuilder } from '../../commercetools';
+import { withRouter } from "react-router";
 
 const VERBOSE=true;
 
 const CartPage = props => {
-  console.log(props);
+  console.log('cart Props',props);
   let [cart, setCart] = useState(null);
   let [fetched, setFetched] = useState(false);
 
@@ -64,6 +65,16 @@ const CartPage = props => {
     updateCartAndRefresh(action);
   }
 
+  const addDiscountCode = async () => {
+    const discountCode=document.getElementById('discountCode').value;
+    console.log('discount code',discountCode);
+    const action = {
+      action: 'addDiscountCode',
+      code: discountCode
+    }
+    updateCartAndRefresh(action);
+  }
+
   const deleteCart = async() => {
     console.log('delete cart');
     let cart = await getCart();
@@ -90,6 +101,9 @@ const CartPage = props => {
       res = await callCT({
         uri: requestBuilder.orders.build(),
         method: 'POST',
+        headers: {
+          'X-Correlation-ID': 'test-corr-id'
+        },
         body: {
           cart: {
             id: cart.id
@@ -100,6 +114,7 @@ const CartPage = props => {
       if(res) {
         sessionStorage.setItem('orderId',res.body.id);
         console.log('Order',res.body);
+        props.history.push('/order');
       }
     } else {
       console.log('error in update')
@@ -143,11 +158,19 @@ const CartPage = props => {
                                                   lineItem={lineItem} 
                                                   increment={incrementQuantity.bind(null,lineItem)} 
                                                   decrement={decrementQuantity.bind(null,lineItem)} 
-                                                 /> )}
-      </Container>
-      <Container fluid>                                                 
+                                                 /> )}                                           
         <Row>
-        <h4>Cart Total: <LineItemPriceInfo price={cart.totalPrice}/></h4>
+          <Col>
+            Add Discount Code: <input id="discountCode" type="text"></input> <button onClick={addDiscountCode}>Add</button>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={10}>
+            <h4>Cart Total</h4> 
+          </Col>
+          <Col>
+            <LineItemPriceInfo price={cart.totalPrice}/>
+          </Col>
         </Row>
         <Row>
           <Col>
@@ -162,4 +185,4 @@ const CartPage = props => {
   )
 }
 
-export default CartPage;
+export default withRouter(CartPage);

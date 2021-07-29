@@ -12,7 +12,7 @@ const LineItemInfo = ({lineItem,increment,decrement}) => {
   
 
   return (
-    <Container>
+    <div>
       <Row>
         <Col>
             <button onClick={decrement}> - </button>&nbsp;
@@ -40,30 +40,34 @@ const LineItemInfo = ({lineItem,increment,decrement}) => {
           <LineItemPriceInfo price={lineItem.totalPrice}/>
         </Col>
         </Row>
-        <Row>
-          <Col md="6">
-          {
-            lineItem.discountedPricePerQuantity.length ? 
-              <span class="small">Discounted price per quantity:
-              <ul>
-              { lineItem.discountedPricePerQuantity.map((item) => (
-                <span>qty: {item.quantity}: 
-                <LineItemPriceInfo price={item.discountedPrice}/>
-                { item.discountedPrice.includedDiscounts.map((discount,index) => <DiscountInfo key={index} discount={discount}/>)}
-                </span> ))
-              }
-              </ul>
-              </span>
-            : 
-              <span>no discounts</span>
-          }
-          </Col>
-        </Row>
-        <Row>
-          <LineItemCustomFields lineItem={lineItem}/>
-        </Row>
+    
+     
+      <Row>
+        <Col>
+          <span class="small">
+            {
+              lineItem.discountedPricePerQuantity.length ? 
+              <div>
+                <span class="heading">Discounted Price per Quantity</span>
+                <ul>
+                { lineItem.discountedPricePerQuantity.map((item) => (
+                  <li>qty: {item.quantity} @ <LineItemPriceInfo price={item.discountedPrice}/>
+                  { item.discountedPrice.includedDiscounts.map((discount,index) => <DiscountInfo key={index} discount={discount}/>)}
+                  </li> ))
+                }
+                </ul>
+              </div>
+              : 
+                <span>no discounts</span>
+            }
+          </span>
+        </Col>
+      </Row>
+      <Row>
+        <LineItemCustomFields lineItem={lineItem}/>
+      </Row>
         <hr></hr>
-      </Container>
+      </div>
   );
 }
 //             

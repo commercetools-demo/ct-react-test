@@ -4,13 +4,12 @@ import PriceInfo from './price-info';
 import { Link } from "react-router-dom";
 import AppContext from '../../appContext.js';
 import { callCT, requestBuilder } from '../../commercetools';
+import { withRouter } from "react-router";
 
 const VERBOSE=false;
 
-const USE_PRICE_ENDING = true;
 
-
-const VariantInfo = ({variant}) => {
+const VariantInfo = ({history,variant}) => {
 
   const [context] = useContext(AppContext);
   
@@ -88,6 +87,7 @@ const VariantInfo = ({variant}) => {
         body: createCartBody
       });
       if(result) {
+        history.push('/cart');
         sessionStorage.setItem('cartId',result.body.id);
       }
     }
@@ -134,4 +134,4 @@ const VariantInfo = ({variant}) => {
   );
 }
 
-export default VariantInfo
+export default withRouter(VariantInfo);

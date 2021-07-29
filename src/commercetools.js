@@ -6,11 +6,11 @@
     (https://commercetools.github.io/nodejs/sdk/api/apiRequestBuilder.html)    
 */
 
-import { createRequestBuilder } from '@commercetools/api-request-builder'
-import SdkAuth from '@commercetools/sdk-auth'
-import { createClient } from '@commercetools/sdk-client'
-import { createAuthMiddlewareForAnonymousSessionFlow, createAuthMiddlewareWithExistingToken } from '@commercetools/sdk-middleware-auth'
-import { createHttpMiddleware } from '@commercetools/sdk-middleware-http'
+import { createRequestBuilder } from '@commercetools/api-request-builder';
+import SdkAuth from '@commercetools/sdk-auth';
+import { createClient } from '@commercetools/sdk-client';
+import { createAuthMiddlewareForAnonymousSessionFlow, createAuthMiddlewareWithExistingToken } from '@commercetools/sdk-middleware-auth';
+import { createHttpMiddleware } from '@commercetools/sdk-middleware-http';
 
 // Log all requests & responses to the console:
 const VERBOSE=true;
@@ -104,12 +104,14 @@ export async function callCT(args) {
       console.log(args.body)
     }
   }
+  var begin = console.time('ct');
   let res = await client.execute({
     uri: args.uri,
     method: args.method,
     body: args.body,
+    headers: args.headers,
   }).catch(err => console.log('Error from commercetools',err));
-
+  console.timeEnd('ct');
   if(res && VERBOSE) {
     console.log('Response from commercetools',res);
   }
