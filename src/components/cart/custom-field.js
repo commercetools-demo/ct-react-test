@@ -7,7 +7,7 @@ import { Container, Row, Col} from 'react-bootstrap';
 const VERBOSE=true;
 
 const CustomField = ({field,cart,onChange}) => {
-  console.log(field);
+  console.log('field',cart.custom.fields[field.name]);
 
   let [value, setValue] = useState(cart?.custom?.fields[field.name]);
 
@@ -26,6 +26,14 @@ const CustomField = ({field,cart,onChange}) => {
               checked={value}
               onChange={event => change(field.name,event.target.checked)} 
         />
+      </div>
+    )
+  }
+
+  if(field.type.name=='Set') {
+    return (
+      <div>
+        <span><b>{field.name}:</b>  {cart.custom.fields[field.name].join(',')}</span>
       </div>
     )
   }

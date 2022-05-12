@@ -3,7 +3,8 @@ import { callCT, requestBuilder } from '../../commercetools';
 import AppContext from '../../appContext';
 import { Container, Row, Col} from 'react-bootstrap';
 import CommercetoolsLogin from './commercetools-login';
-import OktaLogin from './okta-login';
+//import OktaLogin from './okta-login';
+//import DummyLogin from './dummy-login';
 
 const VERBOSE=true;
 
@@ -24,7 +25,7 @@ const AccountPage = () => {
       return;
 
     let res =  await callCT({
-      uri: requestBuilder.myProfile.build(),
+      uri: requestBuilder.myProfile.build() + '?expand=custom.fields.profiles[*]',
       method: 'GET'
     });
     if(res && res.body) {
@@ -36,8 +37,6 @@ const AccountPage = () => {
     return (
       <div>
         <CommercetoolsLogin/>
-        <p>or</p>
-        <OktaLogin />
       </div>
     )
   }
@@ -46,7 +45,21 @@ const AccountPage = () => {
     return (
       <div>
         <h5>Customer</h5>
-        {customer.firstName} {customer.lastName}
+        Customer Name:  {customer.firstName} {customer.lastName}
+        <br/>
+        Profiles:
+        { 
+          customer.custom?.fields?.profiles?.map((profile,index) => 
+            <Row>
+              <Col>{profile.obj.firstName} {profile.obj.lastName}</Col>
+            </Row>
+          )        
+        }
+        <Container>
+          <Row>
+
+          </Row>
+        </Container>
       </div>
     )
   }

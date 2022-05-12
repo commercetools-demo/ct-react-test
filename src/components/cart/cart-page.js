@@ -128,7 +128,7 @@ const CartPage = props => {
       <Container fluid>
         <Row>
           <Col>
-            <h4>Cart</h4>{cart.id}
+            <h4>Cart</h4>{cart.id}, version {cart.version}
           </Col>
           <Col>
             <CartCustomFields cart={cart} updateCart={updateCartAndRefresh} />        
