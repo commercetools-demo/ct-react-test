@@ -56,6 +56,9 @@ const VariantInfo = ({history,variant}) => {
           actions: [{
             action: 'addLineItem',
             ...lineItem
+          },{
+            // Clear any custom types/fields (set by api extension)
+            action: 'setCustomType'
           }]
         }
       });

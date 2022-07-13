@@ -6,6 +6,7 @@ const VERBOSE = true;
 
 function CustomerGroupPicker() {
 
+  console.log('Customer Group Picker');
   const [context, setContext] = useContext(AppContext);
   
   const onChangeCustomerGroup = (event) => {
@@ -30,18 +31,19 @@ function CustomerGroupPicker() {
     }
   }
 
-  const customerGroupId=context.customerGroupId;
 
   let [customerGroups, setCustomerGroups] = useState([]);
-  let [fetched, setFetched] = useState([]);
+  let [cgFetched, setCGFetched] = useState(false);
 
   useEffect(() => {
     fetchCustomerGroups();
   });
 
   async function fetchCustomerGroups()  {
+    console.log('Fetch Cust Group');
     // Avoid repeat calls
-    if(fetched) {
+    if(cgFetched) {
+      console.log('CG Already Fetched');
       return;
     }
  
@@ -56,7 +58,7 @@ function CustomerGroupPicker() {
     if(res && res.body.results) {
       console.log('customerGroups',res.body.results);
       setCustomerGroups(res.body.results);
-      setFetched(true);
+      setCGFetched(true);
     }
   };
 
@@ -66,10 +68,12 @@ function CustomerGroupPicker() {
    
   }
 
+  const selected= context.customerGroupId ? context.customerGroupId : '';
+
   return (
     <div>
       Customer Group:&nbsp;&nbsp;  
-      <select value={customerGroupId} onChange={onChangeCustomerGroup}>
+      <select value={selected} onChange={onChangeCustomerGroup}>
         <option value="">(none selected)</option>
         {customerGroupOptions}
       </select>

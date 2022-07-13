@@ -44,10 +44,12 @@ function CountryPicker() {
    
   }
 
+  let selected=context.country ? context.country : '';
+
   return (
     <div>
       Country:&nbsp;&nbsp;  
-      <select value={context.country} onChange={onChangeCountry}>
+      <select value={selected} onChange={onChangeCountry}>
         <option value="">(none selected)</option>
         {countryOptions}
       </select>

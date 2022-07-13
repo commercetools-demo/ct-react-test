@@ -57,7 +57,7 @@ function StorePicker() {
     storeOptions = stores.map(s => <option key={s.key} value={s.key}>{s.name[config.locale]}</option>);
   }
 
-  const storeKey=context.storeKey;
+  const storeKey=context.storeKey ? context.storeKey : '';
 
   return (
     <div>
