@@ -33,6 +33,10 @@ const VariantInfo = ({history,variant}) => {
         id: channelId,
         typeId: 'channel'
       }
+      lineItem.supplyChannel={
+        id: channelId,
+        typeId: 'channel'
+      }
     }
     
     // Fetch current cart, if any

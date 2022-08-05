@@ -129,6 +129,9 @@ const CartPage = props => {
         <Row>
           <Col>
             <h4>Cart</h4>{cart.id}, version {cart.version}
+            { cart.error && (
+              <h5><font color="red">{cart.error}</font></h5>
+            )}
           </Col>
           <Col>
             <CartCustomFields cart={cart} updateCart={updateCartAndRefresh} />        

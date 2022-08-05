@@ -97,23 +97,29 @@ the following if NOT using requestBuilder:
 2. parameters in "where" clauses need to be encoded via encodeURIComponent
 
 */
-export async function callCT(args) {
+export async function callCTWithError(args) {
   if(VERBOSE) {
     console.log('Calling commercetools:',args.method,args.uri)
     if(args.method=='POST') {
       console.log(args.body)
     }
   }
-  var begin = console.time('ct');
-  let res = await client.execute({
-    uri: args.uri,
-    method: args.method,
-    body: args.body,
-    headers: args.headers,
-  }).catch(err => console.log('Error from commercetools',err));
-  console.timeEnd('ct');
+  let res, message;
+  try {
+    res = await client.execute({
+      ...args
+    });
+  } catch(err) {
+    message = err.message;
+    console.log(err.message);
+  }
   if(res && VERBOSE) {
     console.log('Response from commercetools',res);
   }
+  return [ res, message ];
+}
+
+export async function callCT(args) {
+  let [ res, err ] = await callCTWithError(args);
   return res;
 }

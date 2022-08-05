@@ -1,4 +1,4 @@
-import { callCT, requestBuilder } from '../../commercetools';
+import { callCT, callCTWithError, requestBuilder } from '../../commercetools';
 
 let VERBOSE=true;
 
@@ -48,7 +48,7 @@ export const updateCart = async(actions) => {
   if(!cartUri)
     return;
     
-  let res =  await callCT({
+  let [res, err] =  await callCTWithError({
     uri: getCartUri(),
     method: 'POST',
     body: {
@@ -57,6 +57,12 @@ export const updateCart = async(actions) => {
     },
     verbose: true,
   });
+  if(err) {
+    // Hack - stick the error message into the cart.
+    console.log("ERROR",err);
+    cart.error = err;
+    return cart;
+  }
   if(res?.body) {
     VERBOSE && console.log(res.body);
     return res.body;
