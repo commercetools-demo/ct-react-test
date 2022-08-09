@@ -20,10 +20,13 @@ const LineItemInfo = ({lineItem,increment,decrement}) => {
             <button onClick={increment}> + </button>
         </Col>
         <Col>
+          {lineItem.variant.sku }
+        </Col>
+        <Col>
           {lineItem.name[config.locale] }
         </Col>
         <Col>
-          <LineItemPriceInfo price={lineItem.price.value}/>
+          <LineItemPriceInfo price={lineItem.price}/>
         </Col>
         <Col>
           {

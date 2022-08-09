@@ -1,18 +1,17 @@
+import { formatPrice } from '../../util/priceUtil';
+
 const VERBOSE=true;
 
 const LineItemPriceInfo = ({price}) => {
 
-  console.log('priceInfo',price);
+  console.log('price',price);
   if(!price)
     return <span>n/a</span>;
 
-  if(price.value)
-    price=price.value;
-
+  const priceStr = formatPrice(price);
   
-  let value=(price.centAmount/100).toFixed(2);
   return(
-    <span>${value}</span>
+    <span>{priceStr}</span>
   )
 }
 

@@ -150,6 +150,7 @@ const CartPage = props => {
       <Container>
         <Row>
           <Col><span class="heading">Quantity</span></Col>
+          <Col><span class="heading">SKU</span></Col>
           <Col><span class="heading">Name</span></Col>
           <Col><span class="heading">Unit Price</span></Col>
           <Col><span class="heading">Discounted Price</span></Col>

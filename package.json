@@ -1,6 +1,6 @@
 {
-  "name": "ct-product-search",
-  "version": "0.1.0",
+  "name": "ct-react-test",
+  "version": "0.1.1",
   "private": true,
   "dependencies": {
     "react": "^17.0.1",

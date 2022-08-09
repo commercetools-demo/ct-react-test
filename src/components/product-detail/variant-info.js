@@ -1,13 +1,13 @@
 import AttributeInfo from './attribute-info';
 import { useContext} from 'react';
 import PriceInfo from './price-info';
+import { formatPrice } from '../../util/priceUtil';
 import { Link } from "react-router-dom";
 import AppContext from '../../appContext.js';
 import { callCT, requestBuilder } from '../../commercetools';
 import { withRouter } from "react-router";
 
 const VERBOSE=false;
-
 
 const VariantInfo = ({history,variant}) => {
 
@@ -67,6 +67,7 @@ const VariantInfo = ({history,variant}) => {
         }
       });
     } else {
+      console.log('creating cart & adding item');
       // Create cart and add item in one go. Save cart id
       const createCartBody = {
         currency: currency,
@@ -99,6 +100,10 @@ const VariantInfo = ({history,variant}) => {
       }
     }
   }
+  let priceStr = '';
+  if(variant.price) {
+    priceStr = formatPrice(variant.price);
+  }
   
   VERBOSE && console.log('variant',variant);
   return (
@@ -107,7 +112,7 @@ const VariantInfo = ({history,variant}) => {
         Variant Key:  { variant.key } <br></br>
         { variant.price
         ? <span>
-            Price: (using price selection): {variant.price.value.centAmount/100}
+            Price (using price selection): {priceStr}
             &nbsp;&nbsp;<button type="button" onClick={addToCart}>Add to Cart</button>
           </span>
         :

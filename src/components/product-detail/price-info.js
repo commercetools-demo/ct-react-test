@@ -1,4 +1,6 @@
 import config from '../../config';
+import { formatPrice } from '../../util/priceUtil';
+
 const VERBOSE=false;
 
 const PriceInfo = ({price}) => {
@@ -14,6 +16,7 @@ const PriceInfo = ({price}) => {
     customerGroup=price.customerGroup.obj.name;
   }
 
+  const priceStr = formatPrice(price);
 
   return (
     <tr>
@@ -21,7 +24,7 @@ const PriceInfo = ({price}) => {
       <td>{price.country}</td>
       <td>{channelName}</td>
       <td>{customerGroup}</td>
-      <td>{price.value.centAmount/100}</td>
+      <td>{priceStr}</td>
     </tr>
   );
 }
