@@ -60,9 +60,6 @@ const VariantInfo = ({history,variant}) => {
           actions: [{
             action: 'addLineItem',
             ...lineItem
-          },{
-            // Clear any custom types/fields (set by api extension)
-            action: 'setCustomType'
           }]
         }
       });
@@ -94,12 +91,14 @@ const VariantInfo = ({history,variant}) => {
         method: 'POST',
         body: createCartBody
       });
-      if(result) {
-        history.push('/cart');
-        sessionStorage.setItem('cartId',result.body.id);
-      }
+    }
+    if(result) {
+      history.push('/cart');
+      sessionStorage.setItem('cartId',result.body.id);
     }
   }
+
+
   let priceStr = '';
   if(variant.price) {
     priceStr = formatPrice(variant.price);

@@ -38,8 +38,6 @@ export const updateCart = async(actions) => {
   if(!Array.isArray(actions)) {
     actions = [ actions ];
   }
-  // clear any custom fields
-  actions.push({action: 'setCustomType' });
   console.log('actions',actions);
 
   let cart = await getCart();
