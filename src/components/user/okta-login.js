@@ -1,7 +1,7 @@
 import { useOktaAuth } from '@okta/okta-react';
 import React, { useState, useEffect, useContext } from 'react';
 import AppContext from '../../appContext';
-import { setAccessToken } from '../../commercetools';
+//import { setAccessToken } from '../../commercetools';
 
 const OktaLogin = () => {
 
@@ -45,8 +45,8 @@ const OktaLogin = () => {
   }
   if( authState.isAuthenticated && userInfo) {
 
- 
-    setAccessToken(authState.accessToken.value);
+    // TO DO
+    //setAccessToken(authState.accessToken.value);
     return (
       <div>
         Welcome, {userInfo.name}<p></p>

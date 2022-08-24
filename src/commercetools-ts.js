@@ -30,21 +30,18 @@ const authMiddlewareOptions = {
   scopes: REACT_APP_SCOPES.split(' '),
   fetch,
 };
-console.log(authMiddlewareOptions);
 
 // create the httpMiddlewareOptions object also
 const httpMiddlewareOptions = {
   host: REACT_APP_API_URL,
   fetch,
 };
-console.log(httpMiddlewareOptions);
 
 const ctpClient = new ClientBuilder()
   .withProjectKey(projectKey)
   .withAnonymousSessionFlow(authMiddlewareOptions)
   .withHttpMiddleware(httpMiddlewareOptions)
+  .withLoggerMiddleware()
   .build();
 
 export const apiRoot = createApiBuilderFromCtpClient(ctpClient).withProjectKey({ projectKey: projectKey });
-
-console.log(apiRoot);

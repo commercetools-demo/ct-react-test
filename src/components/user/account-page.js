@@ -1,7 +1,6 @@
 import { useEffect, useContext, useState } from 'react';
 import { apiRoot } from '../../commercetools-ts';
 import AppContext from '../../appContext';
-import { Container, Row, Col} from 'react-bootstrap';
 import CommercetoolsLogin from './commercetools-login';
 //import OktaLogin from './okta-login';
 //import DummyLogin from './dummy-login';

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import AppContext from '../../appContext';
-import { authClient, setAccessToken } from '../../commercetools';
+//import { authClient, setAccessToken } from '../../commercetools';
 import { Container, Row, Col} from 'react-bootstrap';
 
 const DummyLogin = () => {
@@ -14,7 +14,7 @@ const DummyLogin = () => {
   
   const login = async () => {
     console.log('Setting access token',custId);
-    setAccessToken(custId);
+    //setAccessToken(custId);
   };
 
   const logout = async () => {
