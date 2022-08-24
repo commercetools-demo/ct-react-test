@@ -5,7 +5,7 @@ import LineItemPriceInfo from './line-item-price-info';
 import CartCustomFields from './cart-custom-fields';
 import { Container, Row, Col} from 'react-bootstrap';
 import { getCart, updateCart } from './cart-util';
-import { callCT, requestBuilder } from '../../commercetools';
+import { apiRoot } from '../../commercetools-ts';
 import { withRouter } from "react-router";
 
 const VERBOSE=true;
@@ -81,12 +81,16 @@ const CartPage = props => {
     sessionStorage.removeItem('cartId');
     setCart(null);    
     if(cart) {
-      callCT({
-        uri: requestBuilder.myCarts.byId(cart.id).withVersion(cart.version).build(),
-        method: 'DELETE',
-      });
+      apiRoot
+        .carts()
+        .withId({ ID: cart.id})
+        .delete({
+          queryArgs: {
+            version: cart.version
+          }
+        })
+        .execute();
     }
-
   }
 
   const checkout = async() => {
@@ -98,19 +102,18 @@ const CartPage = props => {
     }]);
     let res;
     if(cart) {
-      res = await callCT({
-        uri: requestBuilder.orders.build(),
-        method: 'POST',
-        headers: {
-          'X-Correlation-ID': 'test-corr-id'
-        },
-        body: {
-          cart: {
-            id: cart.id
-          },
-          version: cart.version,
-        }
-      });
+      res = await apiRoot
+        .orders()
+        .post({         
+          body: {
+            cart: {
+              id: cart.id
+            },
+            version: cart.version,
+          }
+      })
+      .execute();
+
       if(res) {
         sessionStorage.setItem('orderId',res.body.id);
         console.log('Order',res.body);

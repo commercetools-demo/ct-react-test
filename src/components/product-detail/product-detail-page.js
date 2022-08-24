@@ -1,10 +1,10 @@
 import config from '../../config';
 import { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import { callCT, requestBuilder } from '../../commercetools';
 import VariantInfo from './variant-info';
 import ContextDisplay from '../context/context-display';
 import AppContext from '../../appContext';
+import { apiRoot } from '../../commercetools-ts';
 
 const VERBOSE=true;
 
@@ -29,9 +29,6 @@ const ProductDetailPage = () => {
       setContext({...context, productId: id});
     }
 
-    let params = ['']      
-    let uri = requestBuilder.productProjections.byId(id).build();
-
     /* Depending on the context settings, we may tack on additional price selection parameters.
     The primary price selection parameter is always currency
     (see https://docs.commercetools.com/api/projects/products#price-selection)
@@ -43,40 +40,41 @@ const ProductDetailPage = () => {
     const customerGroupId = sessionStorage.getItem('customerGroupId');
     const storeKey = sessionStorage.getItem('storeKey');
 
+    const queryArgs = {};
+
     console.log('currency',currency);
     if(currency) {
-      params.push(`priceCurrency=${currency}`);
+      queryArgs.priceCurrency=currency;
       if(country) {
-        params.push(`priceCountry=${country}`);
+        queryArgs.priceCountry=country;
       }
       if(channelId) {
-        params.push(`priceChannel=${channelId}`);
+        queryArgs.priceChannel=channelId;
       }
       if(customerGroupId) {
-        params.push(`priceCustomerGroup=${customerGroupId}`);
+        queryArgs.priceCustomerGroup=customerGroupId;
       }
     }
     if(storeKey) {
-      params.push(`storeProjection=${storeKey}`);
+      queryArgs.storeProjection=storeKey;
     }
 
     /* Last, but not least, add a couple of reference expansions to include channel and customer group data */
-    params = params.concat([
-      'expand=masterVariant.prices[*].channel',
-      'expand=masterVariant.prices[*].customerGroup',
-      'expand=variants[*].prices[*].channel',
-      'expand=variants[*].prices[*].customerGroup']);
+    queryArgs.expand = [
+      'masterVariant.prices[*].channel',
+      'masterVariant.prices[*].customerGroup',
+      'variants[*].prices[*].channel',
+      'variants[*].prices[*].customerGroup'
+    ];
 
-    if(params) {
-      uri = uri + '?' + params.join('&');
-    }
 
-    VERBOSE && console.log('Get product projections URI',uri);
+    let res =  await apiRoot
+      .productProjections()
+      .withId({ ID: id })
+      .get({ queryArgs: queryArgs })
+      .execute();
 
-    let res =  await callCT({
-      uri: uri,
-      method: 'GET'
-    });
+    console.log(res);
     if(res && res.body) {
       setProduct(res.body);
     }

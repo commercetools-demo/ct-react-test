@@ -1,6 +1,0 @@
-Suggested improvements:
-- add 'add to cart' from pdp
-- create a cart page
-- add basic checkout flow (billing & shipping address -> order)
-
-

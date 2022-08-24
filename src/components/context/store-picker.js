@@ -1,9 +1,7 @@
 import config from '../../config';
 import { useContext, useState, useEffect } from 'react';
-import { callCT, requestBuilder } from '../../commercetools';
+import { apiRoot } from '../../commercetools-ts';
 import AppContext from '../../appContext';
-
-const VERBOSE = true;
 
 function StorePicker() {
 
@@ -37,16 +35,18 @@ function StorePicker() {
       return;
     }
     setFetched(true);
- 
-    let uri = requestBuilder.stores.build()+'?limit=200&sort=name.' + config.locale + ' asc';
 
-    VERBOSE && console.log('Get stores URI',uri);
+    let res =  await apiRoot
+      .stores()
+      .get({
+        queryArgs: {
+          limit: 200,
+          sort: `name.${config.locale} asc`
+        }
+      })
+      .execute();
 
-    let res =  await callCT({
-      uri: uri,
-      method: 'GET'
-    });
-    if(res && res.body.results) {
+    if(res?.body?.results) {
       console.log('stores',res.body.results);
       setStores(res.body.results);
     }

@@ -1,36 +1,30 @@
-import { callCT, callCTWithError, requestBuilder } from '../../commercetools';
+import { apiRoot } from '../../commercetools-ts';
 
 let VERBOSE=true;
 
 // Fetch cart from commercetools, expanding all discount references for display purposes
-export const getCart = async() => {
-  const cartUri = getCartUri();
-  console.log(cartUri);
-  if(!cartUri)
-    return null;
-  
-  let res =  await callCT({
-    uri: cartUri,
-    method: 'GET'
-  });
-  if(res?.body && res.body.cartState=='Active') {
-    console.log(res.body);
-    return res.body;
-  }
-  return null;
-}
 
-const getCartUri = () => {
+const expand = 'lineItems[*].discountedPricePerQuantity[*].discountedPrice.includedDiscounts[*].discount';
+
+export const getCart = async() => {
   const cartId = sessionStorage.getItem('cartId');
   if(!cartId)
     return null;
+  
+  let res =  await apiRoot
+    .me()
+    .carts()
+    .withId({ ID: cartId })
+    .get({ queryArgs:
+      { expand: expand }
+    })
+    .execute();
 
-  console.log(cartId);
-  return requestBuilder
-    .myCarts
-    .byId(cartId)
-    .expand('lineItems[*].discountedPricePerQuantity[*].discountedPrice.includedDiscounts[*].discount')
-    .build();
+  if(res?.body && res.body.cartState=='Active') {
+    console.log(res.body);
+  return res.body;
+  }
+  return null;
 }
 
 // return the cart after update

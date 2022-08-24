@@ -1,6 +1,6 @@
 import config from '../../config';
 import { useContext, useState, useEffect } from 'react';
-import { callCT, requestBuilder } from '../../commercetools';
+import { apiRoot } from '../../commercetools-ts';
 import AppContext from '../../appContext';
 
 const VERBOSE = true;
@@ -39,17 +39,16 @@ function ChannelPicker() {
     }
     setFetched(true);
  
-    let uri = requestBuilder
-                .channels
-                .where('roles contains all ("ProductDistribution")').build() + '&limit=200&sort=name.' + locale + ' asc';
 
-   
-    VERBOSE && console.log('Get channels URI',uri);
-
-    let res =  await callCT({
-      uri: uri,
-      method: 'GET'
-    });
+    let res =  await apiRoot
+      .channels()
+      .get({ queryArgs: {
+        where: 'roles contains all ("ProductDistribution")',
+        limit: 200,
+        sort: `name.${locale} asc`
+      }})
+      .execute();
+      
     if(res && res.body.results) {
       console.log('channels',res.body.results);
       setChannels(res.body.results);

@@ -1,8 +1,6 @@
 import { useContext, useState, useEffect } from 'react';
-import { callCT, requestBuilder } from '../../commercetools';
+import { apiRoot } from '../../commercetools-ts';
 import AppContext from '../../appContext';
-
-const VERBOSE = true;
 
 function CustomerGroupPicker() {
 
@@ -47,15 +45,12 @@ function CustomerGroupPicker() {
       return;
     }
  
-    let uri = requestBuilder.customerGroups.build();
-   
-    VERBOSE && console.log('Get customerGroups URI',uri);
+    let res =  await apiRoot
+      .customerGroups()
+      .get()
+      .execute();
 
-    let res =  await callCT({
-      uri: uri,
-      method: 'GET'
-    });
-    if(res && res.body.results) {
+    if(res?.body?.results) {
       console.log('customerGroups',res.body.results);
       setCustomerGroups(res.body.results);
       setCGFetched(true);

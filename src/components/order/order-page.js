@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import ContextDisplay from '../context/context-display';
 import { Container, Row, Col} from 'react-bootstrap';
-import { callCT, requestBuilder } from '../../commercetools';
+import { apiRoot } from '../../commercetools-ts';
 
 const VERBOSE=true;
 
@@ -23,16 +23,16 @@ const OrderPage = () => {
 
 
   const fetchOrder = async() => {
-    console.log('fetch');
     let orderId = sessionStorage.getItem('orderId');
     if(!orderId)
       return null;
 
-    let res = await callCT({
-      uri: requestBuilder.orders.byId(orderId).build(),
-      method: 'GET'
-    })
-    console.log(res);
+    let res = await apiRoot
+      .orders()
+      .withId({ID: orderId})
+      .get()
+      .execute();
+
     if(res?.body) {
       return res.body;
     }

@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from 'react';
-import { callCT, requestBuilder } from '../../commercetools';
+import { apiRoot } from '../../commercetools-ts';
 import AppContext from '../../appContext';
 
 const VERBOSE = true;
@@ -27,14 +27,10 @@ function CurrencyPicker() {
       return;
     }
  
-    let uri = requestBuilder.project.build();
-   
-    VERBOSE && console.log('Get project URI',uri);
-
-    let res =  await callCT({
-      uri: uri,
-      method: 'GET'
-    });
+    let res =  await apiRoot
+    .get()
+    .execute();
+    
     if(res && res.body) {
       setCurrencies(res.body.currencies);
     }

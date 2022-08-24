@@ -1,8 +1,6 @@
 import { useContext, useState, useEffect } from 'react';
-import { callCT, requestBuilder } from '../../commercetools';
+import { apiRoot } from '../../commercetools-ts';
 import AppContext from '../../appContext';
-
-const VERBOSE = true;
 
 function CountryPicker() {
 
@@ -25,14 +23,10 @@ function CountryPicker() {
       return;
     }
  
-    let uri = requestBuilder.project.build();
-   
-    VERBOSE && console.log('Get project URI',uri);
+    let res =  await apiRoot
+      .get()
+      .execute();
 
-    let res =  await callCT({
-      uri: uri,
-      method: 'GET'
-    });
     if(res && res.body) {
       setCountries(res.body.countries);
     }

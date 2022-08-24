@@ -1,8 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import config from '../../config';
-import { callCT, requestBuilder } from '../../commercetools';
-
-import { Container, Row, Col} from 'react-bootstrap';
 
 const VERBOSE=true;
 

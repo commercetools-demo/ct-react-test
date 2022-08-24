@@ -1,8 +1,7 @@
 import config from '../../config';
-import { callCT, requestBuilder } from '../../commercetools'
+import { apiRoot } from '../../commercetools-ts'
 import { useEffect, useState } from 'react';
 import ProductListEntry from './product-list-entry';
-
 
 const ProductList = ({search}) => {
 
@@ -14,7 +13,7 @@ const ProductList = ({search}) => {
     search && getProducts(search);
   });
 
-  const getProducts = async (search) => {
+  const getProducts = async (searchStr) => {
     // Avoid repeat calls (?)
     if(searched) {
       console.log('skipping');
@@ -22,14 +21,15 @@ const ProductList = ({search}) => {
     }
     setSearched(true);
 
-    let res =  await callCT({
-      uri: requestBuilder.productProjectionsSearch
-      .text(search,config.locale)
-      .fuzzy(true)
-      .perPage(20)
-      .build(),
-      method: 'GET'
-    });
+    const res =  await apiRoot.productProjections()
+      .search()
+      .get({ queryArgs: {
+        [`text.${config.locale}`] : searchStr,
+        fuzzy: true,
+        limit: 20
+      }})
+      .execute();
+
     if(res && res.body.results) {
       setProducts(res.body.results);
     } else {

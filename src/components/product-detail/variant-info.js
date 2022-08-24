@@ -4,7 +4,7 @@ import PriceInfo from './price-info';
 import { formatPrice } from '../../util/priceUtil';
 import { Link } from "react-router-dom";
 import AppContext from '../../appContext.js';
-import { callCT, requestBuilder } from '../../commercetools';
+import { apiRoot } from '../../commercetools-ts';
 import { withRouter } from "react-router";
 
 const VERBOSE=false;
@@ -39,11 +39,14 @@ const VariantInfo = ({history,variant}) => {
       }
     }
     
-    // Fetch current cart, if any
-    let result = await callCT({
-      uri: requestBuilder.myActiveCart.build(),
-      method: 'GET'
-    });
+    // Fetch current cart, if any.  Swallow error (TODO: check 404)
+    let result = await apiRoot
+      .me()
+      .activeCart()
+      .get()
+      .execute()
+      .catch( (error) => { console.log('err',error) } );
+
     if(result) {
       cart = result.body;
       sessionStorage.setItem('cartId',cart.id);
@@ -52,16 +55,18 @@ const VariantInfo = ({history,variant}) => {
     if(cart) {
       // add item to current cart
       console.log('Adding to current cart',cart.id,cart.version);
-      result = await callCT({
-        uri: requestBuilder.myCarts.byId(cart.id).build(),
-        method: 'POST',
-        body: {
-          version: cart.version,
-          actions: [{
-            action: 'addLineItem',
-            ...lineItem
-          }]
-        }
+      result = await apiRoot
+        .me()
+        .carts()
+        .withId({ID: cart.id})
+        .post({
+          body: {
+            version: cart.version,
+            actions: [{
+              action: 'addLineItem',
+              ...lineItem
+            }]
+          }
       });
     } else {
       console.log('creating cart & adding item');
@@ -86,11 +91,13 @@ const VariantInfo = ({history,variant}) => {
         }
       }
     
-      let result = await callCT({
-        uri: requestBuilder.myCarts.build(),
-        method: 'POST',
-        body: createCartBody
-      });
+      result = await apiRoot
+        .me()
+        .carts()
+        .post({
+          body: createCartBody
+        })
+        .execute();
     }
     if(result) {
       history.push('/cart');

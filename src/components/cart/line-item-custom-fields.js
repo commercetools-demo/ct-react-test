@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import config from '../../config';
-import { callCT, requestBuilder } from '../../commercetools';
+import { apiRoot } from '../../commercetools-ts';
 
 import { Container, Row, Col} from 'react-bootstrap';
 import LineItemCustomField from './line-item-custom-field';
@@ -26,16 +26,13 @@ const LineItemCustomFields = ({lineItem}) => {
       return;
     setFetched(true);
  
-    let uri = requestBuilder
-                .types
-                .where('resourceTypeIds contains any ("line-item")').build();
+    let res =  await apiRoot
+    .types()
+    .get({ queryArgs: {
+      where: 'resourceTypeIds contains any ("line-item")',      
+    }})
+    .execute();
 
-    VERBOSE && console.log('Get types URI',uri);
-
-    let res =  await callCT({
-      uri: uri,
-      method: 'GET'
-    });
     if(res && res.body.results) {
       console.log('types',res.body.results);
       setTypes(res.body.results);
