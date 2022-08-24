@@ -1,4 +1,4 @@
-import { apiRoot } from '../../commercetools-ts';
+import { apiRoot } from '../../commercetools';
 
 let VERBOSE=true;
 
@@ -35,20 +35,22 @@ export const updateCart = async(actions) => {
   console.log('actions',actions);
 
   let cart = await getCart();
-
-  const cartUri = getCartUri();
-  if(!cartUri)
+  if(!cart)
     return;
-    
-  let [res, err] =  await callCTWithError({
-    uri: getCartUri(),
-    method: 'POST',
-    body: {
-      version: cart.version,
-      actions: actions
-    },
-    verbose: true,
-  });
+
+  let err;    
+  let res =  await apiRoot
+    .me()
+    .carts()
+    .withId({ ID: cart.id })
+    .post({
+      body: {
+        version: cart.version,
+        actions: actions
+      }
+    })
+    .execute();
+
   if(err) {
     // Hack - stick the error message into the cart.
     console.log("ERROR",err);
@@ -61,9 +63,3 @@ export const updateCart = async(actions) => {
   }
   return null;
 }
-
-
-
-
-
-

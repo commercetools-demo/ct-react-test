@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import AppContext from '../../appContext';
-import { apiRoot } from '../../commercetools-ts';
+import { authClient, setAccessToken } from '../../commercetools';
 import { Container, Row, Col} from 'react-bootstrap';
 
 const CommercetoolsLogin = () => {
@@ -20,23 +20,20 @@ const CommercetoolsLogin = () => {
   }
   
   const login = async () => {
-    let res = await apiRoot
-      .me()
-      .login()
-      .post({
-        body: {
-          email: email,
-          password: password
-        }
-      })
-      .execute();
-
+    console.log('calling login');
+    let res = await authClient.customerPasswordFlow({
+      username: email,
+      password: password
+    });
     console.log('login result',res);
-    if(res) {      
+    if(res) {
+      // Figure out what to do here
+      setAccessToken(res.access_token);
       setContext({...context,loggedIn:true});
     } else {
       setStatus('Login failed');
     }
+    return false;
   };
 
   const logout = async () => {

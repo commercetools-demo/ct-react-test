@@ -5,7 +5,7 @@ import LineItemPriceInfo from './line-item-price-info';
 import CartCustomFields from './cart-custom-fields';
 import { Container, Row, Col} from 'react-bootstrap';
 import { getCart, updateCart } from './cart-util';
-import { apiRoot } from '../../commercetools-ts';
+import { apiRoot } from '../../commercetools';
 import { withRouter } from "react-router";
 
 const VERBOSE=true;

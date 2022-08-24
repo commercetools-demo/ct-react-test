@@ -1,5 +1,5 @@
 import { useEffect, useContext, useState } from 'react';
-import { apiRoot } from '../../commercetools-ts';
+import { apiRoot } from '../../commercetools';
 import AppContext from '../../appContext';
 import CommercetoolsLogin from './commercetools-login';
 //import OktaLogin from './okta-login';
@@ -8,7 +8,6 @@ import CommercetoolsLogin from './commercetools-login';
 const VERBOSE=true;
 
 const AccountPage = () => {
-
   const [context] = useContext(AppContext);
   const [customer, setCustomer] = useState();
 

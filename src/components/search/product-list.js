@@ -1,5 +1,5 @@
 import config from '../../config';
-import { apiRoot } from '../../commercetools-ts'
+import { apiRoot } from '../../commercetools'
 import { useEffect, useState } from 'react';
 import ProductListEntry from './product-list-entry';
 

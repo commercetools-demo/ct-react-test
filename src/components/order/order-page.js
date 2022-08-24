@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import ContextDisplay from '../context/context-display';
 import { Container, Row, Col} from 'react-bootstrap';
-import { apiRoot } from '../../commercetools-ts';
+import { apiRoot } from '../../commercetools';
 
 const VERBOSE=true;
 

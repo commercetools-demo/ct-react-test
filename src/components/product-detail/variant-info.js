@@ -4,7 +4,7 @@ import PriceInfo from './price-info';
 import { formatPrice } from '../../util/priceUtil';
 import { Link } from "react-router-dom";
 import AppContext from '../../appContext.js';
-import { apiRoot } from '../../commercetools-ts';
+import { apiRoot } from '../../commercetools';
 import { withRouter } from "react-router";
 
 const VERBOSE=false;
@@ -100,6 +100,7 @@ const VariantInfo = ({history,variant}) => {
         .execute();
     }
     if(result) {
+      console.log('result',result);
       history.push('/cart');
       sessionStorage.setItem('cartId',result.body.id);
     }

@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from 'react';
-import { apiRoot } from '../../commercetools-ts';
+import { apiRoot } from '../../commercetools';
 import AppContext from '../../appContext';
 
 function CountryPicker() {

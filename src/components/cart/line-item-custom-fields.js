@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import config from '../../config';
-import { apiRoot } from '../../commercetools-ts';
+import { apiRoot } from '../../commercetools';
 
 import { Container, Row, Col} from 'react-bootstrap';
 import LineItemCustomField from './line-item-custom-field';

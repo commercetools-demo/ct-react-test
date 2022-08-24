@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import VariantInfo from './variant-info';
 import ContextDisplay from '../context/context-display';
 import AppContext from '../../appContext';
-import { apiRoot } from '../../commercetools-ts';
+import { apiRoot } from '../../commercetools';
 
 const VERBOSE=true;
 
