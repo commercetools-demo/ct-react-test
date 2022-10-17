@@ -1,5 +1,5 @@
 
-const SearchInput = ({onChange, onSubmit}) => {
+const SearchInput = ({onChange, onSetScoped, onSubmit}) => {
 
   // Have the enter key in the search trigger the onSubmit function
   const onKeyUp = (event) => {
@@ -10,7 +10,7 @@ const SearchInput = ({onChange, onSubmit}) => {
 
   return (
   <div>
-    <input type="text" name="email" onChange={onChange} onKeyUp={onKeyUp} />&nbsp;
+    <input type="text" onChange={onChange} onKeyUp={onKeyUp} />&nbsp;
     <input type="submit" value="Search" onClick={onSubmit}/>
   </div>
   )

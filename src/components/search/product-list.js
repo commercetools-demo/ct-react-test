@@ -2,32 +2,33 @@ import config from '../../config';
 import { apiRoot } from '../../commercetools'
 import { useEffect, useState } from 'react';
 import ProductListEntry from './product-list-entry';
+import { setQueryArgs } from '../../util/searchUtil';
 
-const ProductList = ({search}) => {
+const ProductList = (props) => {
 
   let [products, setProducts] = useState([]);
-  
-  let [searched, setSearched] = useState(false);
 
   useEffect(() => {
-    search && getProducts(search);
-  });
+    getProducts(props.search);
+  }, [props.search, props.scoped]);
+
+  
 
   const getProducts = async (searchStr) => {
-    // Avoid repeat calls (?)
-    if(searched) {
-      console.log('skipping');
-      return;
+    const queryArgs = {
+      ...setQueryArgs(),
+      [`text.${config.locale}`] : searchStr,
+      fuzzy: true,
+      limit: 50
+    };
+  
+    if(props.scoped) {
+      queryArgs['filter.query'] = 'variants.scopedPrice.value.centAmount:range (0 to 99999)'
     }
-    setSearched(true);
-
+    
     const res =  await apiRoot.productProjections()
       .search()
-      .get({ queryArgs: {
-        [`text.${config.locale}`] : searchStr,
-        fuzzy: true,
-        limit: 20
-      }})
+      .get({ queryArgs: queryArgs})
       .execute();
 
     if(res && res.body.results) {

@@ -38,7 +38,6 @@ export const updateCart = async(actions) => {
   if(!cart)
     return;
 
-  let err;    
   let res =  await apiRoot
     .me()
     .carts()
@@ -49,17 +48,16 @@ export const updateCart = async(actions) => {
         actions: actions
       }
     })
-    .execute();
+    .execute()
+    .catch((e) => {
+      // HACK - stick the error message on the cart.
+      console.log("ERROR",e);
+      cart.error = e.message;
+    });
 
-  if(err) {
-    // Hack - stick the error message into the cart.
-    console.log("ERROR",err);
-    cart.error = err;
-    return cart;
-  }
   if(res?.body) {
     VERBOSE && console.log(res.body);
     return res.body;
   }
-  return null;
+  return cart;
 }
