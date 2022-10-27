@@ -12,8 +12,6 @@ const ProductList = (props) => {
     getProducts(props.search);
   }, [props.search, props.scoped]);
 
-  
-
   const getProducts = async (searchStr) => {
     const queryArgs = {
       ...setQueryArgs(),
@@ -25,7 +23,7 @@ const ProductList = (props) => {
     if(props.scoped) {
       queryArgs['filter.query'] = 'variants.scopedPrice.value.centAmount:range (0 to 99999)'
     }
-    
+
     const res =  await apiRoot.productProjections()
       .search()
       .get({ queryArgs: queryArgs})

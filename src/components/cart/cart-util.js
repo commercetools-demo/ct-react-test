@@ -4,7 +4,7 @@ let VERBOSE=true;
 
 // Fetch cart from commercetools, expanding all discount references for display purposes
 
-const expand = 'lineItems[*].discountedPricePerQuantity[*].discountedPrice.includedDiscounts[*].discount';
+const queryArgs = {expand: 'lineItems[*].discountedPricePerQuantity[*].discountedPrice.includedDiscounts[*].discount'};
 
 export const getCart = async() => {
   const cartId = sessionStorage.getItem('cartId');
@@ -15,9 +15,7 @@ export const getCart = async() => {
     .me()
     .carts()
     .withId({ ID: cartId })
-    .get({ queryArgs:
-      { expand: expand }
-    })
+    .get({ queryArgs: queryArgs })
     .execute();
 
   if(res?.body && res.body.cartState=='Active') {
@@ -43,6 +41,7 @@ export const updateCart = async(actions) => {
     .carts()
     .withId({ ID: cart.id })
     .post({
+      queryArgs: queryArgs,
       body: {
         version: cart.version,
         actions: actions
