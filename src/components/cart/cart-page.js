@@ -131,7 +131,7 @@ const CartPage = props => {
       <Container fluid>
         <Row>
           <Col>
-            <h4>Cart</h4>{cart.id}, version {cart.version}
+            <h4>Cart</h4>
             { cart.error && (
               <h5><font color="red">{cart.error}</font></h5>
             )}
@@ -141,8 +141,7 @@ const CartPage = props => {
           </Col>
         </Row>
         <Row>
-          
-         
+          &nbsp;
         </Row>
         <Row>
           <Col>
@@ -185,6 +184,17 @@ const CartPage = props => {
           </Col>
           <Col>
             <button type="button" onClick={deleteCart}>Delete Cart</button>
+          </Col>
+        </Row>
+        <Row>&nbsp;</Row>
+      </Container>
+      <Container fluid>
+        <Row>
+          <Col><h4>Metadata</h4>
+            Cart ID {cart.id}
+            <br/>version {cart.version}
+            <br/>createdAt: { cart.createdAt}
+            <br/>lastModifiedAt: { cart.lastModifiedAt }
           </Col>
         </Row>
       </Container>

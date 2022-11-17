@@ -67,7 +67,7 @@ const VariantInfo = ({history,variant}) => {
               ...lineItem
             }]
           }
-      });
+      }).execute();
     } else {
       console.log('creating cart & adding item');
       // Create cart and add item in one go. Save cart id
