@@ -38,6 +38,15 @@ const VariantInfo = ({history,variant}) => {
         typeId: 'channel'
       }
     }
+    // For Ashley
+    lineItem.custom = {
+      'type': {
+        'key': 'ps-custom-line-item'
+      },
+      fields: {
+        'shippingMethod': 'same-day'
+      }
+    }
     
     // Fetch current cart, if any.  Swallow error (TODO: check 404)
     let result = await apiRoot
