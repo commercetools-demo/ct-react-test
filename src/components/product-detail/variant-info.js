@@ -1,118 +1,47 @@
 import AttributeInfo from './attribute-info';
-import { useContext} from 'react';
+import { useContext, useState } from 'react';
 import PriceInfo from './price-info';
 import { formatPrice } from '../../util/priceUtil';
 import { Link } from "react-router-dom";
 import AppContext from '../../appContext.js';
-import { apiRoot } from '../../commercetools';
+import { Container, Row, Col} from 'react-bootstrap';
 import { withRouter } from "react-router";
+import { addToCart } from '../../util/cart-util'
 
 const VERBOSE=false;
 
 const VariantInfo = ({history,variant}) => {
 
   const [context] = useContext(AppContext);
+
+  const [showCustom, setShowCustom] = useState(false);
+
+  const [customType, setCustomType] = useState('');
+  const [customFieldName, setCustomFieldName] = useState('');
+  const [customFieldValue, setCustomFieldValue] = useState('');
   
-  const addToCart = async () => {
-
-    const currency = sessionStorage.getItem('currency');
-    const country = sessionStorage.getItem('country');
-    const channelId = sessionStorage.getItem('channelId');
-    const customerGroupId = sessionStorage.getItem('customerGroupId');
-    const storeKey = sessionStorage.getItem('storeKey');
-
+  const callAddToCart = async () => {
     const productId = context.productId;
-
-    let cart;
-    const lineItem = {
-      productId: productId,
-      variantId: variant.id
-    };
-    if(channelId) {
-      lineItem.distributionChannel={
-        id: channelId,
-        typeId: 'channel'
-      }
-      lineItem.supplyChannel={
-        id: channelId,
-        typeId: 'channel'
-      }
-    }
-    // For Ashley
-    lineItem.custom = {
-      'type': {
-        'key': 'ps-custom-line-item'
-      },
-      fields: {
-        'shippingMethod': 'same-day'
-      }
-    }
-    
-    // Fetch current cart, if any.  Swallow error (TODO: check 404)
-    let result = await apiRoot
-      .me()
-      .activeCart()
-      .get()
-      .execute()
-      .catch( (error) => { console.log('err',error) } );
-
-    if(result) {
-      cart = result.body;
-      sessionStorage.setItem('cartId',cart.id);
-    }
-
-    if(cart) {
-      // add item to current cart
-      console.log('Adding to current cart',cart.id,cart.version);
-      result = await apiRoot
-        .me()
-        .carts()
-        .withId({ID: cart.id})
-        .post({
-          body: {
-            version: cart.version,
-            actions: [{
-              action: 'addLineItem',
-              ...lineItem
-            }]
-          }
-      }).execute();
-    } else {
-      console.log('creating cart & adding item');
-      // Create cart and add item in one go. Save cart id
-      const createCartBody = {
-        currency: currency,
-        lineItems: [lineItem]
-      };
-      if(country) {
-        createCartBody.country = country;
-      }
-      if(customerGroupId) {
-        createCartBody.customerGroup = {
-          typeId: 'customer-group',
-          id: customerGroupId,
+    let custom = {}
+    if(showCustom) {
+      custom = {
+        type: {
+          key: customType
+        },
+        fields: {
+          [customFieldName]: customFieldValue
         }
       }
-      if(storeKey) {
-        createCartBody.store = {
-          typeId: 'store',
-          key: storeKey,
-        }
-      }
-    
-      result = await apiRoot
-        .me()
-        .carts()
-        .post({
-          body: createCartBody
-        })
-        .execute();
     }
+    const result = await addToCart(productId,variant.id,custom);
     if(result) {
-      console.log('result',result);
       history.push('/cart');
-      sessionStorage.setItem('cartId',result.body.id);
     }
+  }
+
+
+  const toggleAddCustomFields = (event) => {
+    setShowCustom(event.target.checked == true);
   }
 
 
@@ -129,7 +58,28 @@ const VariantInfo = ({history,variant}) => {
         { variant.price
         ? <span>
             Price (using price selection): {priceStr}
-            &nbsp;&nbsp;<button type="button" onClick={addToCart}>Add to Cart</button>
+            <br></br>
+            <input type="checkbox" onChange={toggleAddCustomFields} /> Add Custom Fields <br></br>
+            { showCustom &&
+              <div className="indent">
+                <Container fluid="false">
+                  <Row>
+                    <Col xs={1}>Type key:</Col>
+                    <Col><input value={customType} onChange={e => setCustomType(e.target.value)}/></Col>
+                  </Row>
+                  <Row>
+                    <Col xs={1}>Field:</Col>
+                    <Col><input value={customFieldName} onChange={e => setCustomFieldName(e.target.value)}/></Col> 
+                  </Row>
+                  <Row>
+                    <Col xs={1}>Value:</Col>
+                    <Col><input value={customFieldValue} onChange={e => setCustomFieldValue(e.target.value)}/></Col>
+                  </Row>
+                </Container> 
+              </div>
+            
+            }
+            <button type="button" onClick={callAddToCart}>Add to Cart</button>
           </span>
         :
           <div>

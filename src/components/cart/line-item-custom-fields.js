@@ -51,7 +51,7 @@ const LineItemCustomFields = ({lineItem}) => {
       <Container>
         <Row>
           <Col>
-            <span class="heading">
+            <span className="heading">
               Line Item Custom Fields
             </span>
           </Col>

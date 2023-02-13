@@ -47,11 +47,11 @@ const LineItemInfo = ({lineItem,increment,decrement}) => {
      
       <Row>
         <Col>
-          <span class="small">
+          <span className="small">
             {
               lineItem.discountedPricePerQuantity.length ? 
               <div>
-                <span class="heading">Discounted Price per Quantity</span>
+                <span className="heading">Discounted Price per Quantity</span>
                 <ul>
                 { lineItem.discountedPricePerQuantity.map((item) => (
                   <li>qty: {item.quantity} @ <LineItemPriceInfo price={item.discountedPrice}/>
