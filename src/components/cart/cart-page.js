@@ -4,7 +4,7 @@ import ContextDisplay from '../context/context-display';
 import LineItemPriceInfo from './line-item-price-info';
 import CartCustomFields from './cart-custom-fields';
 import { Container, Row, Col} from 'react-bootstrap';
-import { getCart, updateCart } from './cart-util';
+import { getCart, updateCart } from '../../util/cart-util';
 import { apiRoot } from '../../commercetools';
 import { withRouter } from "react-router";
 
@@ -14,6 +14,8 @@ const CartPage = props => {
   console.log('cart Props',props);
   let [cart, setCart] = useState(null);
   let [fetched, setFetched] = useState(false);
+
+  const currency = sessionStorage.getItem('currency');
 
   useEffect(() => {
     getCurrentCart();
@@ -38,6 +40,26 @@ const CartPage = props => {
       </Container>
     )
   }
+
+  const getTotalDiscountAmount = (cart) => {
+    let total = {
+      centAmount: 0,
+      currencyCode: currency
+    }
+    if(!cart) {
+      return 0;
+    }
+    cart.lineItems?.forEach(item => {
+      item.discountedPricePerQuantity?.forEach(dppq => {
+        dppq.discountedPrice.includedDiscounts?.forEach(included => {          
+          total.centAmount += included.discountedAmount.centAmount * dppq.quantity;
+        })
+      })
+    })
+    return total;
+  }
+
+  const totalDiscounts = getTotalDiscountAmount(cart);
 
   const updateCartAndRefresh = async (action) => {
     setCart(await updateCart(action));
@@ -151,12 +173,12 @@ const CartPage = props => {
       </Container>
       <Container>
         <Row>
-          <Col><span class="heading">Quantity</span></Col>
-          <Col><span class="heading">SKU</span></Col>
-          <Col><span class="heading">Name</span></Col>
-          <Col><span class="heading">Unit Price</span></Col>
-          <Col><span class="heading">Discounted Price</span></Col>
-          <Col><span class="heading">Total Price</span></Col>
+          <Col><span className="heading">Quantity</span></Col>
+          <Col><span className="heading">SKU</span></Col>
+          <Col><span className="heading">Name</span></Col>
+          <Col><span className="heading">Unit Price</span></Col>
+          <Col><span className="heading">Discounted Price</span></Col>
+          <Col><span className="heading">Total Price</span></Col>
         </Row>
 
         { cart.lineItems.map((lineItem,index) => <LineItemInfo 
@@ -170,6 +192,16 @@ const CartPage = props => {
             Add Discount Code: <input id="discountCode" type="text"></input> <button onClick={addDiscountCode}>Add</button>
           </Col>
         </Row>
+        <hr></hr>
+        <Row>
+          <Col md={10}>
+            <h6>Total Discounts</h6> 
+          </Col>
+          <Col>
+            <LineItemPriceInfo price={totalDiscounts}/>
+          </Col>
+        </Row>
+        <hr></hr>
         <Row>
           <Col md={10}>
             <h4>Cart Total</h4> 

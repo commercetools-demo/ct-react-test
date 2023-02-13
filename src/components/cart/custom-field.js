@@ -4,9 +4,15 @@ import config from '../../config';
 const VERBOSE=true;
 
 const CustomField = ({field,cart,onChange}) => {
-  console.log('field',cart.custom.fields[field.name]);
+  console.log('field', field);
+  let value, setValue;
+  if(cart.custom) {
+    console.log('field',cart.custom.fields[field.name]);
+    [value, setValue] = useState(cart?.custom?.fields[field.name]);
+  } else {
+    [value, setValue] = useState();
+  }
 
-  let [value, setValue] = useState(cart?.custom?.fields[field.name]);
 
   const change = (field,value) => {
     setValue(value);
@@ -27,7 +33,7 @@ const CustomField = ({field,cart,onChange}) => {
     )
   }
 
-  if(field.type.name=='Set') {
+  if(cart.custom?.fields?.[field.name] && field.type.name=='Set') {
     return (
       <div>
         <span><b>{field.name}:</b>  {cart.custom.fields[field.name].join(',')}</span>

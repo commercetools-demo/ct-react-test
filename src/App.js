@@ -37,52 +37,54 @@ function App() {
     <AppContext.Provider value={[context, setContext]}>
       <BrowserRouter>
         <Security oktaAuth={oktaAuth}>
-          <div>
-            <nav>
-              <ul>
-                <li>
-                  <NavLink exact to="/" activeClassName="active">Home</NavLink>
-                </li>
-                <li>
-                  <NavLink to="/context" activeClassName="active">Context</NavLink>
-                </li>             
-                <li>
-                  <NavLink to={"/product-detail/"+context.productId} activeClassName="active">Product Detail</NavLink>
-                </li>
-                <li>
-                  <NavLink to={"/cart"} activeClassName="active">Cart</NavLink>
-                </li>
-                <li>
-                  <NavLink to={"/account"} activeClassName="active">My Account</NavLink>
-                </li>
-                <li>
-                  <NavLink to={"/order"} activeClassName="active">Order</NavLink>
-                </li>                
-              </ul>
-            </nav>
-            <br></br>
-          </div>       
-          <Switch>
-            <Route path="/context">
-              <ContextPage />
-            </Route>
-            <Route path="/product-detail/:id">
-              <ProductDetailPage />
-            </Route>
-            <Route path="/cart">
-              <CartPage />
-            </Route>
-            <Route path="/account">
-              <AccountPage />
-            </Route>
-            <Route path="/order">
-              <OrderPage />
-            </Route>
-            <Route path={CALLBACK_PATH} component={LoginCallback} />
-            <Route path="/">
-              <SearchPage />
-            </Route>
-          </Switch>
+          <div id="root">
+            <div>
+              <nav>
+                <ul>
+                  <li>
+                    <NavLink exact to="/" activeClassName="active">Home</NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/context" activeClassName="active">Context</NavLink>
+                  </li>             
+                  <li>
+                    <NavLink to={"/product-detail/"+context.productId} activeClassName="active">Product Detail</NavLink>
+                  </li>
+                  <li>
+                    <NavLink to={"/cart"} activeClassName="active">Cart</NavLink>
+                  </li>
+                  <li>
+                    <NavLink to={"/account"} activeClassName="active">My Account</NavLink>
+                  </li>
+                  <li>
+                    <NavLink to={"/order"} activeClassName="active">Order</NavLink>
+                  </li>                
+                </ul>
+              </nav>
+              <br></br>
+            </div>       
+            <Switch>
+              <Route path="/context">
+                <ContextPage />
+              </Route>
+              <Route path="/product-detail/:id">
+                <ProductDetailPage />
+              </Route>
+              <Route path="/cart">
+                <CartPage />
+              </Route>
+              <Route path="/account">
+                <AccountPage />
+              </Route>
+              <Route path="/order">
+                <OrderPage />
+              </Route>
+              <Route path={CALLBACK_PATH} component={LoginCallback} />
+              <Route path="/">
+                <SearchPage />
+              </Route>
+            </Switch>
+          </div>
         </Security>
       </BrowserRouter>
     </AppContext.Provider>
