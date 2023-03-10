@@ -9,3 +9,10 @@ export function formatPrice(price) {
     { style: 'currency',
       currency: value.currencyCode }).format(value.centAmount/100);
 }
+
+export function formatDiscount(discount) {
+  if (discount.value.type === 'relative' && discount.value.permyriad) {
+    return discount.value.permyriad / 100 + "%";
+  }
+  return discount.value;
+}

@@ -30,6 +30,10 @@ This displays a set of input elements to allow the user to choose the 'context' 
 ```src/components/cart```:
 Display the shopping cart with detailed discount information.
 
+## DiscountDetailPage:
+```src/components/discount-detail```:
+Searches for product that are a part of the given discount id.
+
 # Setup:
 
 Because this application has some additional functionality beyond a 'traditional' web app, you'll need

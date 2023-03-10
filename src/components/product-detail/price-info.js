@@ -1,5 +1,6 @@
 import config from '../../config';
-import { formatPrice } from '../../util/priceUtil';
+import {formatDiscount, formatPrice } from '../../util/priceUtil';
+import {Link} from "react-router-dom";
 
 const VERBOSE=false;
 
@@ -16,7 +17,10 @@ const PriceInfo = ({price}) => {
     customerGroup=price.customerGroup.obj.name;
   }
 
-  const priceStr = formatPrice(price);
+  let priceStr = formatPrice(price);
+  if(price.discounted) {
+    priceStr = formatPrice(price.discounted);
+  }
 
   return (
     <tr>
@@ -25,6 +29,15 @@ const PriceInfo = ({price}) => {
       <td>{channelName}</td>
       <td>{customerGroup}</td>
       <td>{priceStr}</td>
+      <td>{ price.discounted?
+        <span>
+            <strike>{formatPrice(price)}</strike> {formatPrice(price.discounted)} <em>{formatDiscount(price.discounted.discount.obj)} off</em><br/>
+            Discount: <Link to={"/discount-detail/"+price.discounted.discount.id}>{price.discounted.discount.obj.name[config.locale]}</Link>
+        </span>
+        :
+        <span>N/A</span>
+      }
+      </td>
     </tr>
   );
 }

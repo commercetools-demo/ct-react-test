@@ -5,16 +5,13 @@ const AttributeInfo = ({attr}) => {
   
   const name = attr.name;
 
-  let value = attr.value;
-  console.log('attr value type',typeof value);
-  if(typeof value === 'object') {
-    value = value.label;
-    if(typeof value === 'object') {
-      value=value[config.locale];
-    }
+  let value = JSON.stringify(attr.value,null,'\t');
+  console.log('attr value type', typeof attr.value);
+  if(typeof attr.value === 'object' && attr.value.label !== undefined && typeof attr.value.label === 'object') {
+    value = attr.value.label[config.locale];
   }
-  if(typeof value == 'boolean') {
-    value = value ? 'true' : 'false';
+  if(typeof attr.value == 'boolean') {
+    value = attr.value ? 'true' : 'false';
   }
   return (
     <span>&nbsp;{ name }: {value}<br></br></span>

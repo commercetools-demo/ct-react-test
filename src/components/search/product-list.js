@@ -19,6 +19,10 @@ const ProductList = (props) => {
       fuzzy: true,
       limit: 50
     };
+
+    queryArgs.expand = [
+      'masterVariant.price.discounted.discount',
+    ]
   
     if(props.scoped) {
       queryArgs['filter.query'] = 'variants.scopedPrice.value.centAmount:range (0 to 99999)'
