@@ -119,7 +119,7 @@ const CartPage = props => {
     let cart = await updateCart([{
       action: 'setShippingAddress',
       address: {
-        country: 'US'
+        country: sessionStorage.getItem('country') ?? 'US'
       }
     }]);
     let res;

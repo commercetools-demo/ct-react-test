@@ -1,7 +1,8 @@
+import config from '../../config';
 import AttributeInfo from './attribute-info';
 import { useContext, useState } from 'react';
 import PriceInfo from './price-info';
-import { formatPrice } from '../../util/priceUtil';
+import { formatDiscount, formatPrice } from '../../util/priceUtil';
 import { Link } from "react-router-dom";
 import AppContext from '../../appContext.js';
 import { Container, Row, Col} from 'react-bootstrap';
@@ -46,18 +47,35 @@ const VariantInfo = ({history,variant}) => {
 
 
   let priceStr = '';
-  if(variant.price) {
+  let strikePriceStr = '';
+  let discountStr = '';
+  if(variant.price?.discounted) {
+    strikePriceStr = formatPrice(variant.price);
+    priceStr = formatPrice(variant.price.discounted);
+    discountStr = formatDiscount(variant.price.discounted.discount.obj);
+  }
+  else if(variant.price) {
     priceStr = formatPrice(variant.price);
   }
   
   VERBOSE && console.log('variant',variant);
   return (
     <li>
+        { variant.images.map(image => <img src={image.url} height={image.dimensions.h} width={image.dimensions.w} alt={image.label}/>) }<br/>
         SKU: { variant.sku } <br></br>
         Variant Key:  { variant.key } <br></br>
         { variant.price
         ? <span>
-            Price (using price selection): {priceStr}
+            Price (using price selection): {
+              variant.price?.discounted?
+                  <span>
+                      <strike>{strikePriceStr}</strike> {priceStr}<br/>
+                      <em>{discountStr} off</em><br/>
+                    Discount: <Link to={"/discount-detail/"+variant.price.discounted.discount.id}>{variant.price.discounted.discount.obj.name[config.locale]}</Link>
+                  </span>
+                  :
+                  <span>{priceStr}</span>
+            }
             <br></br>
             <input type="checkbox" onChange={toggleAddCustomFields} /> Add Custom Fields <br></br>
             { showCustom &&
@@ -94,6 +112,7 @@ const VariantInfo = ({history,variant}) => {
                   <td>Channel</td>
                   <td>Customer Group</td>
                   <td>Price</td>
+                  <td>Discount Info</td>
                 </tr>
               </thead>
               <tbody>

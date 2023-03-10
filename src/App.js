@@ -6,6 +6,7 @@ import CartPage from './components/cart/cart-page';
 import OrderPage from './components/order/order-page';
 import AccountPage from './components/user/account-page';
 import ContextPage from './components/context/context-page';
+import DiscountDetailPage from "./components/discount/discount-detail-page";
 import AppContext from './appContext.js';
 import oktaConfig from './okta-config';
 import {
@@ -51,6 +52,9 @@ function App() {
                     <NavLink to={"/product-detail/"+context.productId} activeClassName="active">Product Detail</NavLink>
                   </li>
                   <li>
+                    <NavLink to={"/discount-detail/"+context.discountId} activeClassName="active">Discount Detail</NavLink>
+                  </li>
+                  <li>
                     <NavLink to={"/cart"} activeClassName="active">Cart</NavLink>
                   </li>
                   <li>
@@ -69,6 +73,9 @@ function App() {
               </Route>
               <Route path="/product-detail/:id">
                 <ProductDetailPage />
+              </Route>
+              <Route path="/discount-detail/:id">
+                <DiscountDetailPage />
               </Route>
               <Route path="/cart">
                 <CartPage />

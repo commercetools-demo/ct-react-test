@@ -36,8 +36,12 @@ const ProductDetailPage = () => {
     queryArgs.expand = [
       'masterVariant.prices[*].channel',
       'masterVariant.prices[*].customerGroup',
+      'masterVariant.prices[*].discounted.discount',
+      'masterVariant.price.discounted.discount',
       'variants[*].prices[*].channel',
-      'variants[*].prices[*].customerGroup'
+      'variants[*].prices[*].customerGroup',
+      'variants[*].prices[*].discounted.discount',
+      'variants[*].price.discounted.discount',
     ];
 
 
@@ -67,11 +71,10 @@ const ProductDetailPage = () => {
         <VariantInfo variant={product.masterVariant} />
         { product.variants.map(variant => <VariantInfo key={variant.id} variant={variant}/>) }
       </ul>
+      <h3>Description</h3>
+      <p>{product.description ? product.description[config.locale] : ""}</p>
     </div>
   )
 }
-
-// TODO - Add description, proper localization
-// {product.description.en}<p>&nbsp;</p>
 
 export default ProductDetailPage;
