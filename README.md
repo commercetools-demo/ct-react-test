@@ -36,22 +36,10 @@ Searches for product that are a part of the given discount id.
 
 # Setup:
 
-Because this application has some additional functionality beyond a 'traditional' web app, you'll need
-additional scopes when creating the developer key.
-
-First, start with the "Mobile & Single Page Application" template, and then add 
-
-under View:
-* Products (all)
-* Project Settings
-* Stores
-
-Download the Environment Variables format, remove the 'export ' and replace CTP_ with REACT_APP_
-
-
-Install Dependencies:
-
-```yarn```
+1. Head on over to https://mc.us-central1.gcp.commercetools.com/unity-store/settings/developer/api-clients
+and generate your API client (use an admin scope for ease of development for now)
+2. Copy the `.env.sample` file as `.env` and include the values from your generated API client
+3.  Install Dependencies: `yarn`
 
 ---
 # To run:
