@@ -39,7 +39,7 @@ const LineItemCustomFields = ({lineItem}) => {
     }
   };
 
-  console.log(typeId);
+  console.log('line item custom type',typeId);
   let type=types.find(t => t.id == typeId)
   if(!type)
     return null;
@@ -47,7 +47,7 @@ const LineItemCustomFields = ({lineItem}) => {
   console.log('line item custom',lineItem.custom);
   
   return (
-    <div class="small">
+    <div className="small">
       <Container>
         <Row>
           <Col>

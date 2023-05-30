@@ -2,8 +2,10 @@ import { useState } from 'react';
 import SearchInput from './search-input';
 import ProductList from './product-list';
 import ContextDisplay from '../context/context-display';
+import config from '../../config';
 
-function SearchPage() {
+
+function HomePage() {
 
   const [isSubmitted, setSubmitted] = useState(false);
   const [search, setSearch] = useState('');
@@ -22,9 +24,16 @@ function SearchPage() {
     setScoped(event.target.checked == true);
   }
 
+  const ctProject = process.env.REACT_APP_PROJECT_KEY;
+
   return (
     <div className="App">
       <ContextDisplay />
+      <span className="small">
+      Connected to commercetools project {ctProject}<br/>
+      Locale: {config.locale}
+      </span>
+      <hr></hr>
       Enter search string to search for products:
       <p/>&nbsp;
         <SearchInput onChange={onChangeSearch} onSubmit={onSubmit} />
@@ -35,4 +44,4 @@ function SearchPage() {
   );
 }
 
-export default SearchPage;
+export default HomePage;

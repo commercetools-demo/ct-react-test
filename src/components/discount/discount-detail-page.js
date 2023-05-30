@@ -1,7 +1,7 @@
 import {useContext, useEffect, useState} from 'react';
 import {setQueryArgs} from "../../util/searchUtil";
 import {apiRoot} from "../../commercetools";
-import ProductListEntry from "../search/product-list-entry";
+import ProductListEntry from "../home/product-list-entry";
 import {useParams} from "react-router-dom";
 import AppContext from "../../appContext";
 import ContextDisplay from "../context/context-display";

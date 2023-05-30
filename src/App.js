@@ -1,6 +1,6 @@
 import './App.css';
 import { useState } from 'react';
-import SearchPage from './components/search/search-page';
+import HomePage from './components/home/home-page';
 import ProductDetailPage from './components/product-detail/product-detail-page';
 import CartPage from './components/cart/cart-page';
 import OrderPage from './components/order/order-page';
@@ -88,7 +88,7 @@ function App() {
               </Route>
               <Route path={CALLBACK_PATH} component={LoginCallback} />
               <Route path="/">
-                <SearchPage />
+                <HomePage />
               </Route>
             </Switch>
           </div>

@@ -1,4 +1,4 @@
-import { useContext} from 'react';
+import { useContext, useState } from 'react';
 import AppContext from '../../appContext';
 import { Container, Row, Col} from 'react-bootstrap';
 
@@ -6,8 +6,21 @@ function ContextDisplay() {
 
   const [context] = useContext(AppContext);
 
+  const [error, setError] = useState(sessionStorage.getItem("error"));
+  
+  const dismiss = () => {
+    setError('');
+    sessionStorage.setItem("error",'');
+  }
+
   return (
     <Container fluid>
+      { error && (
+      <Row>
+        <h5><font color="red">{error} <button type="button" onClick={dismiss}>dismiss</button></font></h5>
+      </Row>
+      )}
+
       <Row>
         <Col md="auto">
           <h4>Current Context</h4>

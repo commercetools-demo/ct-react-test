@@ -11,7 +11,6 @@ import { withRouter } from "react-router";
 const VERBOSE=true;
 
 const CartPage = props => {
-  console.log('cart Props',props);
   let [cart, setCart] = useState(null);
   let [fetched, setFetched] = useState(false);
 
@@ -63,6 +62,10 @@ const CartPage = props => {
 
   const updateCartAndRefresh = async (action) => {
     setCart(await updateCart(action));
+    const error = sessionStorage.getItem("error");
+    if(error) {
+      window.location.reload();
+    }
   }
 
   const incrementQuantity = async (lineItem) => {
@@ -83,6 +86,9 @@ const CartPage = props => {
       action: 'changeLineItemQuantity',
       lineItemId: lineItem.id,
       quantity: lineItem.quantity - 1
+    }
+    if(lineItem.priceMode=='ExternalPrice') {
+      action.externalPrice = lineItem.price.value;
     }
     updateCartAndRefresh(action);
   }
@@ -146,6 +152,10 @@ const CartPage = props => {
     }
   }
 
+  const discountCodes = cart.discountCodes 
+    ? cart.discountCodes.map(dc => `${dc.discountCode.obj.code}, matches: ${dc.state == "MatchesCart"}`).join(', ') 
+    : '';
+  
   return (
     <div>
       <ContextDisplay />
@@ -189,6 +199,7 @@ const CartPage = props => {
                                                  /> )}                                           
         <Row>
           <Col>
+          { discountCodes && (<span className="small">Discount Codes Applied: {discountCodes}<br/><br/></span>) }
             Add Discount Code: <input id="discountCode" type="text"></input> <button onClick={addDiscountCode}>Add</button>
           </Col>
         </Row>

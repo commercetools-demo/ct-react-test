@@ -37,6 +37,8 @@ const VariantInfo = ({history,variant}) => {
     const result = await addToCart(productId,variant.id,custom);
     if(result) {
       history.push('/cart');
+    } else {
+      window.location.reload();
     }
   }
 

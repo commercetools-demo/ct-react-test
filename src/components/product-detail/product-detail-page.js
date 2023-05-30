@@ -14,7 +14,8 @@ const ProductDetailPage = () => {
 
   const [context, setContext] = useContext(AppContext);
  
-  let [product, setProduct] = useState(null);
+  let [product, setProduct] = useState(null);  
+  let [error, setError] = useState(null);
 
   useEffect(() => {
     fetchProduct(id);
@@ -65,7 +66,9 @@ const ProductDetailPage = () => {
     <div>
       <ContextDisplay />
       <h1>{product.name[config.locale]}</h1>
-      
+      { error && (
+        <h5><font color="red">{error}</font></h5>
+      )}
       <h3>Variants:</h3>
       <ul>
         <VariantInfo variant={product.masterVariant} />

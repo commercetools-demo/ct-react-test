@@ -1,12 +1,13 @@
 import config from '../../config';
 
+const VERBOSE = false;
 
 const AttributeInfo = ({attr}) => {
   
   const name = attr.name;
 
   let value = JSON.stringify(attr.value,null,'\t');
-  console.log('attr value type', typeof attr.value);
+  VERBOSE && console.log('attr value type', typeof attr.value);
   if(typeof attr.value === 'object' && attr.value.label !== undefined && typeof attr.value.label === 'object') {
     value = attr.value.label[config.locale];
   }

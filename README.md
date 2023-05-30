@@ -14,9 +14,9 @@ The code to authenticate with commercetools and call the APIs is encapsulated in
 
 # Pages
 
-## SearchPage 
-```src/components/search```:
-Displays an input form that lets the user search for products
+## HomePage 
+```src/components/home```:
+Home page / search page.  Displays an input form that lets the user search for products
 
 ## ProductDetailPage:
 ```src/components/product-detail```:

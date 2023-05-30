@@ -1,4 +1,5 @@
 import { apiRoot } from '../commercetools';
+import config from '../config';
 
 let VERBOSE=true;
 
@@ -7,21 +8,32 @@ let VERBOSE=true;
 const queryArgs = {expand: [
     'lineItems[*].discountedPricePerQuantity[*].discountedPrice.includedDiscounts[*].discount',
     'lineItems[*].price.discounted.discount',
+    'discountCodes[*].discountCode'
   ]};
+
+  const handleError = (e) => {
+    console.log("CART ERROR",e);
+    sessionStorage.setItem('error',e.message);
+  }
 
 export const getCart = async() => {
   const cartId = sessionStorage.getItem('cartId');
+  console.log('CART UTIL Session cart id',cartId);
   if(!cartId)
     return null;
   
   let res =  await apiRoot
-    .me()
     .carts()
     .withId({ ID: cartId })
     .get({ queryArgs: queryArgs })
     .execute();
 
+  if(!config.forceRecalcCart) {
+    return res?.body;
+  }
+  // Force a recalculate, refreshing product data, etc.
   if(res?.body && res.body.cartState=='Active') {
+    console.log('Recalculating...');
     let recalculatedCart = await apiRoot
         .me()
         .carts()
@@ -58,7 +70,6 @@ export const updateCart = async(actions) => {
     return;
 
   let res =  await apiRoot
-    .me()
     .carts()
     .withId({ ID: cart.id })
     .post({
@@ -69,11 +80,7 @@ export const updateCart = async(actions) => {
       }
     })
     .execute()
-    .catch((e) => {
-      // HACK - stick the error message on the cart.
-      console.log("ERROR",e);
-      cart.error = e.message;
-    });
+    .catch((e) => handleError(e));
 
   if(res?.body) {
     VERBOSE && console.log(res.body);
@@ -90,7 +97,6 @@ export const addToCart = async (productId, variantId, custom) => {
   const customerGroupId = sessionStorage.getItem('customerGroupId');
   const storeKey = sessionStorage.getItem('storeKey');
 
-  let cart;
   const lineItem = {
     productId,
     variantId
@@ -108,24 +114,13 @@ export const addToCart = async (productId, variantId, custom) => {
   // Add custom fields, if any
   lineItem.custom = custom;
   
-  // Fetch current cart, if any.  Swallow error (TODO: check 404)
-  let result = await apiRoot
-    .me()
-    .activeCart()
-    .get()
-    .execute()
-    .catch( (error) => { console.log('err',error) } );
-
-  if(result) {
-    cart = result.body;
-    sessionStorage.setItem('cartId',cart.id);
-  }
-
+  let cart = await getCart();
+  
+  let result;
   if(cart) {
     // add item to current cart
     console.log('Adding to current cart',cart.id,cart.version);
     result = await apiRoot
-      .me()
       .carts()
       .withId({ID: cart.id})
       .post({
@@ -136,11 +131,13 @@ export const addToCart = async (productId, variantId, custom) => {
             ...lineItem
           }]
         }
-    }).execute();
+    }).execute()
+    .catch((e) => handleError(e));
   } else {
     console.log('creating cart & adding item');
     // Create cart and add item in one go. Save cart id
     const createCartBody = {
+      inventoryMode: 'ReserveOnOrder',
       currency: currency,
       lineItems: [lineItem]
     };
@@ -161,12 +158,12 @@ export const addToCart = async (productId, variantId, custom) => {
     }
   
     result = await apiRoot
-      .me()
       .carts()
       .post({
         body: createCartBody
       })
-      .execute();
+      .execute()
+      .catch((e)  => handleError(e));
   }
   if(result) {
     console.log('result',result);
