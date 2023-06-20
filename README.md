@@ -30,6 +30,10 @@ This displays a set of input elements to allow the user to choose the 'context' 
 ```src/components/cart```:
 Display the shopping cart with detailed discount information.
 
+## PaymentPage
+```src/components/payment```:
+Renders an payment page uzing the Zuora client library. 
+
 ## DiscountDetailPage:
 ```src/components/discount-detail```:
 Searches for product that are a part of the given discount id.
@@ -39,7 +43,8 @@ Searches for product that are a part of the given discount id.
 1. Head on over to https://mc.us-central1.gcp.commercetools.com/unity-store/settings/developer/api-clients
 and generate your API client (use an admin scope for ease of development for now)
 2. Copy the `.env.sample` file as `.env` and include the values from your generated API client
-3.  Install Dependencies: `yarn`
+3. Get secrets from [here](https://vault.corp.unity3d.com/ui/vault/secrets/integration-layer/show/common/commercetools-poc) 
+4.  Install Dependencies: `yarn`
 
 ---
 # To run:
