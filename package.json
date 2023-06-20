@@ -3,17 +3,20 @@
   "version": "0.1.1",
   "private": true,
   "dependencies": {
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
-    "react-scripts": "4.0.1",
-    "react-router-dom": "^5.2.0",
-    "@commercetools/sdk-client-v2": "2.1.2",
     "@commercetools/platform-sdk": "4.5.0",
     "@commercetools/sdk-auth": "4.0.1",
-    "@okta/okta-react": "^4.1.0",
+    "@commercetools/sdk-client-v2": "2.1.2",
     "@okta/okta-auth-js": "4.7.2",
-    "bootstrap" : "^4.6.0",
-    "react-bootstrap": "^1.5.1"
+    "@okta/okta-react": "^4.1.0",
+    "axios": "^1.4.0",
+    "base-64": "^1.0.0",
+    "bootstrap": "^4.6.0",
+    "react": "^17.0.1",
+    "react-bootstrap": "^1.5.1",
+    "react-dom": "^17.0.1",
+    "react-helmet": "^6.1.0",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "4.0.1"
   },
   "scripts": {
     "start": "react-scripts start",

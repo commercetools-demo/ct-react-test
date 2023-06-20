@@ -1,6 +1,6 @@
-import fetch from 'node-fetch'
-import { ClientBuilder } from '@commercetools/sdk-client-v2';
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
+import { ClientBuilder } from '@commercetools/sdk-client-v2';
+import fetch from 'node-fetch';
 
 // From old version - for customer login
 import SdkAuth from '@commercetools/sdk-auth';

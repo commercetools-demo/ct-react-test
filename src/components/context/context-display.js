@@ -1,6 +1,6 @@
-import { useContext} from 'react';
+import { useContext } from 'react';
+import { Col, Container, Row } from 'react-bootstrap';
 import AppContext from '../../appContext';
-import { Container, Row, Col} from 'react-bootstrap';
 
 function ContextDisplay() {
 
@@ -29,6 +29,11 @@ function ContextDisplay() {
         <Col md="auto">
           Customer Group: {context.customerGroupName}
         </Col>
+        {context.accessToken && 
+           <Col md="auto">
+             Customer: logged in
+          </Col>
+        }
       </Row>
       <hr></hr>
     </Container>

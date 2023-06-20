@@ -1,6 +1,6 @@
-import { useEffect, useContext, useState } from 'react';
-import { apiRoot } from '../../commercetools';
+import { useContext, useEffect, useState } from 'react';
 import AppContext from '../../appContext';
+import { apiRoot, setAccessToken } from '../../commercetools';
 import CommercetoolsLogin from './commercetools-login';
 //import OktaLogin from './okta-login';
 //import DummyLogin from './dummy-login';
@@ -8,7 +8,7 @@ import CommercetoolsLogin from './commercetools-login';
 const VERBOSE=true;
 
 const AccountPage = () => {
-  const [context] = useContext(AppContext);
+  const [context, setContext] = useContext(AppContext);
   const [customer, setCustomer] = useState();
 
   useEffect(() => {
@@ -18,17 +18,24 @@ const AccountPage = () => {
     
   const fetchCustomer = async () => {
     console.log('fetch cust',customer);
+    const accessToken = sessionStorage.getItem('accessToken');
     // Avoid repeat calls
-    if(customer)
+    if(customer) {
       return;
+    }
 
-    let res =  await apiRoot
-      .me()
-      .get()
-      .execute();
+    if(!customer && accessToken) {
+      setAccessToken(accessToken);
 
-    if(res?.body) {
-      setCustomer(res.body);
+        let res =  await apiRoot
+          .me()
+          .get()
+          .execute();
+
+      if(res?.body) {
+        setCustomer(res.body);
+        setContext({...context, loggedIn: true});
+      }
     }
   };
 
@@ -43,8 +50,13 @@ const AccountPage = () => {
   if(customer) {
     return (
       <div>
-        <h5>Customer</h5>
-        Customer Name:  {customer.firstName} {customer.lastName}      
+        <div>
+          <h5>Customer</h5>
+          Customer Name:  {customer.firstName} {customer.lastName}      
+        </div>
+        <div>
+          <CommercetoolsLogin/>
+        </div>
       </div>
     )
   }

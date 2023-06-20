@@ -1,12 +1,12 @@
-import LineItemInfo from './line-item-info';
 import { useEffect, useState } from 'react';
-import ContextDisplay from '../context/context-display';
-import LineItemPriceInfo from './line-item-price-info';
-import CartCustomFields from './cart-custom-fields';
-import { Container, Row, Col} from 'react-bootstrap';
-import { getCart, updateCart } from '../../util/cart-util';
-import { apiRoot } from '../../commercetools';
+import { Col, Container, Row } from 'react-bootstrap';
 import { withRouter } from "react-router";
+import { apiRoot } from '../../commercetools';
+import { getCart, updateCart } from '../../util/cart-util';
+import ContextDisplay from '../context/context-display';
+import CartCustomFields from './cart-custom-fields';
+import LineItemInfo from './line-item-info';
+import LineItemPriceInfo from './line-item-price-info';
 
 const VERBOSE=true;
 
@@ -139,8 +139,10 @@ const CartPage = props => {
       if(res) {
         sessionStorage.setItem('orderId',res.body.id);
         console.log('Order',res.body);
-        props.history.push('/order');
+        props.history.push('/payment');
       }
+
+      // props.history.push('/payment');
     } else {
       console.log('error in update')
     }
