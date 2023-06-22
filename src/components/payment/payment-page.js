@@ -7,13 +7,11 @@ import ContextDisplay from '../context/context-display';
 
 const VERBOSE=true;
 const {
-    pageId, 
     accountId, 
     payment_page_url,
-    name,
     baseUrl
   } = zuora;
-  const pmamount = '10';
+  const pmamount = '1';
 
 class PaymentPage extends Component {
   state = {
@@ -57,37 +55,36 @@ class PaymentPage extends Component {
 
   getToken = async () => {
     // Fields for on session payments
-    const integrationType = '';
-    const request = {
+    // const integrationType = '';
+    /*const request = {
       pageid: pageId,
       uri: payment_page_url,
       currency: 'USD',
       accountid: accountId,
       integrationtype: integrationType,
       pmamount
-    };
+    };*/
 
-    const {data: token} = await axios
-      .post(`${baseUrl}/payment_page/issue-token`, request);
-
-      return token;
+    const {data} = await axios
+      .get(`${baseUrl}/api/account/session`);
+      return data;
   };
 
-  getPrepopulateFields = async () => {
+  /*getPrepopulateFields = async () => {
     const request = {
       env: name
     };
-
+​
     const {data} = await axios
-      .post(`${baseUrl}/payment_page/prepoulated-fields`, request);
-
+      .post(`${baseUrl}/payment_page/prepopulated-fields`, request);
+​
     return data?.prepopulateFields
-
-  }
+​
+  }*/
 
   renderPaymentPage = async () => {
-    const {signature: data} = await this.getToken();
-    const prepopulateFields = await this.getPrepopulateFields();
+    const data = await this.getToken();
+    // const prepopulateFields = await this.getPrepopulateFields();
     const gtOptions = ['Option:Value'];
     const Z = window.Z;
     const params = {
@@ -98,13 +95,13 @@ class PaymentPage extends Component {
       field_creditCardExpirationMonth: "",
       field_creditCardExpirationYear: "",
       field_creditCardNumber: "",
-      token: data.token,
-      signature: data.signature,
-      key: data.key,
-      tenantId: data.tenantId,
+      token: data.token.token,
+      signature: data.token.signature,
+      key: data.token.key,
+      tenantId: data.token.tenantId,
       id: data.pageId,
       param_supportedTypes: 'AmericanExpress,JCB,Visa,MasterCard,Discover,Dankort',
-      url: data.url,
+      url: payment_page_url,
       locale: 'en',
       field_accountId: accountId,
       paymentGateway: '',
@@ -125,7 +122,7 @@ class PaymentPage extends Component {
 
     Z.renderWithErrorHandler(
       params,
-      prepopulateFields,
+      {},
       (...args) => {
         this.callback(...args)
       },
