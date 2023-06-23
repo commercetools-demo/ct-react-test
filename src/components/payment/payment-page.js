@@ -43,9 +43,9 @@ class PaymentPage extends Component {
     if(response.success === 'true') {
       sessionStorage.setItem('paymentMethodId', response.refId);
       const cart = await getCart();
-      const paymentRes = await apiRoot.me().payments().post({
+      const paymentRes = await apiRoot.payments().post({
         body: {
-          key : response.refId,
+          key: response.refId,
           amountPlanned : {
             currencyCode: cart.totalPrice.currencyCode,
             centAmount : cart.totalPrice.centAmount
