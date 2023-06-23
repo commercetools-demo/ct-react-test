@@ -122,27 +122,8 @@ const CartPage = props => {
         country: sessionStorage.getItem('country') ?? 'US'
       }
     }]);
-    let res;
     if(cart) {
-      res = await apiRoot
-        .orders()
-        .post({         
-          body: {
-            cart: {
-              id: cart.id
-            },
-            version: cart.version,
-          }
-      })
-      .execute();
-
-      if(res) {
-        sessionStorage.setItem('orderId',res.body.id);
-        console.log('Order',res.body);
-        props.history.push('/payment');
-      }
-
-      // props.history.push('/payment');
+      props.history.push('/payment');
     } else {
       console.log('error in update')
     }

@@ -2,7 +2,9 @@ import axios from 'axios';
 import { Component } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { withRouter } from "react-router";
+import { apiRoot } from '../../commercetools';
 import { zuora } from '../../config';
+import { getCart, updateCart } from '../../util/cart-util';
 import ContextDisplay from '../context/context-display';
 
 const VERBOSE=true;
@@ -36,12 +38,55 @@ class PaymentPage extends Component {
     this.setState({ isPaymentGatewayLoading: false });
   }
 
-  callback = (response) => {
+  callback = async (response) => {
     console.log('callback with response', response)
     if(response.success === 'true') {
       sessionStorage.setItem('paymentMethodId', response.refId);
-      // create payment
-      this.props.history.push('/order');
+      const cart = await getCart();
+      const paymentRes = await apiRoot.me().payments().post({
+        body: {
+          key : response.refId,
+          amountPlanned : {
+            currencyCode: cart.totalPrice.currencyCode,
+            centAmount : cart.totalPrice.centAmount
+          },
+          paymentMethodInfo : {
+            paymentInterface : "ADYEN",
+            method : "CREDIT_CARD",
+            name : {
+              en : "Credit Card"
+            }
+          },
+        }
+      }).execute()
+
+      console.log('paymentRes', paymentRes)
+
+      const cartWithPayment = await updateCart([{
+        action: 'addPayment',
+        payment: {
+          id: paymentRes.body.id,
+          typeId: "payment"
+        }
+      }]);
+
+      const order = await apiRoot
+        .orders()
+        .post({         
+          body: {
+            cart: {
+              id: cartWithPayment.id
+            },
+            version: cartWithPayment.version,
+          }
+      })
+      .execute();
+
+      if(order) {
+        sessionStorage.setItem('orderId',order.body.id);
+        console.log('Order',order.body);
+        this.props.history.push('/order');
+      }
     }
   }
 

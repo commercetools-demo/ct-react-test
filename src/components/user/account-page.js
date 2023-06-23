@@ -21,6 +21,10 @@ const AccountPage = () => {
     const accessToken = sessionStorage.getItem('accessToken');
     // Avoid repeat calls
     if(customer) {
+      if(accessToken) {
+        setAccessToken(accessToken);
+      }
+
       return;
     }
 
