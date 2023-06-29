@@ -9,7 +9,8 @@ import ContextDisplay from '../context/context-display';
 
 const VERBOSE=true;
 const {
-    accountId, 
+    username,
+    password,
     payment_page_url,
     baseUrl
   } = zuora;
@@ -111,7 +112,16 @@ class PaymentPage extends Component {
     };*/
 
     const {data} = await axios
-      .get(`${baseUrl}/api/account/session`);
+      .get(`${baseUrl}/api/ct-poc/account/session`, {
+        headers: {
+          'Authorization': `Basic ${
+            Buffer.from(
+              `${username}:${password}`
+            ).toString("base64")
+          }`
+        }
+      });
+
       return data;
   };
 
@@ -148,7 +158,6 @@ class PaymentPage extends Component {
       param_supportedTypes: 'AmericanExpress,JCB,Visa,MasterCard,Discover,Dankort',
       url: payment_page_url,
       locale: 'en',
-      field_accountId: accountId,
       paymentGateway: '',
       authorizationAmount: pmamount,
       style: 'inline',
