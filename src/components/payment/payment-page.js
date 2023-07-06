@@ -46,7 +46,6 @@ class PaymentPage extends Component {
       const cart = await getCart();
       const paymentRes = await apiRoot.payments().post({
         body: {
-          key: response.refId,
           amountPlanned : {
             currencyCode: cart.totalPrice.currencyCode,
             centAmount : cart.totalPrice.centAmount
@@ -58,6 +57,18 @@ class PaymentPage extends Component {
               en : "Credit Card"
             }
           },
+          custom: {
+            type: {
+              key: "payment-zuoraPaymentMethodReference",
+              typeId: "type"
+            },
+            fields: {
+              zuoraPaymentMethodReference: {
+                "en-US": response.refId,
+                "de-DE": response.refId
+              }
+            }
+          }
         }
       }).execute()
 
