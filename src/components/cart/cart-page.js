@@ -64,7 +64,7 @@ const CartPage = props => {
     setCart(await updateCart(action));
     const error = sessionStorage.getItem("error");
     if(error) {
-      window.location.reload();
+      //window.location.reload();
     }
   }
 

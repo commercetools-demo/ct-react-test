@@ -8,9 +8,18 @@ const DiscountInfo = ({discount}) => {
   if(!discount)
     return null;
 
+  
+  let discountName;
+  console.log('DISCOUNT TYPE',discount.typeId);
+  if(discount.discount.typeId == 'direct-discount') {
+    discountName = '(direct)'
+  } else {
+    discountName = discount?.discount?.obj?.name[config.locale]
+  }
+
   return (
     <div className="small">
-        Discount Name: { discount?.discount?.obj?.name[config.locale] } &nbsp;&nbsp;
+        Discount: { discountName } &nbsp;&nbsp;
         Discounted Amount:  <LineItemPriceInfo price={discount.discountedAmount}/>
     </div>
   );

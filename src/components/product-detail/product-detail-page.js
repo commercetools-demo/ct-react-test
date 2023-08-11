@@ -71,7 +71,7 @@ const ProductDetailPage = () => {
       )}
       <h3>Variants:</h3>
       <ul>
-        <VariantInfo variant={product.masterVariant} />
+        <VariantInfo priceMode={product.priceMode} variant={product.masterVariant} />
         { product.variants.map(variant => <VariantInfo key={variant.id} variant={variant}/>) }
       </ul>
       <h3>Description</h3>
