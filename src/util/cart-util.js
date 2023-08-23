@@ -100,10 +100,6 @@ export const addToCart = async (productId, variantId, custom) => {
       id: channelId,
       typeId: 'channel'
     }
-    lineItem.supplyChannel={
-      id: channelId,
-      typeId: 'channel'
-    }
   }
   // Add custom fields, if any
   lineItem.custom = custom;
