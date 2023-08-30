@@ -2,6 +2,7 @@ import { useEffect, useContext, useState } from 'react';
 import { apiRoot } from '../../commercetools';
 import AppContext from '../../appContext';
 import CommercetoolsLogin from './commercetools-login';
+import CustomFields from './custom-fields';
 //import OktaLogin from './okta-login';
 //import DummyLogin from './dummy-login';
 
@@ -44,7 +45,9 @@ const AccountPage = () => {
     return (
       <div>
         <h5>Customer</h5>
-        Customer Name:  {customer.firstName} {customer.lastName}      
+        Customer Name:  {customer.firstName} {customer.lastName}
+        <br></br>
+        <CustomFields customer = {customer}/>
       </div>
     )
   }

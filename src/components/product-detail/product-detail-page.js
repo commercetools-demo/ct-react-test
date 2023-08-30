@@ -15,11 +15,33 @@ const ProductDetailPage = () => {
   const [context, setContext] = useContext(AppContext);
  
   let [product, setProduct] = useState(null);  
+  let [customer, setCustomer] = useState(null);  
   let [error, setError] = useState(null);
 
   useEffect(() => {
     fetchProduct(id);
+    fetchCustomer();
   });
+
+  const fetchCustomer = async () => {
+    console.log('fetchCust',context.loggedIn);
+    if( !context.loggedIn || customer) {
+        return;
+    }
+
+    try {
+      let res = await apiRoot
+      .me()
+      .get()
+      .execute();
+      if(res) {
+        setCustomer(res.body);
+      }
+    } catch(e) {
+      setContext({...context, loggedIn:false});
+      console.error(e);
+    }
+  }
 
   const fetchProduct = async (id) => {
     // Avoid repeat calls (?)
@@ -69,10 +91,11 @@ const ProductDetailPage = () => {
       { error && (
         <h5><font color="red">{error}</font></h5>
       )}
+      { }
       <h3>Variants:</h3>
       <ul>
-        <VariantInfo priceMode={product.priceMode} variant={product.masterVariant} />
-        { product.variants.map(variant => <VariantInfo key={variant.id} variant={variant}/>) }
+        <VariantInfo priceMode={product.priceMode} variant={product.masterVariant} customer={customer} />
+        { product.variants.map(variant => <VariantInfo key={variant.id} priceMode={product.priceMode} variant={variant} customer={customer}/>) }
       </ul>
       <h3>Description</h3>
       <p>{product.description ? product.description[config.locale] : ""}</p>

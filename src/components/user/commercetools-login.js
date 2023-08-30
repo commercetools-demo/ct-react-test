@@ -27,7 +27,6 @@ const CommercetoolsLogin = () => {
     });
     console.log('login result',res);
     if(res) {
-      // Figure out what to do here
       setAccessToken(res.access_token);
       setContext({...context,loggedIn:true});
     } else {

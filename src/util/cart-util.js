@@ -89,7 +89,7 @@ export const updateCart = async(actions) => {
   return cart;
 }
 
-export const addToCart = async (productId, variantId, custom) => {
+export const addToCart = async (productId, variantId, custom,externalPrice) => {
 
   const currency = sessionStorage.getItem('currency');
   const country = sessionStorage.getItem('country');
@@ -113,6 +113,12 @@ export const addToCart = async (productId, variantId, custom) => {
   }
   // Add custom fields, if any
   lineItem.custom = custom;
+
+  // add External Price
+  if(externalPrice) {
+    lineItem.priceMode = 'ExternalPrice';
+    lineItem.externalPrice = externalPrice;
+  }
   
   let cart = await getCart();
   
@@ -137,7 +143,6 @@ export const addToCart = async (productId, variantId, custom) => {
     console.log('creating cart & adding item');
     // Create cart and add item in one go. Save cart id
     const createCartBody = {
-      inventoryMode: 'ReserveOnOrder',
       currency: currency,
       lineItems: [lineItem]
     };
