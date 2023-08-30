@@ -1,225 +1,154 @@
+// @ts-check
 import axios from 'axios';
-import { Component } from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
+import React, { Component } from "react";
 import { withRouter } from "react-router";
-import { apiRoot } from '../../commercetools';
-import { zuora } from '../../config';
-import { getCart, updateCart } from '../../util/cart-util';
-import ContextDisplay from '../context/context-display';
+import { useRef, useEffect } from 'react';
 
-const VERBOSE=true;
-const {
-    username,
-    password,
-    payment_page_url,
-    baseUrl
-  } = zuora;
-  const pmamount = '1';
+import AdyenCheckout from '@adyen/adyen-web';
+import paymentMethodsMock from "./paymentMethodsMock.json";
+import '@adyen/adyen-web/dist/adyen.css';
 
-class PaymentPage extends Component {
-  state = {
-    paymentError: null,
-    isPaymentGatewayLoading: true,
-  }
+const URL_APP = 'http://localhost:3000';
+const ADYEN_MERCHANT_ACCOUNT = 'UnityTechnologies';
+const ADYEN_URL = 'https://checkout-test.adyen.com/v67';
+const ADYEN_API_KEY = '';
+const ADYEN_CLIENT_KEY = '';
 
-  constructor(props) {
-    super(props);
 
-    this.renderPaymentPage();
-  }
+const createPaymentSession = async (req, res) => {
+  // fetch product price here
 
-  SAFE_componentWillMount() {
-    this.errorMessageCallback = this.errorMessageCallback.bind(this);
-    this.callback = this.callback.bind(this);
-    this.onloadCallback = this.onloadCallback.bind(this);
-  }
+  const { organizationId, ...body } = req.body;
 
-  onloadCallback = () => {
-    console.log('onloadCallback')
-    this.setState({ isPaymentGatewayLoading: false });
-  }
+  const paymentReference = `SAMPLE_PAYMENT_${organizationId}`;
 
-  callback = async (response) => {
-    console.log('callback with response', response)
-    if(response.success === 'true') {
-      sessionStorage.setItem('paymentMethodId', response.refId);
-      const cart = await getCart();
-      const paymentRes = await apiRoot.payments().post({
-        body: {
-          amountPlanned : {
-            currencyCode: cart.totalPrice.currencyCode,
-            centAmount : cart.totalPrice.centAmount
-          },
-          paymentMethodInfo : {
-            paymentInterface : "ADYEN",
-            method : "CREDIT_CARD",
-            name : {
-              en : "Credit Card"
-            }
-          },
-          custom: {
-            type: {
-              key: "payment-zuoraPaymentMethodReference",
-              typeId: "type"
-            },
-            fields: {
-              zuoraPaymentMethodReference: {
-                "en-US": response.refId,
-                "de-DE": response.refId
-              }
-            }
-          }
-        }
-      }).execute()
+  const response = await axios({
+    method: 'POST',
+    url: `${ADYEN_URL}/sessions`,
+    data: {
+      merchantAccount: ADYEN_MERCHANT_ACCOUNT,
+      amount: {
+        currency: 'EUR',
+        value: 10000,
+      },
+      returnUrl: `${URL_APP}/api/payments/callback`,
+      // get proper reference here
+      reference: paymentReference,
+      // shopperReference: '950e7c9a-0925-4aec-812c-3ea8b6b10ed5',
+      ...body,
+    },
+    headers: {
+      'content-type': 'text/json',
+      'X-API-Key': ADYEN_API_KEY,
+    },
+  });
 
-      console.log('paymentRes', paymentRes)
+  return res.status(200).json(response.data);
+}
 
-      const cartWithPayment = await updateCart([{
-        action: 'addPayment',
-        payment: {
-          id: paymentRes.body.id,
-          typeId: "payment"
-        }
-      }]);
+const AdyenForm = () => {
 
-      const order = await apiRoot
-        .orders()
-        .post({         
-          body: {
-            cart: {
-              id: cartWithPayment.id
-            },
-            version: cartWithPayment.version,
-          }
-      })
-      .execute();
+  const paymentContainer = useRef(null);
 
-      if(order) {
-        sessionStorage.setItem('orderId',order.body.id);
-        console.log('Order',order.body);
-        this.props.history.push('/order');
-      }
-    }
-  }
+  useEffect(() => {
+    let hasRun = false;
 
-  errorMessageCallback = (key, code, message) => {
-    console.log('error!', key)
-    console.log('error code!', code);
-    console.log('error message', message);
+    const createCheckout = async () => {
+      if (hasRun) return;
 
-    this.setState({ paymentError: message });
-  }
+      const session = await createPaymentSession();
 
-  getToken = async () => {
-    // Fields for on session payments
-    // const integrationType = '';
-    /*const request = {
-      pageid: pageId,
-      uri: payment_page_url,
-      currency: 'USD',
-      accountid: accountId,
-      integrationtype: integrationType,
-      pmamount
-    };*/
-
-    const {data} = await axios
-      .get(`${baseUrl}/api/ct-poc/account/session`, {
-        headers: {
-          'Authorization': `Basic ${
-            Buffer.from(
-              `${username}:${password}`
-            ).toString("base64")
-          }`
-        }
+      const checkout = await AdyenCheckout({
+        session,
+        clientKey: ADYEN_CLIENT_KEY, // Web Drop-in versions before 3.10.1 use originKey instead of clientKey.
+        locale: 'en-US',
+        environment: 'test',
       });
 
-      return data;
-  };
-
-  /*getPrepopulateFields = async () => {
-    const request = {
-      env: name
-    };
-​
-    const {data} = await axios
-      .post(`${baseUrl}/payment_page/prepopulated-fields`, request);
-​
-    return data?.prepopulateFields
-​
-  }*/
-
-  renderPaymentPage = async () => {
-    const data = await this.getToken();
-    // const prepopulateFields = await this.getPrepopulateFields();
-    const gtOptions = ['Option:Value'];
-    const Z = window.Z;
-    const params = {
-      field_achBankABACode: "",
-      field_achBankAccountNumber: "",
-      field_bankAccountName: "",
-      field_bankAccountNumber: "",
-      field_creditCardExpirationMonth: "",
-      field_creditCardExpirationYear: "",
-      field_creditCardNumber: "",
-      token: data.token.token,
-      signature: data.token.signature,
-      key: data.token.key,
-      tenantId: data.token.tenantId,
-      id: data.pageId,
-      param_supportedTypes: 'AmericanExpress,JCB,Visa,MasterCard,Discover,Dankort',
-      url: payment_page_url,
-      locale: 'en',
-      paymentGateway: '',
-      authorizationAmount: pmamount,
-      style: 'inline',
-      submitEnabled: 'true'
-    };
-
-    gtOptions.forEach((gtOption) => {
-        let ref = gtOption.split(":");
-        let pass = "param_gwOptions_" + ref[0];
-        params[pass] = ref[1];
-    });
-
-    Z.setEventHandler("onloadCallback", (...args) => {
-      this.onloadCallback(...args)
-    });
-
-    Z.renderWithErrorHandler(
-      params,
-      {},
-      (...args) => {
-        this.callback(...args)
-      },
-      (...args) => {
-        this.errorMessageCallback(...args)
+      if (paymentContainer.current) {
+        checkout.create('dropin').mount(paymentContainer.current);
       }
-    );
-  };
+    };
 
-  render() { 
+    createCheckout();
+
+    // eslint-disable-next-line consistent-return
+    return () => {
+      hasRun = true;
+    };
+  }, []);
+
+  return (
+    <>
+      <div ref={paymentContainer} />
+    </>
+  );
+};
+
+export default withRouter(AdyenForm);
+
+//export default AdyenForm;
+
+/*
+
+
+class PaymentPage extends Component {
+  constructor(props) {
+    super(props);
+    this.initAdyenCheckout = this.initAdyenCheckout.bind(this);
+  }
+
+  componentDidMount() {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href =
+      "https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/3.0.0/adyen.css";
+    document.head.appendChild(link);
+
+    const script = document.createElement("script");
+    script.src =
+      "https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/3.0.0/adyen.js";
+    script.async = true;
+    script.onload = this.initAdyenCheckout; // Wait until the script is loaded before initiating AdyenCheckout
+    document.body.appendChild(script);
+  }
+
+  async initAdyenCheckout() {
+
+    const session = await createPaymentSession();
+
+
+    // You can add AdyenCheckout to your list of globals and then delete the window reference:
+    // const checkout = new AdyenCheckout(configuration);
+
+    const checkout = await AdyenCheckout({
+      session,
+      clientKey: ADYEN_CLIENT_KEY, // Web Drop-in versions before 3.10.1 use originKey instead of clientKey.
+      paymentMethodsResponse: paymentMethodsMock,
+      locale: 'en-US',
+      environment: 'test',
+    });
+
+
+    // If you need to refer to the dropin externaly, you can save this inside a variable:
+    // const dropin = checkout.create...
+    checkout.create("dropin").mount(paymentContainer.current);
+  }
+
+  render() {
     return (
-          <div>
-      <ContextDisplay />
-      
-      <Container fluid>
-        <Row>
-          <Col>
-            <h4>Payment</h4>
-            {this.state.paymentError}
-            {this.state.isPaymentGatewayLoading === true && 
-              <div> 
-                <label>Loading payment gateway......</label>
-              </div>
-            }
-            <div id="zuora_payment" className="container container-center"></div>
-            <div id="checkBoxDiv" className="item" hidden></div>
-          </Col>
-        </Row>
-      </Container>         
-    </div>
-    )
+      <div
+        ref={ref => {
+          this.ref = ref;
+        }}
+      />
+    );
   }
 }
 
 export default withRouter(PaymentPage);
+
+*/
+
+
+
