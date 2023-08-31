@@ -10,8 +10,7 @@ import paymentMethodsMock from "./paymentMethodsMock.json";
 import '@adyen/adyen-web/dist/adyen.css';
 
 const URL_APP = 'http://localhost:3001';
-// set me here
-const ADYEN_CLIENT_KEY = '';
+
 
 const AdyenForm = () => {
 
@@ -27,9 +26,10 @@ const AdyenForm = () => {
 
       const checkout = await AdyenCheckout({
         session: session.data,
-        clientKey: ADYEN_CLIENT_KEY, // Web Drop-in versions before 3.10.1 use originKey instead of clientKey.
+        clientKey: process.env.REACT_APP_ADYEN_CLIENT_KEY, // Web Drop-in versions before 3.10.1 use originKey instead of clientKey.
         locale: 'en-US',
         environment: 'test',
+        paymentMethodsResponse: paymentMethodsMock,
       });
 
       if (paymentContainer.current) {
