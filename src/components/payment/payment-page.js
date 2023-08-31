@@ -1,4 +1,5 @@
 // @ts-check
+
 import axios from 'axios';
 import React, { Component } from "react";
 import { withRouter } from "react-router";
@@ -8,8 +9,9 @@ import AdyenCheckout from '@adyen/adyen-web';
 import paymentMethodsMock from "./paymentMethodsMock.json";
 import '@adyen/adyen-web/dist/adyen.css';
 
-const URL_APP = 'http://localhost:5000';
-const ADYEN_CLIENT_KEY = process.env.ADYEN_CLIENT_KEY;
+const URL_APP = 'http://localhost:3001';
+// set me here
+const ADYEN_CLIENT_KEY = '';
 
 const AdyenForm = () => {
 
@@ -21,10 +23,10 @@ const AdyenForm = () => {
     const createCheckout = async () => {
       if (hasRun) return;
 
-      const session = await axios.post(`${URL_APP}/api/sessions`,  {organizationId: 'blaOrganizationId'});
+      const session = await axios.get(`${URL_APP}/api/sessions`);
 
       const checkout = await AdyenCheckout({
-        session,
+        session: session.data,
         clientKey: ADYEN_CLIENT_KEY, // Web Drop-in versions before 3.10.1 use originKey instead of clientKey.
         locale: 'en-US',
         environment: 'test',
