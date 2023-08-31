@@ -8,43 +8,8 @@ import AdyenCheckout from '@adyen/adyen-web';
 import paymentMethodsMock from "./paymentMethodsMock.json";
 import '@adyen/adyen-web/dist/adyen.css';
 
-const URL_APP = 'http://localhost:3000';
-const ADYEN_MERCHANT_ACCOUNT = 'UnityTechnologies';
-const ADYEN_URL = 'https://checkout-test.adyen.com/v67';
-const ADYEN_API_KEY = '';
-const ADYEN_CLIENT_KEY = '';
-
-
-const createPaymentSession = async (req, res) => {
-  // fetch product price here
-
-  const { organizationId, ...body } = req.body;
-
-  const paymentReference = `SAMPLE_PAYMENT_${organizationId}`;
-
-  const response = await axios({
-    method: 'POST',
-    url: `${ADYEN_URL}/sessions`,
-    data: {
-      merchantAccount: ADYEN_MERCHANT_ACCOUNT,
-      amount: {
-        currency: 'EUR',
-        value: 10000,
-      },
-      returnUrl: `${URL_APP}/api/payments/callback`,
-      // get proper reference here
-      reference: paymentReference,
-      // shopperReference: '950e7c9a-0925-4aec-812c-3ea8b6b10ed5',
-      ...body,
-    },
-    headers: {
-      'content-type': 'text/json',
-      'X-API-Key': ADYEN_API_KEY,
-    },
-  });
-
-  return res.status(200).json(response.data);
-}
+const URL_APP = 'http://localhost:5000';
+const ADYEN_CLIENT_KEY = process.env.ADYEN_CLIENT_KEY;
 
 const AdyenForm = () => {
 
@@ -56,7 +21,7 @@ const AdyenForm = () => {
     const createCheckout = async () => {
       if (hasRun) return;
 
-      const session = await createPaymentSession();
+      const session = await axios.post(`${URL_APP}/api/sessions`,  {organizationId: 'blaOrganizationId'});
 
       const checkout = await AdyenCheckout({
         session,
