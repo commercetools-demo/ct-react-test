@@ -5,9 +5,16 @@ const { uuid } = require("uuidv4");
 
 const { Client, Config, CheckoutAPI } = require("@adyen/api-library");
 
+const cors = require('cors');
 
+const corsOptions = {
+    origin: 'http://localhost:3000', // Replace with the origin(s) you want to allow
+  };
+  
 const app = express();
 const port = 3001;
+
+app.use(cors(corsOptions));
 
   // Adyen Node.js API library boilerplate (configuration, etc.)
   const config = new Config();
