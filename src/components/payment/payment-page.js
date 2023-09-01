@@ -4,6 +4,7 @@ import axios from 'axios';
 import React, { Component } from "react";
 import { withRouter } from "react-router";
 import { useRef, useEffect } from 'react';
+import { getCart, updateCart } from '../../util/cart-util';
 
 import AdyenCheckout from '@adyen/adyen-web';
 import paymentMethodsMock from "./paymentMethodsMock.json";
@@ -22,7 +23,20 @@ const AdyenForm = () => {
     const createCheckout = async () => {
       if (hasRun) return;
 
-      const session = await axios.get(`${URL_APP}/api/sessions`);
+      const cart = await getCart();
+      console.log(cart);
+
+      const currency = cart?.totalPrice.currencyCode;
+      const countryCode = cart?.shippingAddress?.country;
+      const price =  cart?.totalPrice.centAmount; // value is 100€ in minor units
+      const lineItems = cart?.lineItems;
+
+      const session = await axios.post(`${URL_APP}/api/sessions`,  {
+        currency,  
+        price, 
+        countryCode,
+        lineItems,
+    });
 
       const checkout = await AdyenCheckout({
         session: session.data,

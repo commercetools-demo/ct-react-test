@@ -12,6 +12,7 @@
     "@okta/okta-react": "^4.1.0",
     "axios": "^1.4.0",
     "base-64": "^1.0.0",
+    "body-parser": "^1.20.2",
     "bootstrap": "^4.6.0",
     "concurrently": "^8.2.1",
     "cors": "^2.8.5",

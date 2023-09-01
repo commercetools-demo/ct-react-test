@@ -2,6 +2,7 @@ require('dotenv').config(); // Load environment variables from .env file
 
 const express = require('express');
 const { uuid } = require("uuidv4");
+const bodyParser = require('body-parser');
 
 const { Client, Config, CheckoutAPI } = require("@adyen/api-library");
 
@@ -15,6 +16,7 @@ const app = express();
 const port = 3001;
 
 app.use(cors(corsOptions));
+app.use(bodyParser.json());
 
   // Adyen Node.js API library boilerplate (configuration, etc.)
   const config = new Config();
@@ -30,6 +32,14 @@ const createPaymentSession = async (req, res) => {
         const orderRef = uuid();
         const organizationId = "KATOrgId";
 
+        const reqBody = req.body;
+        console.log(reqBody);
+
+        const currency = reqBody.currency;
+        const countryCode = reqBody.countryCode;
+        const price =  reqBody.price; 
+        const lineItems = reqBody.lineItems;
+
         const paymentReference = `SAMPLE_PAYMENT_${organizationId}`;
         // Allows for gitpod support
         const localhost = req.get('host');
@@ -37,16 +47,12 @@ const createPaymentSession = async (req, res) => {
         const protocol = req.socket.encrypted? 'https' : 'http';
         // Ideally the data passed here should be computed based on business logic
         const response = await checkout.PaymentsApi.sessions({
-          amount: { currency: "EUR", value: 10000 }, // value is 100€ in minor units
-          countryCode: "NL",
+          amount: { currency: currency, value: price }, // value is 100€ in minor units
+          countryCode: countryCode,
           merchantAccount: process.env.ADYEN_MERCHANT_ACCOUNT, // required
           reference: orderRef, // required: your Payment Reference
           returnUrl: `${protocol}://${localhost}/checkout?orderRef=${orderRef}`, // set redirect URL required for some payment methods (ie iDEAL)
-          // set lineItems required for some payment methods (ie Klarna)
-          lineItems: [
-            {quantity: 1, amountIncludingTax: 5000 , description: "Sunglasses"},
-            {quantity: 1, amountIncludingTax: 5000 , description: "Headphones"}
-          ] 
+          lineItems: lineItems
         });
     
        return res.status(200).json(response);
@@ -58,11 +64,6 @@ const createPaymentSession = async (req, res) => {
 }
 
 app.post('/api/sessions', async (req, res) => {
-    return createPaymentSession(req, res);
-});
-
-
-app.get('/api/sessions', async (req, res) => {
     return createPaymentSession(req, res);
 });
 
