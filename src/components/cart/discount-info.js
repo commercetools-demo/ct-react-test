@@ -3,8 +3,6 @@ import LineItemPriceInfo from './line-item-price-info';
 
 const DiscountInfo = ({discount}) => {
 
-  console.log(discount);
-
   if(!discount)
     return null;
 

@@ -50,7 +50,6 @@ function ChannelPicker() {
       .execute();
       
     if(res && res.body.results) {
-      console.log('channels',res.body.results);
       setChannels(res.body.results);
     }
   };

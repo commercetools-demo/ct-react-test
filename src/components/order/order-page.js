@@ -77,7 +77,6 @@ const OrderPage = () => {
       </Container>
     )
   }
-  console.log(order);
 
 
   return (

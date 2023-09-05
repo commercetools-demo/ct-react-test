@@ -42,7 +42,6 @@ function App() {
     if(scriptTags) {
       const scriptTag = scriptTags[0];
       scriptTag.onload = () => {
-        console.log('lib added', window.Z)
       }
     }
   }

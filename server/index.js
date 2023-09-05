@@ -1,7 +1,6 @@
 require('dotenv').config(); // Load environment variables from .env file
 
 const express = require('express');
-const { uuid } = require("uuidv4");
 const bodyParser = require('body-parser');
 
 const { Client, Config, CheckoutAPI } = require("@adyen/api-library");
@@ -26,10 +25,10 @@ app.use(bodyParser.json());
   const checkout = new CheckoutAPI(client);
 
 
-const createPaymentSession = async (req, res) => {
+const adyenCreatePaymentSession = async (req, res) => {
     try {
         // unique ref for the transaction
-        const orderRef = uuid();
+        const orderRef = "order";
         const organizationId = "KATOrgId";
 
         const reqBody = req.body;
@@ -63,8 +62,31 @@ const createPaymentSession = async (req, res) => {
 
 }
 
+
+const adyenCheckPaymentInfo = async (sessionId, sessionResult, res) => {
+  try {
+      const response = await checkout.PaymentsApi.getResultOfPaymentSession(sessionId,{
+        params: { sessionResult },
+      });
+      console.log(response)
+     return res.status(200).json(response);
+    } catch (err) {
+      console.error(`Error: ${err.message}, error code: ${err.errorCode}`);
+      return res.status(err.statusCode || 500).json(err.message);
+    }
+
+}
+
 app.post('/api/sessions', async (req, res) => {
-    return createPaymentSession(req, res);
+    return adyenCreatePaymentSession(req, res);
+});
+
+app.get('/api/sessions/:sessionId', async (req, res) => {
+  const sessionId = req.params.sessionId;
+  const sessionResult = req.query.sessionResult;
+  console.log("Session id", sessionId);
+  console.log("Session result", sessionResult);
+  return adyenCheckPaymentInfo(sessionId, sessionResult, res);
 });
 
 

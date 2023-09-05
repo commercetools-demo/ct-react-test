@@ -58,7 +58,6 @@ const VariantInfo = ({history,variant}) => {
     priceStr = formatPrice(variant.price);
   }
   
-  VERBOSE && console.log('variant',variant);
   return (
     <li>
         { variant.images.map(image => <img src={image.url} height={image.dimensions.h} width={image.dimensions.w} alt={image.label}/>) }<br/>

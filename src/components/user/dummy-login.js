@@ -13,7 +13,6 @@ const DummyLogin = () => {
   }
   
   const login = async () => {
-    console.log('Setting access token',custId);
     //setAccessToken(custId);
   };
 

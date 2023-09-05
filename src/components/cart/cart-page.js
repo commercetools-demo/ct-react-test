@@ -11,7 +11,6 @@ import LineItemPriceInfo from './line-item-price-info';
 const VERBOSE=true;
 
 const CartPage = props => {
-  console.log('cart Props',props);
   let [cart, setCart] = useState(null);
   let [fetched, setFetched] = useState(false);
 
@@ -78,7 +77,6 @@ const CartPage = props => {
   }
   
   const decrementQuantity = async (lineItem) => {
-    console.log('decrement',lineItem);
     const action = {
       action: 'changeLineItemQuantity',
       lineItemId: lineItem.id,
@@ -89,7 +87,6 @@ const CartPage = props => {
 
   const addDiscountCode = async () => {
     const discountCode=document.getElementById('discountCode').value;
-    console.log('discount code',discountCode);
     const action = {
       action: 'addDiscountCode',
       code: discountCode
@@ -98,7 +95,6 @@ const CartPage = props => {
   }
 
   const deleteCart = async() => {
-    console.log('delete cart');
     let cart = await getCart();
     sessionStorage.removeItem('cartId');
     setCart(null);    
@@ -125,7 +121,6 @@ const CartPage = props => {
     if(cart) {
       props.history.push('/payment');
     } else {
-      console.log('error in update')
     }
   }
 

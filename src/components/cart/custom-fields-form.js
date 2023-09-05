@@ -5,7 +5,6 @@ import CustomField from './custom-field';
 const VERBOSE=true;
 
 const CustomFieldsForm = ({type, cart, updateCart}) => {
-  console.log(type);
 
   if(!type)
     return null;
@@ -13,7 +12,6 @@ const CustomFieldsForm = ({type, cart, updateCart}) => {
   let [fields] = useState({});
   
   const updateField = (field,value) => {
-    console.log('update',field,value);
     fields[field]=value;
   }
 

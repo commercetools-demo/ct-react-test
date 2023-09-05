@@ -17,7 +17,6 @@ const AccountPage = () => {
 
     
   const fetchCustomer = async () => {
-    console.log('fetch cust',customer);
     const accessToken = sessionStorage.getItem('accessToken');
     // Avoid repeat calls
     if(customer) {

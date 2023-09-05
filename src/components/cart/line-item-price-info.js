@@ -5,7 +5,6 @@ const VERBOSE=true;
 
 const LineItemPriceInfo = ({price}) => {
 
-  console.log('price',price);
   if(!price) {
     return <span>n/a</span>;
   }

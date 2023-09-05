@@ -20,12 +20,10 @@ const CommercetoolsLogin = () => {
   }
   
   const login = async () => {
-    console.log('calling login');
     let res = await authClient.customerPasswordFlow({
       username: email,
       password: password
     });
-    console.log('login result',res);
     if(res) {
       sessionStorage.setItem('accessToken', res.access_token);
       // Figure out what to do here
