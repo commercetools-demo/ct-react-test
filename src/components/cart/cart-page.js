@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { withRouter } from "react-router";
-import { apiRoot } from '../../commercetools';
+import { apiRoot, setAccessToken } from '../../commercetools';
 import { getCart, updateCart } from '../../util/cart-util';
 import ContextDisplay from '../context/context-display';
 import CartCustomFields from './cart-custom-fields';
@@ -17,6 +17,12 @@ const CartPage = props => {
   const currency = sessionStorage.getItem('currency');
 
   useEffect(() => {
+    if(!cart || !cart.customerId) {
+      if(!isCustomerLoggedIn())
+      {
+        props.history.push('/account');
+      }
+    }
     getCurrentCart();
   });
 
@@ -26,6 +32,15 @@ const CartPage = props => {
     setFetched(true);
     setCart(await getCart());
   }
+
+  const isCustomerLoggedIn = () => {
+    const accessToken = sessionStorage.getItem('accessToken');
+    if(!accessToken) {
+      return false;
+    }
+    setAccessToken(accessToken);
+    return true
+  };
 
   if(!cart) {
     return (
