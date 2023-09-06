@@ -39,7 +39,6 @@ export const getCart = async() => {
           }
         })
         .execute()
-    console.log(recalculatedCart.body);
     return recalculatedCart.body;
   }
   return null;
@@ -76,7 +75,6 @@ export const updateCart = async(actions) => {
     });
 
   if(res?.body) {
-    VERBOSE && console.log(res.body);
     return res.body;
   }
   return cart;
@@ -134,7 +132,6 @@ export const addToCart = async (productId, variantId, custom) => {
         }
     }).execute();
   } else {
-    console.log('creating cart & adding item');
     // Create cart and add item in one go. Save cart id
     const createCartBody = {
       currency: currency,

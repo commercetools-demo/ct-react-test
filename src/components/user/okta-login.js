@@ -29,7 +29,6 @@ const OktaLogin = () => {
     oktaAuth.signOut();
   };
 
-  console.log(authState,userInfo);
 
   if( authState.isPending ) {
     return (

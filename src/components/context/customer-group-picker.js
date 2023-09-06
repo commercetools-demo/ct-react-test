@@ -4,7 +4,6 @@ import AppContext from '../../appContext';
 
 function CustomerGroupPicker() {
 
-  console.log('Customer Group Picker');
   const [context, setContext] = useContext(AppContext);
   
   const onChangeCustomerGroup = (event) => {
@@ -38,10 +37,8 @@ function CustomerGroupPicker() {
   });
 
   async function fetchCustomerGroups()  {
-    console.log('Fetch Cust Group');
     // Avoid repeat calls
     if(cgFetched) {
-      console.log('CG Already Fetched');
       return;
     }
  
@@ -51,7 +48,6 @@ function CustomerGroupPicker() {
       .execute();
 
     if(res?.body?.results) {
-      console.log('customerGroups',res.body.results);
       setCustomerGroups(res.body.results);
       setCGFetched(true);
     }

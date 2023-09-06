@@ -7,8 +7,6 @@ import { Container, Row, Col} from 'react-bootstrap';
 const VERBOSE=true;
 
 const LineItemInfo = ({lineItem,increment,decrement}) => {
-
-  VERBOSE && console.log('lineItem',lineItem);
   
 
   return (

@@ -47,7 +47,6 @@ function StorePicker() {
       .execute();
 
     if(res?.body?.results) {
-      console.log('stores',res.body.results);
       setStores(res.body.results);
     }
   };

@@ -5,7 +5,6 @@ import {Link} from "react-router-dom";
 const VERBOSE=false;
 
 const PriceInfo = ({price}) => {
-  VERBOSE && console.log('price:',price);
 
   let channelName = '';
   if(price.channel && price.channel.obj && price.channel.obj.name) {

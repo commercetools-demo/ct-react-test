@@ -34,7 +34,6 @@ const CartCustomFields = ({cart, updateCart}) => {
       .execute();
 
     if(res && res.body.results) {
-      console.log('types',res.body.results);
       setTypes(res.body.results);
     }
   };

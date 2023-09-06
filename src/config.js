@@ -1,3 +1,17 @@
+const {
+  REACT_APP_ZUORA_PAYMENT_PAGE_URL,
+  REACT_APP_ZUORA_PAYMENT_USERNAME,
+  REACT_APP_ZUORA_PAYMENT_PASSWORD,
+  REACT_APP_ZUORA_PAYMENT_BASE_URL
+} = process.env;
+
 module.exports = {
-  locale: 'en-US'
+  locale: 'en-US',
+  showPaymentPage: false,
+  zuora: {
+    payment_page_url: REACT_APP_ZUORA_PAYMENT_PAGE_URL,
+    baseUrl: REACT_APP_ZUORA_PAYMENT_BASE_URL,
+    username: REACT_APP_ZUORA_PAYMENT_USERNAME,
+    password: REACT_APP_ZUORA_PAYMENT_PASSWORD
+  }
 }

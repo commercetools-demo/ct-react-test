@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import ContextDisplay from '../context/context-display';
-import { Container, Row, Col} from 'react-bootstrap';
+import { Col, Container, Row } from 'react-bootstrap';
 import { apiRoot } from '../../commercetools';
+import ContextDisplay from '../context/context-display';
 
 const VERBOSE=true;
 
@@ -9,6 +9,8 @@ const OrderPage = () => {
 
   let [order, setOrder] = useState(null);
   let [fetched, setFetched] = useState(false);
+  
+  const paymentMethodId = sessionStorage.getItem('paymentMethodId');
 
   useEffect(() => {
     getCurrentOrder();
@@ -21,9 +23,32 @@ const OrderPage = () => {
     setOrder(await fetchOrder());
   }
 
+  const deleteOrder = async () => {
+    let orderId = sessionStorage.getItem('orderId');
+
+    const deleted = await apiRoot
+      .orders()
+      .withId({ID: orderId})
+      .delete({
+        queryArgs: {
+          version: 1
+        }
+      })
+      .execute();
+    
+    sessionStorage.removeItem('orderId');
+    sessionStorage.removeItem('paymentMethodId');
+
+    setOrder(null);
+    setFetched(false)
+
+    return deleted;
+  }
+
 
   const fetchOrder = async() => {
     let orderId = sessionStorage.getItem('orderId');
+
     if(!orderId)
       return null;
 
@@ -36,6 +61,8 @@ const OrderPage = () => {
     if(res?.body) {
       return res.body;
     }
+
+    return null;
   }
   
   if(!order) {
@@ -50,7 +77,6 @@ const OrderPage = () => {
       </Container>
     )
   }
-  console.log(order);
 
 
   return (
@@ -61,8 +87,14 @@ const OrderPage = () => {
         <Row>
           <Col>
             <h4>Order</h4>{order.id}
+            <button onClick={deleteOrder}>Delete</button>
           </Col>
         </Row>
+        <Row>
+          <Col>
+            <h4>Payment method</h4>{paymentMethodId}
+          </Col>
+        </Row> 
       </Container>         
     </div>
   )

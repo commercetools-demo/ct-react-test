@@ -1,17 +1,16 @@
-import LineItemInfo from './line-item-info';
 import { useEffect, useState } from 'react';
-import ContextDisplay from '../context/context-display';
-import LineItemPriceInfo from './line-item-price-info';
-import CartCustomFields from './cart-custom-fields';
-import { Container, Row, Col} from 'react-bootstrap';
-import { getCart, updateCart } from '../../util/cart-util';
-import { apiRoot } from '../../commercetools';
+import { Col, Container, Row } from 'react-bootstrap';
 import { withRouter } from "react-router";
+import { apiRoot } from '../../commercetools';
+import { getCart, updateCart } from '../../util/cart-util';
+import ContextDisplay from '../context/context-display';
+import CartCustomFields from './cart-custom-fields';
+import LineItemInfo from './line-item-info';
+import LineItemPriceInfo from './line-item-price-info';
 
 const VERBOSE=true;
 
 const CartPage = props => {
-  console.log('cart Props',props);
   let [cart, setCart] = useState(null);
   let [fetched, setFetched] = useState(false);
 
@@ -78,7 +77,6 @@ const CartPage = props => {
   }
   
   const decrementQuantity = async (lineItem) => {
-    console.log('decrement',lineItem);
     const action = {
       action: 'changeLineItemQuantity',
       lineItemId: lineItem.id,
@@ -89,7 +87,6 @@ const CartPage = props => {
 
   const addDiscountCode = async () => {
     const discountCode=document.getElementById('discountCode').value;
-    console.log('discount code',discountCode);
     const action = {
       action: 'addDiscountCode',
       code: discountCode
@@ -98,7 +95,6 @@ const CartPage = props => {
   }
 
   const deleteCart = async() => {
-    console.log('delete cart');
     let cart = await getCart();
     sessionStorage.removeItem('cartId');
     setCart(null);    
@@ -122,27 +118,9 @@ const CartPage = props => {
         country: sessionStorage.getItem('country') ?? 'US'
       }
     }]);
-    let res;
     if(cart) {
-      res = await apiRoot
-        .orders()
-        .post({         
-          body: {
-            cart: {
-              id: cart.id
-            },
-            version: cart.version,
-          }
-      })
-      .execute();
-
-      if(res) {
-        sessionStorage.setItem('orderId',res.body.id);
-        console.log('Order',res.body);
-        props.history.push('/order');
-      }
+      props.history.push('/payment');
     } else {
-      console.log('error in update')
     }
   }
 

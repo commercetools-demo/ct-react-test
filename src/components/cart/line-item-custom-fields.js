@@ -34,17 +34,14 @@ const LineItemCustomFields = ({lineItem}) => {
     .execute();
 
     if(res && res.body.results) {
-      console.log('types',res.body.results);
       setTypes(res.body.results);
     }
   };
 
-  console.log(typeId);
   let type=types.find(t => t.id == typeId)
   if(!type)
     return null;
 
-  console.log('line item custom',lineItem.custom);
   
   return (
     <div class="small">
