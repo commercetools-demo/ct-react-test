@@ -6,8 +6,7 @@ import ContextDisplay from '../context/context-display';
 import AppContext from '../../appContext';
 import { apiRoot } from '../../commercetools';
 import { setQueryArgs } from '../../util/searchUtil';
-
-const VERBOSE=true;
+import ProductWithWarranty from './product-with-warranty';
 
 const ProductDetailPage = () => {
   let { id } = useParams();
@@ -39,6 +38,7 @@ const ProductDetailPage = () => {
       'masterVariant.prices[*].customerGroup',
       'masterVariant.prices[*].discounted.discount',
       'masterVariant.price.discounted.discount',
+      'masterVariant.attributes[*].value',
       'variants[*].prices[*].channel',
       'variants[*].prices[*].customerGroup',
       'variants[*].prices[*].discounted.discount',
@@ -62,20 +62,34 @@ const ProductDetailPage = () => {
     return null
   }
 
+  // Figure out which type of PDP to use
+
+  let productType = 'basic';
+  const warrantyAttr = product.masterVariant.attributes.find(a => a.name == 'warranty');
+  if(warrantyAttr?.value) {
+    productType = 'warranty'
+  }
+
   return (
     <div>
       <ContextDisplay />
-      <h1>{product.name[config.locale]}</h1>
-      { error && (
-        <h5><font color="red">{error}</font></h5>
-      )}
-      <h3>Variants:</h3>
-      <ul>
-        <VariantInfo priceMode={product.priceMode} variant={product.masterVariant} />
-        { product.variants.map(variant => <VariantInfo key={variant.id} variant={variant}/>) }
-      </ul>
-      <h3>Description</h3>
-      <p>{product.description ? product.description[config.locale] : ""}</p>
+      { productType == 'warranty' 
+      ? ( <ProductWithWarranty product={product} /> )
+      : (
+          <div>
+            <h1>{product.name[config.locale]}</h1>
+            { error && (
+              <h5><font color="red">{error}</font></h5>
+            )}
+            <h3>Variants:</h3>
+            <ul>
+              <VariantInfo priceMode={product.priceMode} variant={product.masterVariant} />
+              { product.variants.map(variant => <VariantInfo variant={variant}/>) }
+            </ul>
+            <h3>Description</h3>
+            <p>{product.description ? product.description[config.locale] : ""}</p>
+          </div>
+        )}
     </div>
   )
 }

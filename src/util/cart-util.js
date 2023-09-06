@@ -169,5 +169,5 @@ export const addToCart = async (productId, variantId, custom) => {
     console.log('result',result);
     sessionStorage.setItem('cartId',result.body.id);
   }
-  return result;
+  return result.body;
 }

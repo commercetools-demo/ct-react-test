@@ -63,7 +63,7 @@ const VariantInfo = ({history,priceMode,variant}) => {
   VERBOSE && console.log('variant',variant);
   return (
     <li>
-        { variant.images.map(image => <img src={image.url} height={image.dimensions.h} width={image.dimensions.w} alt={image.label}/>) }<br/>
+        { variant.images.map(image => <img key={image} src={image.url} height={image.dimensions.h} width={image.dimensions.w} alt={image.label}/>) }<br/>
         SKU: { variant.sku } <br></br>
         Variant Key:  { variant.key } <br></br>
         { priceMode == 'Embedded'

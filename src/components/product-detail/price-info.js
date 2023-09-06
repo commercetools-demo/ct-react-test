@@ -7,6 +7,9 @@ const VERBOSE=false;
 const PriceInfo = ({price}) => {
   VERBOSE && console.log('price:',price);
 
+  if(!price)
+    return '';
+
   let channelName = '';
   if(price.channel && price.channel.obj && price.channel.obj.name) {
     channelName=price.channel.obj.name[config.locale];
@@ -23,22 +26,24 @@ const PriceInfo = ({price}) => {
   }
 
   return (
-    <tr>
-      <td>{price.value.currencyCode}</td>
-      <td>{price.country}</td>
-      <td>{channelName}</td>
-      <td>{customerGroup}</td>
-      <td>{priceStr}</td>
-      <td>{ price.discounted?
-        <span>
-            <strike>{formatPrice(price)}</strike> {formatPrice(price.discounted)} <em>{formatDiscount(price.discounted.discount.obj)} off</em><br/>
-            Discount: <Link to={"/discount-detail/"+price.discounted.discount.id}>{price.discounted.discount.obj.name[config.locale]}</Link>
-        </span>
-        :
-        <span>N/A</span>
-      }
-      </td>
-    </tr>
+    <table>
+      <tbody>
+        <tr>
+          <td>{price.value.currencyCode}</td>
+          <td>{price.country}</td>
+          <td>{channelName}</td>
+          <td>{customerGroup}</td>
+          <td>{priceStr}</td>
+          <td>{ price.discounted &&
+                <span>
+                    <strike>{formatPrice(price)}</strike> {formatPrice(price.discounted)} <em>{formatDiscount(price.discounted.discount.obj)} off</em><br/>
+                    Discount: <Link to={"/discount-detail/"+price.discounted.discount.id}>{price.discounted.discount.obj.name[config.locale]}</Link>
+                </span>
+              }
+          </td>
+        </tr>
+      </tbody>
+    </table>
   );
 }
 
