@@ -44,6 +44,18 @@ export const getCart = async() => {
   return null;
 }
 
+export const getCustomer = async() => {
+  
+  let res =  await apiRoot
+  .me()
+  .get()
+  .execute();
+  if(res?.body) {
+    return res?.body;
+  }
+  return null;
+}
+
 // return the cart after update
 export const updateCart = async(actions) => {
   if(!Array.isArray(actions)) {

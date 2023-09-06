@@ -1,5 +1,5 @@
 import { apiRoot } from '../commercetools';
-import { getCart } from './cart-util';
+import { getCart, getCustomer } from './cart-util';
 import { v4 as uuidv4 } from 'uuid';
 
 // Fetch cart from commercetools, expanding all discount references for display purposes
@@ -55,9 +55,13 @@ export const createPayment = async(cartId, paymentParams) => {
 // 
 export const addPaymentToCart = async(payment) => {
   let cart = await getCart();
-  if(!cart)
+  let customer = await getCustomer();
+  console.log("customer", customer)
+  if(!cart || !customer || customer.shippingAddressIds.length==0 || customer.billingAddressIds.length==0)
     return;
-
+  
+  const shippingAddressId = customer.defaultShippingAddressId ? customer.defaultShippingAddressId : customer.shippingAddressIds[0];
+  const billingAddressId = customer.defaultBillingAddressId ? customer.defaultBillingAddressId : customer.billingAddressIds[0];
   let res =  await apiRoot
     .carts()
     .withId({ ID: cart.id })
@@ -72,18 +76,18 @@ export const addPaymentToCart = async(payment) => {
               typeId: "payment"
             }
           },
-          /*{
+          {
             action: 'setShippingAddress',
             address: {
-              country: user.addresses.find((address) => address.id === shippingAddressId)?.country
+              country: customer.addresses.find((address) => address.id === shippingAddressId)?.country
             }
           },
           {
             action: 'setBillingAddress',
             address: {
-              country: user.addresses.find((address) => address.id === billingAddressId)?.country
+              country: customer.addresses.find((address) => address.id === billingAddressId)?.country
             }
-          }*/]
+          }]
       }
     })
     .execute()

@@ -23,8 +23,7 @@ const AccountPage = () => {
       if(accessToken) {
         setAccessToken(accessToken);
       }
-
-      return;
+      return customer;
     }
 
     if(!customer && accessToken) {
@@ -39,7 +38,9 @@ const AccountPage = () => {
         setCustomer(res.body);
         setContext({...context, loggedIn: true});
       }
+      return res?.body;
     }
+    return null
   };
 
   if(!context.loggedIn) {
