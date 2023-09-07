@@ -122,6 +122,7 @@ export const createSessionRequest = async(payment, paymentParams) => {
         shopperInteraction: 'Ecommerce',
         recurringProcessingModel: 'CardOnFile',
         storePaymentMethod: true,
+        removeSensitiveData: false,
       };
     let res =  await apiRoot
       .payments()
