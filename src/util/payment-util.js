@@ -102,6 +102,37 @@ export const addPaymentToCart = async(payment) => {
   return cart;
 }
 
+export const removePaymentToCart = async(paymentId) => {
+  let cart = await getCart();
+
+  let res =  await apiRoot
+    .carts()
+    .withId({ ID: cart.id })
+    .post({
+      queryArgs: queryArgs,
+      body: {
+        version: cart.version,
+        actions: [{
+          action: 'removePayment',
+          payment: {
+            id: paymentId,
+            typeId: "payment"
+          }
+        }]
+      }
+    })
+    .execute()
+    .catch((e) => {
+      console.log("ERROR",e);
+      cart.error = e.message;
+    });
+
+  if(res?.body) {
+    return res.body;
+  }
+  return cart;
+}
+
 export const createSessionRequest = async(payment, paymentParams) => {
     if(!payment)
       throw Error("Cannot create session without payment");
