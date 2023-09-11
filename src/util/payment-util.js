@@ -95,6 +95,7 @@ export const addPaymentToCart = async(payment) => {
     .catch((e) => {
       console.log("ERROR",e);
       cart.error = e.message;
+      throw Error (e.message)
     });
 
   if(res?.body) {
