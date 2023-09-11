@@ -15,6 +15,7 @@ export const createPayment = async(cartId, paymentParams) => {
   const getPaymentMethodsRequest = {
     countryCode: paymentParams.countryCode,
     shopperLocale: "en-US",
+    shopperReference: "1611da6b-87a6-4ae0-aa68-0b4c7a8cfef7",
     amount: {
         currency: paymentParams.currencyCode,
         value: paymentParams.centAmount
@@ -87,6 +88,10 @@ export const addPaymentToCart = async(payment) => {
             address: {
               country: customer.addresses.find((address) => address.id === billingAddressId)?.country
             }
+          },
+          {
+            action: "setStatusInterfaceText",
+            interfaceText: "Pending",
           }]
       }
     })
