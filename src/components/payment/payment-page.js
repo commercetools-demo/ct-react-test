@@ -24,7 +24,7 @@ const AdyenForm = props => {
     const createCheckout = async () => {
       if (hasRun) return;
 
-      const cart = await getCart();
+      let cart = await getCart();
       if (!cart)  throw Error("Cart not found!")
 
       const currency = cart?.totalPrice.currencyCode;
@@ -45,14 +45,16 @@ const AdyenForm = props => {
         shopperLocale: "en-US",
         lineItems
       }
-      const payment = await createPayment(cart.id, paymentParams)
+      let payment;
       if(cart.paymentInfo && cart.paymentInfo.payments && cart.paymentInfo.payments.length > 0) {
-        for (let i = 0; i < cart.paymentInfo.payments.length; i++) {
-          cart.paymentInfo.payments
-          await removePaymentToCart(cart.paymentInfo.payments[i].id);
-        }
+        console.log("payment existed" )
+        payment = await checkPayment(cart.paymentInfo.payments[0].id);
+      } else {
+        console.log("create payment")
+        payment = await createPayment(cart.id, paymentParams)
+        cart = await addPaymentToCart(payment) || null;
+        console.log("cartResult", cart)
       }
-      await addPaymentToCart(payment);
       const sessionRequestPayment = await createSessionRequest(payment, paymentParams);
       if(!sessionRequestPayment) throw Error("No session request returned");
       console.log("sessionRequestPayment", sessionRequestPayment);
@@ -87,11 +89,11 @@ const AdyenForm = props => {
                   console.log("transactionId", transactionId);
                   const cart = await getCart();
                   if(!cart) throw Error("Cart not found!");
-                  const updatedCart = await createOrder(cart);
-                  console.log("updatedCart", updatedCart);
-                  if(!updatedCart) throw new Error("Order not created!");
+                  const createdOrder = await createOrder(cart);
+                  console.log("createdOrder", createdOrder);
+                  if(!createdOrder) throw new Error("Order not created!");
                   else {
-                    sessionStorage.setItem('orderId',updatedCart.id);
+                    sessionStorage.setItem('orderId',createdOrder.id);
                     props.history.push('/order');
                   }
                 }
