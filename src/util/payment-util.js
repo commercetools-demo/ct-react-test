@@ -88,10 +88,6 @@ export const addPaymentToCart = async(payment) => {
             address: {
               country: customer.addresses.find((address) => address.id === billingAddressId)?.country
             }
-          },
-          {
-            action: "setStatusInterfaceText",
-            interfaceText: "Pending",
           }]
       }
     })
