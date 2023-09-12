@@ -56,6 +56,9 @@ const AdyenForm = props => {
         console.log("cartResult", cart)
       }
       const sessionRequestPayment = await createSessionRequest(payment, paymentParams);
+      if(cart && cart.error) {
+        throw Error(cart.error);
+      }
       if(!sessionRequestPayment) throw Error("No session request returned");
       console.log("sessionRequestPayment", sessionRequestPayment);
 

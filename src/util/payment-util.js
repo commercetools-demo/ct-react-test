@@ -80,13 +80,27 @@ export const addPaymentToCart = async(payment) => {
           {
             action: 'setShippingAddress',
             address: {
-              country: customer.addresses.find((address) => address.id === shippingAddressId)?.country
+              country: customer.addresses.find((address) => address.id === shippingAddressId)?.country,
+              city: customer.addresses.find((address) => address.id === shippingAddressId)?.city,
+              state: customer.addresses.find((address) => address.id === shippingAddressId)?.state,
+              firstName: customer.addresses.find((address) => address.id === shippingAddressId)?.firstName,
+              lastName: customer.addresses.find((address) => address.id === shippingAddressId)?.lastName,
+              streetName: customer.addresses.find((address) => address.id === shippingAddressId)?.streetName,
+              streetNumber: customer.addresses.find((address) => address.id === shippingAddressId)?.streetNumber,
+              postalCode: customer.addresses.find((address) => address.id === shippingAddressId)?.postalCode,
             }
           },
           {
             action: 'setBillingAddress',
             address: {
-              country: customer.addresses.find((address) => address.id === billingAddressId)?.country
+              country: customer.addresses.find((address) => address.id === billingAddressId)?.country,
+              city: customer.addresses.find((address) => address.id === billingAddressId)?.city,
+              state: customer.addresses.find((address) => address.id === billingAddressId)?.state,
+              firstName: customer.addresses.find((address) => address.id === billingAddressId)?.firstName,
+              lastName: customer.addresses.find((address) => address.id === billingAddressId)?.lastName,
+              streetName: customer.addresses.find((address) => address.id === billingAddressId)?.streetName,
+              streetNumber: customer.addresses.find((address) => address.id === billingAddressId)?.streetNumber,
+              postalCode:customer.addresses.find((address) => address.id === billingAddressId)?.streetNumber,
             }
           }]
       }
@@ -95,6 +109,7 @@ export const addPaymentToCart = async(payment) => {
     .catch((e) => {
       console.log("ERROR",e);
       cart.error = e.message;
+      throw Error (e.message)
     });
 
   if(res?.body) {

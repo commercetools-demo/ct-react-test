@@ -130,7 +130,10 @@ export const addToCart = async (productId, variantId, custom) => {
   if(cart) {
     // add item to current cart
     console.log('Adding to current cart',cart.id,cart.version);
-    result = await apiRoot
+    if (!cart.shippingAddress?.city) {
+      let customer = await getCustomer();
+      const shippingAddressId = customer.defaultShippingAddressId ? customer.defaultShippingAddressId : customer.shippingAddressIds[0];
+      cart = await apiRoot
       .me()
       .carts()
       .withId({ID: cart.id})
@@ -138,8 +141,61 @@ export const addToCart = async (productId, variantId, custom) => {
         body: {
           version: cart.version,
           actions: [{
+            action: 'setShippingAddress',
+            address: {
+              country: customer.addresses.find((address) => address.id === shippingAddressId)?.country,
+              city: customer.addresses.find((address) => address.id === shippingAddressId)?.city,
+              state: customer.addresses.find((address) => address.id === shippingAddressId)?.state,
+              firstName: customer.addresses.find((address) => address.id === shippingAddressId)?.firstName,
+              lastName: customer.addresses.find((address) => address.id === shippingAddressId)?.lastName,
+              streetName: customer.addresses.find((address) => address.id === shippingAddressId)?.streetName,
+              streetNumber: customer.addresses.find((address) => address.id === shippingAddressId)?.streetNumber,
+              postalCode: customer.addresses.find((address) => address.id === shippingAddressId)?.postalCode,
+            }
+          }]
+        }
+      }).execute();
+    }
+    if (!cart.genesisOrgId) {
+      cart = await apiRoot
+      .me()
+      .carts()
+      .withId({ID: cart.id})
+      .post({
+        body: {
+          version: cart.version,
+          actions: [{
+            action: "setCustomField",
+            name: "selectedGenesisOrgId",
+            value: 5772923323852
+            }]
+        }
+      }).execute();
+    }
+    const cartId = cart.id || cart.body.id;
+    const cartVersion = cart.version || cart.body.version;
+    console.log("Cart Update Line Items",cartId )
+    console.log("cartPayload", {
+      version: cartVersion,
+      actions: [{
+        action: 'addLineItem',
+        ...lineItem
+      },]
+    })
+    result = await apiRoot
+      .me()
+      .carts()
+      .withId({ID: cartId})
+      .post({
+        body: {
+          version: cartVersion,
+          actions: [{
             action: 'addLineItem',
             ...lineItem
+          },
+          {
+            action: 'setCustomerEmail',
+            email: 'api.avalara@test.com'
           }]
         }
     }).execute();
@@ -147,7 +203,8 @@ export const addToCart = async (productId, variantId, custom) => {
     // Create cart and add item in one go. Save cart id
     const createCartBody = {
       currency: currency,
-      lineItems: [lineItem]
+      lineItems: [lineItem],
+      taxMode: "External",
     };
     if(country) {
       createCartBody.country = country;
@@ -164,6 +221,12 @@ export const addToCart = async (productId, variantId, custom) => {
         key: storeKey,
       }
     }
+    createCartBody.custom = {
+      type: {
+        key: "cart-order-custom-type-information",
+        typeId: "type"
+      }
+    }
   
     result = await apiRoot
       .me()
@@ -174,7 +237,7 @@ export const addToCart = async (productId, variantId, custom) => {
       .execute();
   }
   if(result) {
-    console.log('result',result);
+    console.log('create cart result',result);
     sessionStorage.setItem('cartId',result.body.id);
   }
   return result;
