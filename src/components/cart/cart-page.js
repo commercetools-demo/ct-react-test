@@ -127,16 +127,7 @@ const CartPage = props => {
   }
 
   const checkout = async() => {
-    let cart = await updateCart([{
-      action: 'setShippingAddress',
-      address: {
-        country: sessionStorage.getItem('country') ?? 'US'
-      }
-    }]);
-    if(cart) {
       props.history.push('/payment');
-    } else {
-    }
   }
 
   return (
