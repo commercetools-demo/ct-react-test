@@ -4,8 +4,8 @@ import axios from 'axios';
 import React, { Component, useState } from "react";
 import { withRouter } from "react-router";
 import { useRef, useEffect } from 'react';
-import { getCart, updateCart } from '../../util/cart-util';
-
+import { getCart } from '../../util/cart-util';
+import { setAccessToken } from '../../commercetools';
 import AdyenCheckout from '@adyen/adyen-web';
 import '@adyen/adyen-web/dist/adyen.css';
 import { createPayment, addPaymentToCart, createSessionRequest, checkPayment, createOrder, removePaymentToCart } from '../../util/payment-util';
@@ -19,6 +19,22 @@ const AdyenForm = props => {
   const paymentContainer = useRef(null);
 
   useEffect(() => {
+    if(!isCustomerLoggedIn())
+    {
+      props.history.push('/account');
+    }
+  });
+
+  const isCustomerLoggedIn = () => {
+    const accessToken = sessionStorage.getItem('accessToken');
+    if(!accessToken) {
+      return false;
+    }
+    setAccessToken(accessToken);
+    return true
+  };
+
+  useEffect(() => {
     let hasRun = false;
 
     const createCheckout = async () => {
@@ -29,7 +45,7 @@ const AdyenForm = props => {
 
       const currency = cart?.totalPrice.currencyCode;
       const countryCode = cart?.shippingAddress?.country;
-      const price =  cart?.totalPrice.centAmount; // value is 100€ in minor units
+      const price =  cart?.taxedPrice?.totalGross?.centAmount; // value is 100€ in minor units
       const lineItems = cart?.lineItems.map((item) => {
         return {  
           id: item.id,
@@ -39,6 +55,7 @@ const AdyenForm = props => {
           sku: item.variant.sku,
         }});
       const paymentParams = {
+        selectedGenesisOrgId: cart.custom?.fields?.selectedGenesisOrgId,
         currencyCode: currency,
         centAmount: price,
         countryCode,
@@ -93,6 +110,7 @@ const AdyenForm = props => {
                   console.log("createdOrder", createdOrder);
                   if(!createdOrder) throw new Error("Order not created!");
                   else {
+                    sessionStorage.removeItem("cartId");
                     sessionStorage.setItem('orderId',createdOrder.id);
                     props.history.push('/order');
                   }

@@ -4,7 +4,6 @@ import { withRouter } from "react-router";
 import { apiRoot, setAccessToken } from '../../commercetools';
 import { getCart, updateCart } from '../../util/cart-util';
 import ContextDisplay from '../context/context-display';
-import CartCustomFields from './cart-custom-fields';
 import LineItemInfo from './line-item-info';
 import LineItemPriceInfo from './line-item-price-info';
 
@@ -17,11 +16,9 @@ const CartPage = props => {
   const currency = sessionStorage.getItem('currency');
 
   useEffect(() => {
-    if(!cart || !cart.customerId) {
-      if(!isCustomerLoggedIn())
-      {
-        props.history.push('/account');
-      }
+    if(!isCustomerLoggedIn())
+    {
+      props.history.push('/account');
     }
     getCurrentCart();
   });
@@ -55,7 +52,7 @@ const CartPage = props => {
     )
   }
 
-  const getTotalDiscountAmount = (cart) => {
+  const getTotalTaxes = (cart) => {
     let total = {
       centAmount: 0,
       currencyCode: currency
@@ -63,17 +60,12 @@ const CartPage = props => {
     if(!cart) {
       return 0;
     }
-    cart.lineItems?.forEach(item => {
-      item.discountedPricePerQuantity?.forEach(dppq => {
-        dppq.discountedPrice.includedDiscounts?.forEach(included => {          
-          total.centAmount += included.discountedAmount.centAmount * dppq.quantity;
-        })
-      })
-    })
+    console.log("totalTax", cart.taxedPrice)
+    total.centAmount = cart.taxedPrice?.totalTax?.centAmount || 0;
     return total;
   }
 
-  const totalDiscounts = getTotalDiscountAmount(cart);
+  const totalTaxes = getTotalTaxes(cart);
 
   const updateCartAndRefresh = async (action) => {
     setCart(await updateCart(action));
@@ -142,9 +134,6 @@ const CartPage = props => {
               <h5><font color="red">{cart.error}</font></h5>
             )}
           </Col>
-          <Col>
-            <CartCustomFields cart={cart} updateCart={updateCartAndRefresh} />        
-          </Col>
         </Row>
         <Row>
           &nbsp;
@@ -161,7 +150,7 @@ const CartPage = props => {
           <Col><span className="heading">SKU</span></Col>
           <Col><span className="heading">Name</span></Col>
           <Col><span className="heading">Unit Price</span></Col>
-          <Col><span className="heading">Discounted Price</span></Col>
+          <Col><span className="heading">Taxes</span></Col>
           <Col><span className="heading">Total Price</span></Col>
         </Row>
 
@@ -179,10 +168,10 @@ const CartPage = props => {
         <hr></hr>
         <Row>
           <Col md={10}>
-            <h6>Total Discounts</h6> 
+            <h6>Taxes</h6> 
           </Col>
           <Col>
-            <LineItemPriceInfo price={totalDiscounts}/>
+            <LineItemPriceInfo price={totalTaxes}/>
           </Col>
         </Row>
         <hr></hr>
@@ -191,7 +180,7 @@ const CartPage = props => {
             <h4>Cart Total</h4> 
           </Col>
           <Col>
-            <LineItemPriceInfo price={cart.totalPrice}/>
+            <LineItemPriceInfo price={cart.taxedPrice?.totalGross || cart.totalPrice}/>
           </Col>
         </Row>
         <Row>
