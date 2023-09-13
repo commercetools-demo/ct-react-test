@@ -83,6 +83,8 @@ export const addPaymentToCart = async(payment) => {
         streetName: customer.addresses.find((address) => address.id === shippingAddressId)?.streetName,
         streetNumber: customer.addresses.find((address) => address.id === shippingAddressId)?.streetNumber,
         postalCode: customer.addresses.find((address) => address.id === shippingAddressId)?.postalCode,
+        email: customer.addresses.find((address) => address.id === shippingAddressId)?.email,
+
       }
     },
     {
@@ -96,6 +98,7 @@ export const addPaymentToCart = async(payment) => {
         streetName: customer.addresses.find((address) => address.id === billingAddressId)?.streetName,
         streetNumber: customer.addresses.find((address) => address.id === billingAddressId)?.streetNumber,
         postalCode:customer.addresses.find((address) => address.id === billingAddressId)?.postalCode,
+        email: customer.addresses.find((address) => address.id === billingAddressId)?.email,
       }
     }]
   } else {

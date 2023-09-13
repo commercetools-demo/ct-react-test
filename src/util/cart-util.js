@@ -192,9 +192,6 @@ export const addToCart = async (productId, variantId, custom) => {
       lineItems: [lineItem],
       taxMode,
     };
-    if(process.env.REACT_APP_AVALARA_READY  === "true") {
-      createCartBody.customerEmail = 'api.avalara@test.com'
-    }
     if(country) {
       createCartBody.country = country;
     }
