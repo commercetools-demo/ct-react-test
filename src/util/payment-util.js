@@ -1,5 +1,5 @@
 import { apiRoot } from '../commercetools';
-import { getCart, getCustomer } from './cart-util';
+import { getCart, getCustomer, getCartById } from './cart-util';
 import { v4 as uuidv4 } from 'uuid';
 
 // Fetch cart from commercetools, expanding all discount references for display purposes
@@ -12,10 +12,11 @@ const queryArgs = {expand: [
 export const createPayment = async(cartId, paymentParams) => {
   if(!cartId)
     throw Error("Cannot create payment without cartId");
+    let cart = await getCartById(cartId);
   const getPaymentMethodsRequest = {
-    countryCode: paymentParams.countryCode,
+    countryCode: cart?.shippingAddress?.country || "US",
     shopperLocale: "en-US",
-    shopperReference: "1611da6b-87a6-4ae0-aa68-0b4c7a8cfef7",
+    shopperReference: cart.custom?.fields?.selectedGenesisOrgId.toString(),
     amount: {
         currency: paymentParams.currencyCode,
         value: paymentParams.centAmount
@@ -63,6 +64,62 @@ export const addPaymentToCart = async(payment) => {
   
   const shippingAddressId = customer.defaultShippingAddressId ? customer.defaultShippingAddressId : customer.shippingAddressIds[0];
   const billingAddressId = customer.defaultBillingAddressId ? customer.defaultBillingAddressId : customer.billingAddressIds[0];
+  let actions;
+  if(process.env.REACT_APP_AVALARA_READY === "true") {
+    actions = [{
+      action: 'addPayment',
+      payment: {
+        id: payment.id,
+        typeId: "payment"
+      }
+    },
+    {
+      action: 'setShippingAddress',
+      address: {
+        country: customer.addresses.find((address) => address.id === shippingAddressId)?.country,
+        city: customer.addresses.find((address) => address.id === shippingAddressId)?.city,
+        state: customer.addresses.find((address) => address.id === shippingAddressId)?.state,
+        firstName: customer.addresses.find((address) => address.id === shippingAddressId)?.firstName,
+        lastName: customer.addresses.find((address) => address.id === shippingAddressId)?.lastName,
+        streetName: customer.addresses.find((address) => address.id === shippingAddressId)?.streetName,
+        streetNumber: customer.addresses.find((address) => address.id === shippingAddressId)?.streetNumber,
+        postalCode: customer.addresses.find((address) => address.id === shippingAddressId)?.postalCode,
+      }
+    },
+    {
+      action: 'setBillingAddress',
+      address: {
+        country: customer.addresses.find((address) => address.id === billingAddressId)?.country,
+        city: customer.addresses.find((address) => address.id === billingAddressId)?.city,
+        state: customer.addresses.find((address) => address.id === billingAddressId)?.state,
+        firstName: customer.addresses.find((address) => address.id === billingAddressId)?.firstName,
+        lastName: customer.addresses.find((address) => address.id === billingAddressId)?.lastName,
+        streetName: customer.addresses.find((address) => address.id === billingAddressId)?.streetName,
+        streetNumber: customer.addresses.find((address) => address.id === billingAddressId)?.streetNumber,
+        postalCode:customer.addresses.find((address) => address.id === billingAddressId)?.streetNumber,
+      }
+    }]
+  } else {
+    actions = [{
+      action: 'addPayment',
+      payment: {
+        id: payment.id,
+        typeId: "payment"
+      }
+    },
+    {
+      action: 'setShippingAddress',
+      address: {
+        country: customer.addresses.find((address) => address.id === shippingAddressId)?.country,
+      }
+    },
+    {
+      action: 'setBillingAddress',
+      address: {
+        country: customer.addresses.find((address) => address.id === billingAddressId)?.country,
+      }
+    }]
+  }
   let res =  await apiRoot
     .carts()
     .withId({ ID: cart.id })
@@ -70,39 +127,7 @@ export const addPaymentToCart = async(payment) => {
       queryArgs: queryArgs,
       body: {
         version: cart.version,
-        actions: [{
-            action: 'addPayment',
-            payment: {
-              id: payment.id,
-              typeId: "payment"
-            }
-          },
-          {
-            action: 'setShippingAddress',
-            address: {
-              country: customer.addresses.find((address) => address.id === shippingAddressId)?.country,
-              city: customer.addresses.find((address) => address.id === shippingAddressId)?.city,
-              state: customer.addresses.find((address) => address.id === shippingAddressId)?.state,
-              firstName: customer.addresses.find((address) => address.id === shippingAddressId)?.firstName,
-              lastName: customer.addresses.find((address) => address.id === shippingAddressId)?.lastName,
-              streetName: customer.addresses.find((address) => address.id === shippingAddressId)?.streetName,
-              streetNumber: customer.addresses.find((address) => address.id === shippingAddressId)?.streetNumber,
-              postalCode: customer.addresses.find((address) => address.id === shippingAddressId)?.postalCode,
-            }
-          },
-          {
-            action: 'setBillingAddress',
-            address: {
-              country: customer.addresses.find((address) => address.id === billingAddressId)?.country,
-              city: customer.addresses.find((address) => address.id === billingAddressId)?.city,
-              state: customer.addresses.find((address) => address.id === billingAddressId)?.state,
-              firstName: customer.addresses.find((address) => address.id === billingAddressId)?.firstName,
-              lastName: customer.addresses.find((address) => address.id === billingAddressId)?.lastName,
-              streetName: customer.addresses.find((address) => address.id === billingAddressId)?.streetName,
-              streetNumber: customer.addresses.find((address) => address.id === billingAddressId)?.streetNumber,
-              postalCode:customer.addresses.find((address) => address.id === billingAddressId)?.streetNumber,
-            }
-          }]
+        actions
       }
     })
     .execute()
