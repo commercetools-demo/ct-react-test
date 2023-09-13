@@ -44,6 +44,20 @@ export const getCart = async() => {
   return null;
 }
 
+export const getCartById = async(cartId) => {
+  if(!cartId)
+    return null;
+  
+  let res =  await apiRoot
+    .me()
+    .carts()
+    .withId({ ID: cartId })
+    .get({ queryArgs: queryArgs })
+    .execute();
+
+  return res?.body;
+}
+
 export const getCustomer = async() => {
   
   let res =  await apiRoot
@@ -101,6 +115,7 @@ export const addToCart = async (productId, variantId, custom) => {
   const storeKey = sessionStorage.getItem('storeKey');
 
   let cart;
+  let result;
   const lineItem = {
     productId,
     variantId
@@ -115,62 +130,32 @@ export const addToCart = async (productId, variantId, custom) => {
   lineItem.custom = custom;
   
   // Fetch current cart, if any.  Swallow error (TODO: check 404)
-  let result = await apiRoot
+  const cartId = sessionStorage.getItem('cartId');
+
+  console.log("found CartId", cartId);
+  if(cartId) {
+    result = await apiRoot
     .me()
-    .activeCart()
+    .carts()
+    .withId({ ID: cartId })
     .get()
     .execute()
     .catch( (error) => { console.log('err',error) } );
-
-  if(result) {
-    cart = result.body;
-    sessionStorage.setItem('cartId',cart.id);
+    cart = result && result.body;
+    if(cart) {
+      sessionStorage.setItem('cartId',cart.id);
+    }
   }
 
   if(cart) {
     // add item to current cart
     console.log('Adding to current cart',cart.id,cart.version);
-    if (!cart.shippingAddress?.city) {
-      let customer = await getCustomer();
-      const shippingAddressId = customer.defaultShippingAddressId ? customer.defaultShippingAddressId : customer.shippingAddressIds[0];
-      cart = await apiRoot
-      .me()
-      .carts()
-      .withId({ID: cart.id})
-      .post({
-        body: {
-          version: cart.version,
-          actions: [{
-            action: 'setShippingAddress',
-            address: {
-              country: customer.addresses.find((address) => address.id === shippingAddressId)?.country,
-              city: customer.addresses.find((address) => address.id === shippingAddressId)?.city,
-              state: customer.addresses.find((address) => address.id === shippingAddressId)?.state,
-              firstName: customer.addresses.find((address) => address.id === shippingAddressId)?.firstName,
-              lastName: customer.addresses.find((address) => address.id === shippingAddressId)?.lastName,
-              streetName: customer.addresses.find((address) => address.id === shippingAddressId)?.streetName,
-              streetNumber: customer.addresses.find((address) => address.id === shippingAddressId)?.streetNumber,
-              postalCode: customer.addresses.find((address) => address.id === shippingAddressId)?.postalCode,
-            }
-          }]
-        }
-      }).execute();
+    if (!cart.shippingAddress?.city && process.env.REACT_APP_AVALARA_READY  === "true") {
+      const customer = await getCustomer();
+      cart = await addAddress(customer, cart.id || cart.body.id, cart.version || cart.body.version);
     }
-    if (!cart.genesisOrgId) {
-      cart = await apiRoot
-      .me()
-      .carts()
-      .withId({ID: cart.id})
-      .post({
-        body: {
-          version: cart.version,
-          actions: [{
-            action: "setCustomField",
-            name: "selectedGenesisOrgId",
-            value: 5772923323852
-            }]
-        }
-      }).execute();
+    if (!cart.genesisOrgId && process.env.REACT_APP_AVALARA_READY  === "true") {
+      cart = addGenesisOrgId(cart.id || cart.body.id, cart.version || cart.body.version);
     }
     const cartId = cart.id || cart.body.id;
     const cartVersion = cart.version || cart.body.version;
@@ -192,20 +177,24 @@ export const addToCart = async (productId, variantId, custom) => {
           actions: [{
             action: 'addLineItem',
             ...lineItem
-          },
-          {
-            action: 'setCustomerEmail',
-            email: 'api.avalara@test.com'
           }]
         }
     }).execute();
   } else {
+    console.log("creating a new cart")
     // Create cart and add item in one go. Save cart id
+    let taxMode = "Platform";
+    if(process.env.REACT_APP_AVALARA_READY  === "true") {
+      taxMode= "External"
+    }
     const createCartBody = {
       currency: currency,
       lineItems: [lineItem],
-      taxMode: "External",
+      taxMode,
     };
+    if(process.env.REACT_APP_AVALARA_READY  === "true") {
+      createCartBody.customerEmail = 'api.avalara@test.com'
+    }
     if(country) {
       createCartBody.country = country;
     }
@@ -221,13 +210,15 @@ export const addToCart = async (productId, variantId, custom) => {
         key: storeKey,
       }
     }
-    createCartBody.custom = {
-      type: {
-        key: "cart-order-custom-type-information",
-        typeId: "type"
+    if(process.env.REACT_APP_AVALARA_READY  === "true") {
+      createCartBody.custom = {
+        type: {
+          key: "cart-order-custom-type-information",
+          typeId: "type"
+        }
       }
     }
-  
+    console.log("createCartBody", createCartBody);
     result = await apiRoot
       .me()
       .carts()
@@ -235,10 +226,58 @@ export const addToCart = async (productId, variantId, custom) => {
         body: createCartBody
       })
       .execute();
+    console.log("genesisOrg", result);
+    if (!result.genesisOrgId && process.env.REACT_APP_AVALARA_READY  === "true") {
+      result = await addGenesisOrgId(result.id || result.body.id, result.version || result.body.version);
+    }
   }
   if(result) {
     console.log('create cart result',result);
     sessionStorage.setItem('cartId',result.body.id);
   }
   return result;
+}
+
+const addAddress = async (customer, cartId, cartVersion) => {
+      const shippingAddressId = customer.defaultShippingAddressId ? customer.defaultShippingAddressId : customer.shippingAddressIds[0];
+      return apiRoot
+      .me()
+      .carts()
+      .withId({ID: cartId})
+      .post({
+        body: {
+          version: cartVersion,
+          actions: [{
+            action: 'setShippingAddress',
+            address: {
+              country: customer.addresses.find((address) => address.id === shippingAddressId)?.country,
+              city: customer.addresses.find((address) => address.id === shippingAddressId)?.city,
+              state: customer.addresses.find((address) => address.id === shippingAddressId)?.state,
+              firstName: customer.addresses.find((address) => address.id === shippingAddressId)?.firstName,
+              lastName: customer.addresses.find((address) => address.id === shippingAddressId)?.lastName,
+              streetName: customer.addresses.find((address) => address.id === shippingAddressId)?.streetName,
+              streetNumber: customer.addresses.find((address) => address.id === shippingAddressId)?.streetNumber,
+              postalCode: customer.addresses.find((address) => address.id === shippingAddressId)?.postalCode,
+            }
+          }]
+        }
+      }).execute();
+}
+
+const addGenesisOrgId = async (cartId, cartVersion) => {
+  console.log("genesisOrgId", Number(process.env.REACT_APP_SELECTED_ORG_ID))
+  return await apiRoot
+      .me()
+      .carts()
+      .withId({ID: cartId})
+      .post({
+        body: {
+          version: cartVersion,
+          actions: [{
+            action: "setCustomField",
+            name: "selectedGenesisOrgId",
+            value: Number(process.env.REACT_APP_SELECTED_ORG_ID)
+            }]
+        }
+      }).execute();
 }
