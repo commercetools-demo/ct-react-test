@@ -14,9 +14,9 @@ export const createPayment = async(cartId, paymentParams) => {
     throw Error("Cannot create payment without cartId");
     let cart = await getCartById(cartId);
   const getPaymentMethodsRequest = {
-    countryCode: cart?.shippingAddress?.country || "US",
+    countryCode: paymentParams.countryCode,
     shopperLocale: "en-US",
-    shopperReference: cart.custom?.fields?.selectedGenesisOrgId.toString(),
+    shopperReference: paymentParams.selectedGenesisOrgId.toString(),
     amount: {
         currency: paymentParams.currencyCode,
         value: paymentParams.centAmount
@@ -51,7 +51,6 @@ export const createPayment = async(cartId, paymentParams) => {
     } else {
         throw Error("No payment returned");
     }
-    return null;
 }
 
 // 
@@ -96,7 +95,7 @@ export const addPaymentToCart = async(payment) => {
         lastName: customer.addresses.find((address) => address.id === billingAddressId)?.lastName,
         streetName: customer.addresses.find((address) => address.id === billingAddressId)?.streetName,
         streetNumber: customer.addresses.find((address) => address.id === billingAddressId)?.streetNumber,
-        postalCode:customer.addresses.find((address) => address.id === billingAddressId)?.streetNumber,
+        postalCode:customer.addresses.find((address) => address.id === billingAddressId)?.postalCode,
       }
     }]
   } else {
@@ -179,7 +178,6 @@ export const createSessionRequest = async(payment, paymentParams) => {
       throw Error("Cannot create session without payment");
     
     const orderRef = uuidv4();
-    const customerRef = uuidv4();
     const localhost = process.env.NODE_ENV === 'test' ? 'localhost:3000' : 'somethingelse';
     const protocol = process.env.NODE_ENV === 'test' ? 'http' : 'https';
 
@@ -190,7 +188,7 @@ export const createSessionRequest = async(payment, paymentParams) => {
         reference: orderRef, // required: your Payment Reference. Random UUID?
         returnUrl: `${protocol}://${localhost}/checkout?orderRef=${orderRef}`, // set redirect URL required for some payment methods (ie iDEAL)
         lineItems: paymentParams.lineItems,
-        shopperReference: customerRef,
+        shopperReference: paymentParams.selectedGenesisOrgId.toString(),
         shopperInteraction: 'Ecommerce',
         recurringProcessingModel: 'CardOnFile',
         storePaymentMethod: true,

@@ -152,13 +152,13 @@ export const addToCart = async (productId, variantId, custom) => {
     console.log('Adding to current cart',cart.id,cart.version);
     if (!cart.shippingAddress?.city && process.env.REACT_APP_AVALARA_READY  === "true") {
       const customer = await getCustomer();
-      cart = await addAddress(customer, cart.id || cart.body.id, cart.version || cart.body.version);
+      cart = await addAddress(customer, cart.id || cart.body?.id, cart.version || cart.body.version);
     }
     if (!cart.genesisOrgId && process.env.REACT_APP_AVALARA_READY  === "true") {
-      cart = addGenesisOrgId(cart.id || cart.body.id, cart.version || cart.body.version);
+      cart = addGenesisOrgId(cart.id || cart.body?.id, cart.version || cart.body?.version);
     }
-    const cartId = cart.id || cart.body.id;
-    const cartVersion = cart.version || cart.body.version;
+    const cartId = cart.id || cart.body?.id;
+    const cartVersion = cart.version || cart.body?.version;
     console.log("Cart Update Line Items",cartId )
     console.log("cartPayload", {
       version: cartVersion,
@@ -226,10 +226,15 @@ export const addToCart = async (productId, variantId, custom) => {
         body: createCartBody
       })
       .execute();
-    console.log("genesisOrg", result);
+    if (!result.shippingAddress?.city && process.env.REACT_APP_AVALARA_READY  === "true") {
+      const customer = await getCustomer();
+      result = await addAddress(customer, result.id || result.body?.id, result.version || result.body?.version);
+    }
+    console.log("shippingAddress", result)
     if (!result.genesisOrgId && process.env.REACT_APP_AVALARA_READY  === "true") {
       result = await addGenesisOrgId(result.id || result.body.id, result.version || result.body.version);
     }
+    console.log("genesisOrg", result);
   }
   if(result) {
     console.log('create cart result',result);
