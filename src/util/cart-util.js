@@ -157,6 +157,9 @@ export const addToCart = async (productId, variantId, custom) => {
     if (!cart.genesisOrgId && process.env.REACT_APP_AVALARA_READY  === "true") {
       cart = addGenesisOrgId(cart.id || cart.body?.id, cart.version || cart.body?.version);
     }
+    if(!cart.genesisOrgName && process.env.REACT_APP_AVALARA_READY  === "true") {
+      cart = addGenesisOrgName(cart.id || cart.body?.id, cart.version || cart.body?.version);
+    }
     const cartId = cart.id || cart.body?.id;
     const cartVersion = cart.version || cart.body?.version;
     console.log("Cart Update Line Items",cartId )
@@ -231,6 +234,9 @@ export const addToCart = async (productId, variantId, custom) => {
     if (!result.genesisOrgId && process.env.REACT_APP_AVALARA_READY  === "true") {
       result = await addGenesisOrgId(result.id || result.body.id, result.version || result.body.version);
     }
+    if(!result.genesisOrgName && process.env.REACT_APP_AVALARA_READY  === "true") {
+      result = await addGenesisOrgName(result.id || result.body.id, result.version || result.body.version);
+    }
     console.log("genesisOrg", result);
   }
   if(result) {
@@ -279,6 +285,24 @@ const addGenesisOrgId = async (cartId, cartVersion) => {
             action: "setCustomField",
             name: "selectedGenesisOrgId",
             value: Number(process.env.REACT_APP_SELECTED_ORG_ID)
+            }]
+        }
+      }).execute();
+}
+
+const addGenesisOrgName = async (cartId, cartVersion) => {
+  console.log("genesisOrgName", process.env.REACT_APP_SELECTED_ORG_NAME)
+  return await apiRoot
+      .me()
+      .carts()
+      .withId({ID: cartId})
+      .post({
+        body: {
+          version: cartVersion,
+          actions: [{
+            action: "setCustomField",
+            name: "selectedGenesisOrgName",
+            value: process.env.REACT_APP_SELECTED_ORG_NAME
             }]
         }
       }).execute();
