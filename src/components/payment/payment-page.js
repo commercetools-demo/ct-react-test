@@ -8,7 +8,7 @@ import { getCart } from '../../util/cart-util';
 import { setAccessToken } from '../../commercetools';
 import AdyenCheckout from '@adyen/adyen-web';
 import '@adyen/adyen-web/dist/adyen.css';
-import { createPayment, addPaymentToCart, createSessionRequest, checkPayment, createOrder, removePaymentToCart } from '../../util/payment-util';
+import { createPayment, addPaymentToCart, createSessionRequest, checkPayment, getCreatedOrderByCartId } from '../../util/payment-util';
 import { Col, Container, Row } from 'react-bootstrap';
 
 const URL_APP = 'http://localhost:3001';
@@ -104,16 +104,19 @@ const AdyenForm = props => {
                 if(transaction[0]) {
                   const transactionId = transaction[0].id;
                   console.log("transactionId", transactionId);
-                  const cart = await getCart();
-                  if(!cart) throw Error("Cart not found!");
-                  const createdOrder = await createOrder(cart);
-                  console.log("createdOrder", createdOrder);
-                  if(!createdOrder) throw new Error("Order not created!");
-                  else {
-                    sessionStorage.removeItem("cartId");
-                    sessionStorage.setItem('orderId',createdOrder.id);
-                    props.history.push('/order');
+                  const cartId = sessionStorage.getItem('cartId');
+                  if(!cartId) throw Error("Cart not found!");
+                  let createdOrderArray = await getCreatedOrderByCartId(cartId);
+                  while(!createdOrderArray || createdOrderArray.count === 0 ) {
+                    setLoadingTransaction(true);
+                    await transactionTimeoutAwait(2000);
+                    createdOrderArray = await getCreatedOrderByCartId(cartId);
+                    
                   }
+                  const createdOrder = createdOrderArray.results[0]
+                  sessionStorage.removeItem("cartId");
+                  sessionStorage.setItem('orderId',createdOrder.id);
+                  props.history.push('/order');
                 }
               }
               setLoadingTransaction(true);

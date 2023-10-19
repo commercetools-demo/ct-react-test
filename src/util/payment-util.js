@@ -268,3 +268,22 @@ export const createOrder = async(cart) => {
   }
   return;
 }
+
+export const getCreatedOrderByCartId = async(cartId) => {
+  const queryArgs = {
+    cart: { ID: cartId}
+  }
+  let res =  await apiRoot
+  .orders()
+  .get({ queryArgs: queryArgs})
+  .execute()
+  .catch((e) => {
+    console.log("ERROR",e);
+    cart.error = e.message;
+  });
+  console.log("getCreatedOrderByCartId", res?.body)
+  if(res?.body) {
+    return res.body;
+  }
+  return;
+}

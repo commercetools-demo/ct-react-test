@@ -11,6 +11,7 @@ const VERBOSE=true;
 
 const CartPage = props => {
   let [cart, setCart] = useState(null);
+  let [refresh, setRefresh] = useState();
   let [fetched, setFetched] = useState(false);
 
   const currency = sessionStorage.getItem('currency');
@@ -81,6 +82,11 @@ const CartPage = props => {
       action.externalPrice = lineItem.price.value;
     }
     updateCartAndRefresh(action);
+  }
+
+  const addAddon = async () => {
+    const cart = await getCart();
+    setCart(cart);
   }
   
   const decrementQuantity = async (lineItem) => {
@@ -159,6 +165,8 @@ const CartPage = props => {
                                                   lineItem={lineItem} 
                                                   increment={incrementQuantity.bind(null,lineItem)} 
                                                   decrement={decrementQuantity.bind(null,lineItem)} 
+                                                  addAddon={addAddon.bind()}
+                                                  lineItems={cart.lineItems}
                                                  /> )}                                           
         <Row>
           <Col>
