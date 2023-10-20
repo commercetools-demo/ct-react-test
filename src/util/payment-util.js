@@ -271,7 +271,7 @@ export const createOrder = async(cart) => {
 
 export const getCreatedOrderByCartId = async(cartId) => {
   const queryArgs = {
-    cart: { ID: cartId}
+    where:'cart(id="'+cartId+'")'
   }
   let res =  await apiRoot
   .orders()
