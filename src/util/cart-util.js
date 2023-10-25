@@ -154,12 +154,15 @@ export const addToCart = async (productId, variantId, custom) => {
       const customer = await getCustomer();
       cart = await addAddress(customer, cart.id || cart.body?.id, cart.version || cart.body.version);
     }
+    console.log("cartAddress",cart);
     if (!cart.genesisOrgId && process.env.REACT_APP_AVALARA_READY  === "true") {
-      cart = addGenesisOrgId(cart.id || cart.body?.id, cart.version || cart.body?.version);
+      cart = await addGenesisOrgId(cart.id || cart.body?.id, cart.version || cart.body?.version);
     }
+    console.log("cartOrgId",cart);
     if(!cart.genesisOrgName && process.env.REACT_APP_AVALARA_READY  === "true") {
-      cart = addGenesisOrgName(cart.id || cart.body?.id, cart.version || cart.body?.version);
+      cart = await addGenesisOrgName(cart.id || cart.body?.id, cart.version || cart.body?.version);
     }
+    console.log("cartGenesisOrgName",cart);
     const cartId = cart.id || cart.body?.id;
     const cartVersion = cart.version || cart.body?.version;
     console.log("Cart Update Line Items",cartId )

@@ -38,10 +38,14 @@ const ProductDetailPage = () => {
       'masterVariant.prices[*].customerGroup',
       'masterVariant.prices[*].discounted.discount',
       'masterVariant.price.discounted.discount',
+      'masterVariant.attributes',
+      'masterVariant.attributes[*].value[*][*].value',
       'variants[*].prices[*].channel',
       'variants[*].prices[*].customerGroup',
       'variants[*].prices[*].discounted.discount',
-      'variants[*].price.discounted.discount',
+      'variants[*].prices[*].discounted.discount',
+      'variants[*].attributes',
+      'variants[*].attributes[*].value[*][*].value',
     ];
 
 

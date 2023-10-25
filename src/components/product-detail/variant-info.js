@@ -123,9 +123,15 @@ const VariantInfo = ({history,variant}) => {
             </table>
           </div>
         }
+
+
+
         <p></p>
         <h4>Attributes:</h4> { variant.attributes.map(attr => <AttributeInfo key={attr.name} attr={attr} />) } <br></br>
         <p></p>
+
+
+
     </li>
   );
 }
