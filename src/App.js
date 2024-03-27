@@ -7,6 +7,7 @@ import OrderPage from './components/order/order-page';
 import AccountPage from './components/user/account-page';
 import ContextPage from './components/context/context-page';
 import DiscountDetailPage from "./components/discount/discount-detail-page";
+import StorePage from "./components/store/store-page";
 import AppContext from './appContext.js';
 import oktaConfig from './okta-config';
 import {
@@ -62,6 +63,9 @@ function App() {
                   </li>
                   <li>
                     <NavLink to={"/order"} activeClassName="active">Order</NavLink>
+                  </li>
+                  <li>
+                    <NavLink to={"/store"} activeClassName="active">Store Picker</NavLink>
                   </li>                
                 </ul>
               </nav>
@@ -85,6 +89,9 @@ function App() {
               </Route>
               <Route path="/order">
                 <OrderPage />
+              </Route>
+              <Route path="/store">
+                <StorePage />
               </Route>
               <Route path={CALLBACK_PATH} component={LoginCallback} />
               <Route path="/">

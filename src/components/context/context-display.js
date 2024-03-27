@@ -43,6 +43,20 @@ function ContextDisplay() {
           Customer Group: {context.customerGroupName}
         </Col>
       </Row>
+      <Row>
+        <Col md="auto">
+          Airline: {context.airlineName}
+        </Col>
+        <Col md="auto">
+          Route: {context.routeName}
+        </Col>
+        <Col md="auto">
+          Flight: {context.flightName}
+        </Col>
+        <Col md="auto">
+          Class: {context.className}
+        </Col>
+      </Row>
       <hr></hr>
     </Container>
   );
