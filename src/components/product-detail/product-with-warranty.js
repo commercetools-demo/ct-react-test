@@ -7,7 +7,6 @@ import { Container, Row, Col} from 'react-bootstrap';
 import PriceInfo from './price-info';
 import Warranty from './warranty';
 import { addToCart, updateCart } from '../../util/cart-util'
-import { withRouter } from "react-router";
 
 const ProductWithWarranty = (props) => {
   const [price, setPrice] = useState(null);
@@ -110,4 +109,4 @@ const ProductWithWarranty = (props) => {
   )
 }
 
-export default withRouter(ProductWithWarranty);
+export default ProductWithWarranty;
