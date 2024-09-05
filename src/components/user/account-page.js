@@ -22,14 +22,16 @@ const AccountPage = () => {
     if(customer)
       return;
 
-    let res =  await apiRoot
+    apiRoot
       .me()
       .get()
-      .execute();
-
-    if(res?.body) {
-      setCustomer(res.body);
-    }
+      .execute()
+      .then(res => {
+        setCustomer(res.body);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   if(!context.loggedIn) {

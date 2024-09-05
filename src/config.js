@@ -1,4 +1,4 @@
 module.exports = {
-  locale: 'en',
+  locale: 'en-US',
   forceRecalcCart: false
 }

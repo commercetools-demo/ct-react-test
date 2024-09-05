@@ -6,7 +6,6 @@ import CartCustomFields from './cart-custom-fields';
 import { Container, Row, Col} from 'react-bootstrap';
 import { getCart, updateCart } from '../../util/cart-util';
 import { apiRoot } from '../../commercetools';
-import { withRouter } from "react-router";
 
 const VERBOSE=true;
 
@@ -245,4 +244,4 @@ const CartPage = props => {
   )
 }
 
-export default withRouter(CartPage);
+export default CartPage;

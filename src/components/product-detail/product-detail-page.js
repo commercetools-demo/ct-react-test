@@ -23,7 +23,7 @@ const ProductDetailPage = () => {
 
   const fetchProduct = async (id) => {
     // Avoid repeat calls (?)
-    if(product || !id) {
+    if(product || !id || id == 'undefined') {
       return;
     }
 
@@ -33,7 +33,7 @@ const ProductDetailPage = () => {
     
     const queryArgs = setQueryArgs();
 
-    /* Last, but not least, add a couple of reference expansions to include channel and customer group data */
+    /* Last, but not least, add reference expansions to include channel and customer group data */
     queryArgs.expand = [
       'masterVariant.prices[*].channel',
       'masterVariant.prices[*].customerGroup',
@@ -59,7 +59,7 @@ const ProductDetailPage = () => {
   };
 
   if(!product) {
-    return null
+    return (<div>No product selected</div>)
   }
 
   return (

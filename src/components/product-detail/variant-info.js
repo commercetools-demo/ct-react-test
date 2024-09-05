@@ -3,15 +3,16 @@ import AttributeInfo from './attribute-info';
 import { useContext, useState } from 'react';
 import PriceInfo from './price-info';
 import { formatDiscount, formatPrice } from '../../util/priceUtil';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AppContext from '../../appContext.js';
 import { Container, Row, Col} from 'react-bootstrap';
-import { withRouter } from "react-router";
 import { addToCart } from '../../util/cart-util'
 
 const VERBOSE=false;
 
-const VariantInfo = ({history,priceMode,variant}) => {
+
+
+const VariantInfo = ({priceMode,variant}) => {
 
   const [context] = useContext(AppContext);
 
@@ -20,6 +21,8 @@ const VariantInfo = ({history,priceMode,variant}) => {
   const [customType, setCustomType] = useState('');
   const [customFieldName, setCustomFieldName] = useState('');
   const [customFieldValue, setCustomFieldValue] = useState('');
+
+  const navigate = useNavigate();
   
   const callAddToCart = async () => {
     const productId = context.productId;
@@ -36,7 +39,8 @@ const VariantInfo = ({history,priceMode,variant}) => {
     }
     const result = await addToCart(productId,variant.id,custom);
     if(result) {
-      history.push('/cart');
+      console.log('redirect to cart');
+      navigate('/cart');
     } else {
       //window.location.reload();
     }
@@ -143,4 +147,4 @@ const VariantInfo = ({history,priceMode,variant}) => {
   );
 }
 
-export default withRouter(VariantInfo);
+export default VariantInfo;

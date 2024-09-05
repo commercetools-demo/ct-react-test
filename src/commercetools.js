@@ -55,7 +55,7 @@ let ctpClient = new ClientBuilder()
   .withLoggerMiddleware()
   .build();
 
-export let apiRoot = createApiBuilderFromCtpClient(ctpClient).withProjectKey({ projectKey: projectKey });
+export let apiRoot = createApiBuilderFromCtpClient(ctpClient, REACT_APP_API_URL ).withProjectKey({ projectKey: projectKey });
 
 // Create a new client with the new token, and a new api Root
 export function setAccessToken(token) {
@@ -65,5 +65,5 @@ export function setAccessToken(token) {
   .withHttpMiddleware(httpMiddlewareOptions)
   .withLoggerMiddleware()
   .build();
-  apiRoot = createApiBuilderFromCtpClient(ctpClient).withProjectKey({ projectKey: projectKey });
+  apiRoot = createApiBuilderFromCtpClient(ctpClient, REACT_APP_API_URL).withProjectKey({ projectKey: projectKey });
 }
