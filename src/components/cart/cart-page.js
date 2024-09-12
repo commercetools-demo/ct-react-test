@@ -6,12 +6,15 @@ import CartCustomFields from './cart-custom-fields';
 import { Container, Row, Col} from 'react-bootstrap';
 import { getCart, updateCart } from '../../util/cart-util';
 import { apiRoot } from '../../commercetools';
+import {  useNavigate } from "react-router-dom";
 
 const VERBOSE=true;
 
 const CartPage = props => {
   let [cart, setCart] = useState(null);
   let [fetched, setFetched] = useState(false);
+
+  const navigate = useNavigate();
 
   const currency = sessionStorage.getItem('currency');
 
@@ -141,10 +144,12 @@ const CartPage = props => {
       })
       .execute();
 
+
       if(res) {
+        sessionStorage.removeItem('cartId');
         sessionStorage.setItem('orderId',res.body.id);
         console.log('Order',res.body);
-        props.history.push('/order');
+        navigate('/order');
       }
     } else {
       console.log('error in update')

@@ -67,7 +67,7 @@ const VariantInfo = ({priceMode,variant}) => {
   VERBOSE && console.log('variant',variant);
   return (
     <li>
-        { variant.images.map(image => <img src={image.url} height={image.dimensions.h} width={image.dimensions.w} alt={image.label}/>) }<br/>
+        { variant.images.map(image => <img src={image.url} height={200} width={200} alt={image.label}/>) }<br/>
         SKU: { variant.sku } <br></br>
         Variant Key:  { variant.key } <br></br>
         { priceMode == 'Embedded'
@@ -137,7 +137,10 @@ const VariantInfo = ({priceMode,variant}) => {
         :
           <div>
             Price Mode is Standalone - price will display in cart<br></br>
-            <button type="button" onClick={callAddToCart}>Add to Cart</button>
+            { context.currency
+              ?  <button type="button" onClick={callAddToCart}>Add to Cart</button>
+              :  <p><b>To add to cart, first select a currency in the <Link to="/context">Context page</Link></b></p>
+            }
           </div>
         }
         <p></p>

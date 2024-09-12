@@ -57,7 +57,7 @@ function ChannelPicker() {
 
   let channelOptions = "";
   if(channels.length) {
-    channelOptions = channels.map(c => <option key={c.id} value={c.id}>{c.name[config.locale]}</option>);
+    channelOptions = channels.map(c => <option key={c.id} value={c.id}>{c.name?.[config.locale]}</option>);
   }
 
   let selectedChannel=context.channelId ? context.channelId : '';

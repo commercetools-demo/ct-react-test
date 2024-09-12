@@ -61,7 +61,7 @@ const LineItemInfo = ({lineItem,increment,decrement}) => {
                 </ul>
               </div>
               : 
-                <span>no discounts</span>
+                <span>no cart discounts</span>
             }
           </span>
         </Col>

@@ -16,8 +16,10 @@ const LineItemPriceInfo = ({price}) => {
         price.discounted ?
             <span>
               <strike>{formatPrice(price)}</strike> {formatPrice(price.discounted)}<br/>
-              <em>{formatDiscount(price.discounted.discount.obj)} off</em><br/>
-              {price.discounted.discount.obj.name[config.locale]}
+              <span class="small">
+                <em>{formatDiscount(price.discounted.discount.obj)} off</em><br/>
+                Product Discount Name:<br/> {price.discounted.discount.obj.name[config.locale]}
+              </span>
             </span>
             :
             <span>{formatPrice(price)}</span>
